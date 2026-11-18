@@ -35,7 +35,11 @@ function rewrite(source) {
       pendingType = null;
       continue;
     }
-    output.push(line.replaceAll(".default(')", '.default("")'));
+    output.push(
+      line
+        .replaceAll(".default(')", '.default("")')
+        .replace(/\bi18N: jsonb\(\)/, 'i18n: jsonb("i18n")'),
+    );
   }
 
   if (used.size > 0) {

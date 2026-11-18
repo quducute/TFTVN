@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts"
   },
   "scripts": {
     "check": "node --env-file=../../.env.local check.mjs ../../migrations/0001_init.sql",
@@ -19,8 +20,6 @@
   "devDependencies": {
     "@types/node": "^26.6.6",
     "@types/pg": "^8.23.1",
-    "@typescript/native": "npm:typescript@^7.0.2",
-    "drizzle-kit": "^0.31.11",
-    "typescript": "npm:@typescript/typescript6@^6.0.2"
+    "drizzle-kit": "^0.31.11"
   }
 }

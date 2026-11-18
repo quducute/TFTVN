@@ -12,17 +12,21 @@
     "db:pull": "pnpm --filter @tftvn/db pull",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "etl": "pnpm --filter @tftvn/etl run"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.14.0",
     "prettier": "^3.10.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.73.0"
+  },
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=26"
   }
 }

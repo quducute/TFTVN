@@ -2,15 +2,16 @@ import { relations } from "drizzle-orm/relations";
 import {
   gameSets,
   gamedataSnapshots,
-  patches,
   users,
   userTokens,
+  patches,
   comps,
   articles,
   articleComps,
   bookmarks,
   articleReactions,
   roleItems,
+  championRoles,
   matches,
   matchParticipants,
   gameEntities,
@@ -27,22 +28,11 @@ export const gamedataSnapshotsRelations = relations(gamedataSnapshots, ({ one, m
 
 export const gameSetsRelations = relations(gameSets, ({ many }) => ({
   gamedataSnapshots: many(gamedataSnapshots),
-  patches: many(patches),
   comps: many(comps),
   articles: many(articles),
+  patches: many(patches),
   roleItems: many(roleItems),
-}));
-
-export const patchesRelations = relations(patches, ({ one, many }) => ({
-  gameSet: one(gameSets, {
-    fields: [patches.setId],
-    references: [gameSets.id],
-  }),
-  gamedataSnapshot: one(gamedataSnapshots, {
-    fields: [patches.snapshotId],
-    references: [gamedataSnapshots.id],
-  }),
-  comps: many(comps),
+  championRoles: many(championRoles),
 }));
 
 export const userTokensRelations = relations(userTokens, ({ one }) => ({
@@ -64,9 +54,14 @@ export const usersRelations = relations(users, ({ many }) => ({
   bookmarks: many(bookmarks),
   articleReactions: many(articleReactions),
   roleItems: many(roleItems),
+  championRoles: many(championRoles),
 }));
 
 export const compsRelations = relations(comps, ({ one, many }) => ({
+  patch: one(patches, {
+    fields: [comps.setId],
+    references: [patches.id],
+  }),
   user: one(users, {
     fields: [comps.ownerId],
     references: [users.id],
@@ -75,12 +70,20 @@ export const compsRelations = relations(comps, ({ one, many }) => ({
     fields: [comps.setId],
     references: [gameSets.id],
   }),
-  patch: one(patches, {
-    fields: [comps.metaPatchId],
-    references: [patches.id],
-  }),
   articleComps: many(articleComps),
   bookmarks: many(bookmarks),
+}));
+
+export const patchesRelations = relations(patches, ({ one, many }) => ({
+  comps: many(comps),
+  gameSet: one(gameSets, {
+    fields: [patches.setId],
+    references: [gameSets.id],
+  }),
+  gamedataSnapshot: one(gamedataSnapshots, {
+    fields: [patches.snapshotId],
+    references: [gamedataSnapshots.id],
+  }),
 }));
 
 export const articlesRelations = relations(articles, ({ one, many }) => ({
@@ -142,6 +145,17 @@ export const roleItemsRelations = relations(roleItems, ({ one }) => ({
   }),
   user: one(users, {
     fields: [roleItems.updatedBy],
+    references: [users.id],
+  }),
+}));
+
+export const championRolesRelations = relations(championRoles, ({ one }) => ({
+  gameSet: one(gameSets, {
+    fields: [championRoles.setId],
+    references: [gameSets.id],
+  }),
+  user: one(users, {
+    fields: [championRoles.updatedBy],
     references: [users.id],
   }),
 }));

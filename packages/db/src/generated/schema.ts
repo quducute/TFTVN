@@ -84,33 +84,6 @@ export const gamedataSnapshots = pgTable(
   ],
 );
 
-export const patches = pgTable(
-  "patches",
-  {
-    id: text().primaryKey().notNull(),
-    setId: integer("set_id").notNull(),
-    snapshotId: bigint("snapshot_id", { mode: "number" }).notNull(),
-    releasedAt: timestamp("released_at", { withTimezone: true, mode: "string" }),
-    isCurrent: boolean("is_current").default(false).notNull(),
-  },
-  (table) => [
-    uniqueIndex("patches_is_current_key")
-      .using("btree", table.isCurrent.asc().nullsLast().op("bool_ops"))
-      .where(sql`is_current`),
-    index("patches_set_id_idx").using("btree", table.setId.asc().nullsLast().op("int4_ops")),
-    foreignKey({
-      columns: [table.setId],
-      foreignColumns: [gameSets.id],
-      name: "patches_set_id_fkey",
-    }),
-    foreignKey({
-      columns: [table.snapshotId],
-      foreignColumns: [gamedataSnapshots.id],
-      name: "patches_snapshot_id_fkey",
-    }),
-  ],
-);
-
 export const users = pgTable(
   "users",
   {
@@ -232,6 +205,11 @@ export const comps = pgTable(
       )
       .where(sql`(meta_tier IS NOT NULL)`),
     foreignKey({
+      columns: [table.setId, table.metaPatchId],
+      foreignColumns: [patches.id, patches.setId],
+      name: "comps_set_id_meta_patch_id_fkey",
+    }),
+    foreignKey({
       columns: [table.ownerId],
       foreignColumns: [users.id],
       name: "comps_owner_id_fkey",
@@ -240,11 +218,6 @@ export const comps = pgTable(
       columns: [table.setId],
       foreignColumns: [gameSets.id],
       name: "comps_set_id_fkey",
-    }),
-    foreignKey({
-      columns: [table.metaPatchId],
-      foreignColumns: [patches.id],
-      name: "comps_meta_patch_id_fkey",
     }),
     unique("comps_public_id_key").on(table.publicId),
     check(
@@ -484,6 +457,33 @@ export const articleReactions = pgTable(
   ],
 );
 
+export const patches = pgTable(
+  "patches",
+  {
+    id: text().notNull(),
+    setId: integer("set_id").notNull(),
+    snapshotId: bigint("snapshot_id", { mode: "number" }).notNull(),
+    releasedAt: timestamp("released_at", { withTimezone: true, mode: "string" }),
+    isCurrent: boolean("is_current").default(false).notNull(),
+  },
+  (table) => [
+    uniqueIndex("patches_is_current_key")
+      .using("btree", table.isCurrent.asc().nullsLast().op("bool_ops"))
+      .where(sql`is_current`),
+    foreignKey({
+      columns: [table.setId],
+      foreignColumns: [gameSets.id],
+      name: "patches_set_id_fkey",
+    }),
+    foreignKey({
+      columns: [table.snapshotId],
+      foreignColumns: [gamedataSnapshots.id],
+      name: "patches_snapshot_id_fkey",
+    }),
+    primaryKey({ columns: [table.setId, table.id], name: "patches_pkey" }),
+  ],
+);
+
 export const roleItems = pgTable(
   "role_items",
   {
@@ -524,6 +524,37 @@ export const statTotals = pgTable(
   ],
 );
 
+export const championRoles = pgTable(
+  "champion_roles",
+  {
+    setId: integer("set_id").notNull(),
+    championApiName: text("champion_api_name").notNull(),
+    roleApiName: text("role_api_name").notNull(),
+    updatedBy: bigint("updated_by", { mode: "number" }),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("champion_roles_set_id_role_api_name_idx").using(
+      "btree",
+      table.setId.asc().nullsLast().op("int4_ops"),
+      table.roleApiName.asc().nullsLast().op("int4_ops"),
+    ),
+    foreignKey({
+      columns: [table.setId],
+      foreignColumns: [gameSets.id],
+      name: "champion_roles_set_id_fkey",
+    }),
+    foreignKey({
+      columns: [table.updatedBy],
+      foreignColumns: [users.id],
+      name: "champion_roles_updated_by_fkey",
+    }),
+    primaryKey({ columns: [table.setId, table.championApiName], name: "champion_roles_pkey" }),
+  ],
+);
+
 export const matchParticipants = pgTable(
   "match_participants",
   {
@@ -551,7 +582,7 @@ export const gameEntities = pgTable(
     snapshotId: bigint("snapshot_id", { mode: "number" }).notNull(),
     kind: gameEntityKind().notNull(),
     apiName: text("api_name").notNull(),
-    i18N: jsonb().notNull(),
+    i18n: jsonb("i18n").notNull(),
     data: jsonb().notNull(),
     cost: smallint(),
     traits: text().array(),

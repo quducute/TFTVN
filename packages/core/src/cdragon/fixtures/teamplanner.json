@@ -1,0 +1,30 @@
+{
+  "TFTSet17": [
+    {
+      "character_id": "TFT17_Briar",
+      "team_planner_code": 14,
+      "display_name": "Briar",
+      "tier": 1
+    },
+    {
+      "character_id": "TFT17_Bard",
+      "team_planner_code": 28,
+      "display_name": "Bard",
+      "tier": 5
+    }
+  ],
+  "TFTSet18": [
+    {
+      "character_id": "DA_Gromp18_AP",
+      "team_planner_code": 1026,
+      "display_name": "Gromp",
+      "tier": 2
+    },
+    {
+      "character_id": "DA_Murkwolf18",
+      "team_planner_code": 1049,
+      "display_name": "Murkwolf",
+      "tier": 2
+    }
+  ]
+}

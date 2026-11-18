@@ -86,16 +86,9 @@ tftvn/
 - **etl**: `axios`, `bottleneck` (rate limiter Riot).
 - **dev**: `typescript`, `vitest`, `@vitejs/plugin-react`, `@testing-library/react`, `@playwright/test`, `drizzle-kit`, `eslint`, `eslint-config-next`, `typescript-eslint`, `prettier`, `prettier-plugin-tailwindcss`.
 
-**Phiên bản đang dùng (P0, cài bằng `@latest`)**: Next 16.4.6, React 19.3.1, next-intl 4.15.1, Hono 4.13.19, axios 1.21.1, Tailwind 4.3.5, Vitest 5.1.0, ESLint 10.15.0, Prettier 3.10.1, drizzle-orm 0.45.4, drizzle-kit 0.31.11, TypeScript 7.0.2.
+**Phiên bản đang dùng (P0, cài bằng `@latest`)**: Next 16.4.6, React 19.3.1, next-intl 4.15.1, Hono 4.13.19, axios 1.21.1, Tailwind 4.3.5, Vitest 5.1.0, ESLint 10.15.0, Prettier 3.10.1, drizzle-orm 0.45.4, drizzle-kit 0.31.11, tsx 4.23.15, TypeScript 6.0.3.
 
-**TypeScript 7 chạy song song TS 6**: TS 7.0 chưa có API lập trình nên typescript-eslint và bước type-check của `next build` chưa dùng được. Theo hướng dẫn chính thức, mỗi package khai báo:
-
-```json
-"@typescript/native": "npm:typescript@^7.0.2",
-"typescript": "npm:@typescript/typescript6@^6.0.2"
-```
-
-Lệnh `tsc` (qua `pnpm exec` / script) chạy TS 7, còn tool nào import `typescript` thì nhận API TS 6. Bỏ alias khi typescript-eslint hỗ trợ TS 7.1. Lưu ý `npx tsc` trên Windows không chạy được với alias này, dùng `pnpm exec tsc`.
+**Chỉ dùng một bản TypeScript (6.0.3), khai báo một lần ở `package.json` root**. Các package con tìm thấy nó vì Node tìm module ngược lên thư mục cha. Không dùng TS 7 (bản mới nhất) vì TS 7.0 chưa có API lập trình: typescript-eslint và bước type-check của `next build` không chạy được với nó. Đây là ngoại lệ duy nhất của quy tắc "luôn cài bản mới nhất"; chuyển lên TS 7 khi typescript-eslint hỗ trợ (dự kiến TS 7.1).
 
 **Next 16**: file middleware đổi tên thành `src/proxy.ts`; type `LayoutProps` / `PageProps` do `next typegen` sinh ra (script `typecheck` đã chạy sẵn).
 
@@ -131,21 +124,21 @@ Lệnh `tsc` (qua `pnpm exec` / script) chạy TS 7, còn tool nào import `type
 - Xóa mềm (`deleted_at`) cho `articles` và `comps`.
 - **Migration**: viết SQL tay trong `migrations/`, chạy bằng runner nhỏ trong `packages/db` (ghi lại vào bảng `schema_migrations`), sau đó `drizzle-kit pull` để sinh schema TypeScript.
 
-**Tổng cộng 20 bảng**
+**Tổng cộng 21 bảng**
 
-| Nhóm             | Bảng                                                                                 |
-| ---------------- | ------------------------------------------------------------------------------------ |
-| Dữ liệu game (4) | `game_sets`, `gamedata_snapshots`, `patches`, `game_entities`                        |
-| Tài khoản (2)    | `users`, `user_tokens`                                                               |
-| Nội dung (6)     | `comps`, `bookmarks`, `role_items`, `articles`, `article_reactions`, `article_comps` |
-| Thống kê (4)     | `matches`, `match_participants`, `entity_stats`, `stat_totals`                       |
-| Hệ thống (4)     | `site_settings`, `etl_runs`, `riot_cache`, `rate_limits`                             |
+| Nhóm             | Bảng                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------ |
+| Dữ liệu game (4) | `game_sets`, `gamedata_snapshots`, `patches`, `game_entities`                                          |
+| Tài khoản (2)    | `users`, `user_tokens`                                                                                 |
+| Nội dung (7)     | `comps`, `bookmarks`, `role_items`, `champion_roles`, `articles`, `article_reactions`, `article_comps` |
+| Thống kê (4)     | `matches`, `match_participants`, `entity_stats`, `stat_totals`                                         |
+| Hệ thống (4)     | `site_settings`, `etl_runs`, `riot_cache`, `rate_limits`                                               |
 
 ### 3.1 Dữ liệu game (ETL ghi)
 
 - `game_sets(id, name, mutator, is_current, started_at)`: `id` là số Set (17, 18...).
 - `gamedata_snapshots(id, set_id, source_hash, archive_url)`: mỗi lần file CommunityDragon thay đổi thì tạo một snapshot; file gốc nén lại và đính vào **GitHub Release** để chạy lại ETL khi sửa HashResolver.
-- `patches(id, set_id, snapshot_id, released_at, is_current)`: `id` là chuỗi patch (`'17.5'`); nhiều patch có thể dùng chung một snapshot.
+- `patches(set_id, id, snapshot_id, released_at, is_current)`: khóa chính `(set_id, id)` (migration `0002`), vì cùng một bản client (`16.23`) chứa dữ liệu của cả Set hiện tại lẫn Set cũ. `id` là phiên bản client; `comps (set_id, meta_patch_id)` tham chiếu khóa ghép này.
 - `game_entities(snapshot_id, kind, api_name, i18n, data, cost, traits, role_api_name, planner_code)`: **một bảng cho champion / trait / item / augment / role**, tất cả lấy từ CommunityDragon. Các cột `cost`, `traits`, `role_api_name`, `planner_code` chỉ có ở champion (có CHECK đảm bảo).
 - Danh sách hash nhập tay cho HashResolver **không nằm trong DB**: để ở file `packages/core/hash-overrides.json` (có lịch sử trong git, chỉ ETL đọc).
 
@@ -158,6 +151,7 @@ Lệnh `tsc` (qua `pnpm exec` / script) chạy TS 7, còn tool nào import `type
   - **Meta comp gộp vào đây**: `meta_tier` để trống nghĩa là comp thường. CHECK chặn xóa (kể cả xóa mềm) comp đang là meta.
 - `bookmarks(user_id, comp_id)` với PK `(user_id, comp_id)`.
 - `role_items(set_id, role_api_name, items, updated_by)`: trang bị gợi ý cho từng role **do admin chỉnh**. Định nghĩa role nằm trong `game_entities`; bảng này tách riêng để ETL không ghi đè, và gắn theo Set nên giữ nguyên qua các patch.
+- `champion_roles(set_id, champion_api_name, role_api_name, updated_by)` (migration `0003`): role **admin gán** cho từng tướng. Role thực tế = role admin gán, nếu chưa gán thì lấy `game_entities.role_api_name` từ CommunityDragon (hàm `effectiveRole` trong `packages/core`). ETL luôn tạo đủ 12 role chuẩn (`STANDARD_ROLE_API_NAMES`) cho mọi Set để admin có danh sách chọn; tên hiển thị của role nằm trong `messages/vi.json` / `en.json`.
 - `articles(public_id, author_id, set_id, title, category, tags, body, status, reviewed_by, reviewed_at, review_note, deleted_at)`: biết admin nào duyệt/từ chối và lý do.
 - `article_reactions(article_id, user_id, kind)` với PK `(article_id, user_id)`: mỗi user một reaction, đổi bằng `ON CONFLICT DO UPDATE`.
 - `article_comps(article_id, comp_id)`: bài viết gắn được nhiều comp.
@@ -191,13 +185,36 @@ Lệnh `tsc` (qua `pnpm exec` / script) chạy TS 7, còn tool nào import `type
 
 ### 4.1 `sync-gamedata` (hằng ngày hoặc khi có patch mới)
 
-1. Tải `vi_vn.json` (+ `en_us.json`) và teamplanner JSON từ CommunityDragon. Tính hash nội dung; khác snapshot gần nhất thì nén file gốc, đính vào GitHub Release, tạo snapshot mới.
-2. **Tự phát hiện Set**: đọc `setData`/`sets`, chọn Set có số lớn nhất với mutator `TFTSet<N>`. Admin ghi đè được qua `site_settings`.
-3. **HashResolver v2** (TypeScript, nằm trong `packages/core`):
-   - Thuật toán cũ: quét `@VarName@`, băm FNV-1a 32-bit trên tên viết thường, tạo bảng tra ngược.
-   - Thêm nguồn: danh sách hash bin-field công khai của CommunityDragon (cần kiểm tra lại vị trí file hiện tại) và file `packages/core/hash-overrides.json`.
-4. **Thay placeholder** `@Var@` trong description bằng giá trị thật.
-5. Ghi `game_entities`, rồi gọi `POST /api/revalidate` với tag `gamedata`.
+**Đã làm (P1)**. Lệnh: `pnpm etl sync-gamedata [--set N] [--dry-run] [--verbose]`.
+
+1. Tải bằng axios: `content-metadata.json`, `cdragon/tft/vi_vn.json`, `cdragon/tft/en_us.json` (mỗi file khoảng 24 MB) và `tftchampions-teamplanner.json`.
+2. **Patch**: `patches.id` là phiên bản client lấy từ `content-metadata.json` (ví dụ `16.23`), khớp với `game_version` trong match của Riot. Nhãn hiển thị kiểu "18.7" do admin đặt ở `site_settings.patch_label`.
+3. **Tự phát hiện Set**: trong `setData` có nhiều biến thể (PAIRS, TURBO, PVEMODE, CarouselOfChaos...). Chỉ xét mutator đúng dạng `TFTSet<N>` và chọn N lớn nhất. Không dựa vào tiền tố champion: Set 18 dùng `DA_...` và `name` là `"Set10"`. Admin ghi đè qua `site_settings.current_set_override`; P4 sẽ đối chiếu thêm với `tft_set_number` trong match Riot.
+4. **Champion chơi được** lấy theo danh sách teamplanner của mutator đó (Set 18: 65, Set 17: 64). `team_planner_code` thập phân đổi sang 3 chữ số hex (`1026` -> `402`). `champion.traits` trong file là **tên đã dịch**, parser đổi sang `apiName` của trait.
+5. **HashResolver v2** (`packages/core`):
+   - FNV-1a 32-bit trên tên viết thường (đã kiểm tra khớp với danh sách hash của CommunityDragon).
+   - Từ vựng lấy từ **toàn bộ file** của cả hai ngôn ngữ: mọi placeholder, key chưa bị hash, tên biến kỹ năng. Cộng thêm `packages/core/src/hash-overrides.json`.
+   - Danh sách hash bin-field công khai của CommunityDragon **không giải được key nào** (0/83 ở Set 17): nó chứa tên field bin, không chứa tên biến TFT.
+   - Còn khoảng 195 key bị hash ở Set 18, nhưng **mô tả không dùng tới** nên không ảnh hưởng hiển thị.
+6. **Điền placeholder** (`@Name@`, `@Name*100@`), không phân biệt hoa thường, tra theo tên hoặc theo hash của chính tên placeholder:
+   - Trait: thẻ `<row>` thứ k dùng mốc kích hoạt thứ k; `<expandRow>` được nhân bản cho từng mốc; phần còn lại dùng mốc đầu.
+   - Giá trị chỉ có lúc chạy game (`@TFTUnitProperty...@`) và giá trị thiếu hiển thị `?`.
+   - Biến kỹ năng champion theo sao hiển thị `1 sao/2 sao/3 sao`.
+
+   | Set 18                | Điền đủ | Còn `?`                                                                                                        |
+   | --------------------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+   | Augment (594)         | 588     | 6 (giá trị `null` ngay trong dữ liệu nguồn)                                                                    |
+   | Trait (36)            | 36      | 0                                                                                                              |
+   | Item (776)            | 775     | 1                                                                                                              |
+   | Kỹ năng champion (65) | 0       | 65 (mô tả dùng giá trị tính toán như `MagicDamageCalc1`, công thức nằm trong file bin riêng của từng champion) |
+
+7. **Ghi DB** trong một transaction: upsert `game_sets`; snapshot tính theo hash nội dung đã parse của **riêng Set đó** (chạy lại không tạo trùng); upsert `patches (set_id, id)`; Set hiện tại được đánh dấu `is_current`. Mỗi lần chạy ghi vào `etl_runs`.
+8. Khi có snapshot mới và đang chạy trong GitHub Actions: nén file gốc, đính vào GitHub Release `gamedata-<patch>`, rồi gọi `REVALIDATE_URL` (route này làm ở P2).
+
+**Việc còn mở sau P1**
+
+- Kỹ năng champion: đọc `mSpellCalculations` trong file bin của từng champion để tính `...Calc` (chưa làm, hiện hiển thị bảng biến theo sao).
+- Role: Set 17 có 12 role (63/64 champion); **Set 18 gần như không có** (63/65 champion `role: null`), và file không có tên hiển thị của role. Đã chốt: admin tự gán role qua bảng `champion_roles` (màn hình admin làm ở P5).
 
 ### 4.2 `sync-matches` (vài giờ một lần)
 
@@ -377,6 +394,9 @@ Lệnh `tsc` (qua `pnpm exec` / script) chạy TS 7, còn tool nào import `type
 2. Phạm vi Set cũ: chỉ giữ thư viện, hay giữ cả thống kê và meta comps?
 
 **Đã chốt**:
+
+- **Role**: admin tự gán role cho từng tướng (`champion_roles`), vì CommunityDragon thiếu role ở Set 18.
+- Chỉ dùng **một bản TypeScript 6** ở root.
 
 - **Next.js + Vercel cho toàn bộ**: frontend và backend Node (Hono) trong cùng một project.
 - TypeScript toàn bộ, không dùng Rust.

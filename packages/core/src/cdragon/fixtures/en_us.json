@@ -1,0 +1,1028 @@
+{
+  "items": [
+    {
+      "apiName": "TFT17_Item_ASTraitEmblemItem",
+      "associatedTraits": [],
+      "composition": ["TFT_Item_FryingPan", "TFT_Item_RecurveBow"],
+      "desc": "The holder gains the Challenger trait. On takedown, the holder's next @NumAttacks@ attacks each heal for @PercentHealthHeal*100@% of max health.",
+      "effects": {
+        "AS": 30,
+        "NumAttacks": 3,
+        "PercentHealthHeal": 0.05000000074505806
+      },
+      "from": null,
+      "icon": "assets/maps/particles/tft/item_icons/traits/spatula/set17/tft17_emblem_challenger.tex",
+      "id": null,
+      "incompatibleTraits": ["TFT17_ASTrait"],
+      "isAugment": false,
+      "name": "Challenger Emblem",
+      "tags": ["{ebcd1bac}"],
+      "unique": true
+    },
+    {
+      "apiName": "TFT_Item_RecurveBow",
+      "associatedTraits": [],
+      "composition": [],
+      "desc": "%i:scaleAS% +@AS@% Attack Speed",
+      "effects": {
+        "AS": 10
+      },
+      "from": null,
+      "icon": "assets/maps/tft/icons/items/hexcore/tft_item_recurvebow.tex",
+      "id": null,
+      "incompatibleTraits": [],
+      "isAugment": false,
+      "name": "Recurve Bow",
+      "tags": ["component"],
+      "unique": false
+    },
+    {
+      "apiName": "TFT_Item_FryingPan",
+      "associatedTraits": [],
+      "composition": [],
+      "desc": "<tftitemrules>...why else would it be here?</tftitemrules>",
+      "effects": {},
+      "from": null,
+      "icon": "assets/maps/tft/icons/items/hexcore/tft_item_fryingpan.tex",
+      "id": null,
+      "incompatibleTraits": [],
+      "isAugment": false,
+      "name": "Frying Pan",
+      "tags": ["component"],
+      "unique": false
+    },
+    {
+      "apiName": "TFT10_Augment_LittleBuddies",
+      "associatedTraits": [],
+      "composition": [],
+      "desc": "Your 4-cost and 5-cost champions gain @health@ Health and @AttackSpeed*100@% Attack Speed for every 1-cost and 2-cost champion on your board.<br><br>@TFTUnitProperty.item:TFT_Augment_LittleBuddies_Tooltip@",
+      "effects": {
+        "AttackSpeed": 0.07000000029802322,
+        "Health": 65,
+        "{0d14760d}": 4,
+        "{82aeb8a7}": 2
+      },
+      "from": null,
+      "icon": "assets/maps/tft/icons/augments/hexcore/little-buddies-ii.tex",
+      "id": null,
+      "incompatibleTraits": [],
+      "isAugment": true,
+      "name": "Little Buddies",
+      "tags": ["{ce1fd21c}", "{b72bd3bf}", "{d02ae323}", "{ee609993}", "{807eed8a}"],
+      "unique": false
+    },
+    {
+      "apiName": "DA_18_FaeTraitAugment",
+      "associatedTraits": ["DA_18_Fae"],
+      "composition": [],
+      "desc": "Fae pixies are now larger and grant @BonusMultiplier*100@% more Attack Damage and Ability Power. Fae champions gain @UpfrontADAP*100@% Attack Damage and Ability Power immediately. Gain a Xayah and a Rakan.",
+      "effects": {
+        "BonusMultiplier": 0.3499999940395355,
+        "{020fc56b}": 0.18000000715255737
+      },
+      "from": null,
+      "icon": "assets/maps/tft/icons/augments/hexcore/missing-t2.tex",
+      "id": null,
+      "incompatibleTraits": [],
+      "isAugment": true,
+      "name": "Embiggen",
+      "tags": ["{ce1fd21c}"],
+      "unique": false
+    }
+  ],
+  "setData": [
+    {
+      "augments": ["TFT10_Augment_LittleBuddies"],
+      "champions": [
+        {
+          "ability": {
+            "desc": "Passive: For every @PercentMissingHealth@% missing Health, gain <TFTBonus>@ModifiedAS@% (%i:scaleAP%)</TFTBonus> Attack Speed<br><br>Active: Deal <physicalDamage>@ModifiedDamage@&nbsp;(%i:scaleAD%)</physicalDamage> physical damage to the target, increased by <TFTBonus>@PercentBonusDamage*100@%</TFTBonus> if they're a tank.",
+            "icon": "assets/characters/tft17_briar/hud/icons2d/tft17_briarq.tex",
+            "name": "Fish Frenzy",
+            "variables": [
+              {
+                "name": "PercentMissingHealth",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "ADDamage",
+                "value": [
+                  3.299999952316284, 120, 180, 285, 485, 3.299999952316284, 3.299999952316284
+                ]
+              },
+              {
+                "name": "APDamage",
+                "value": [0, 10, 15, 25, 45, 0, 0]
+              },
+              {
+                "name": "PercentBonusDamage",
+                "value": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+              },
+              {
+                "name": "AS",
+                "value": [2, 2, 2, 2.5, 2.5, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT17_Briar",
+          "characterName": "TFT17_Briar",
+          "cost": 1,
+          "icon": "assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_centered_10.tex",
+          "name": "Briar",
+          "role": "ADFighter",
+          "squareIcon": "assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_tile_10.tex",
+          "stats": {
+            "armor": 35,
+            "attackSpeed": 0.75,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 40,
+            "hp": 650,
+            "initialMana": 0,
+            "magicResist": 35,
+            "mana": 40,
+            "range": 1
+          },
+          "tileIcon": "assets/characters/tft17_briar/hud/tft17_briar_square.tex",
+          "traits": ["Anima", "Primordian", "Rogue"]
+        },
+        {
+          "ability": {
+            "desc": "Summon a flying saucer over the current target that lasts <ShowIf.TFT17_Augment_Concentration_Active><TFTRadiantItemBonus>@AugmentedDuration@</TFTRadiantItemBonus></ShowIf.TFT17_Augment_Concentration_Active><ShowIfNot.TFT17_Augment_Concentration_Active>@Duration@</ShowIfNot.TFT17_Augment_Concentration_Active> seconds. Each second it deals <magicDamage>@ModifiedDamagePerSecond@&nbsp;(%i:scaleAP%)</magicDamage>&nbsp;magic damage to the target, plus <magicDamage>@ModifiedSplitDamagePerSecond@&nbsp;(%i:scaleAP%)</magicDamage>&nbsp;magic damage split between all enemies within @SecondaryHexRange@&nbsp;hex. The saucer deals <TFTBonus>@TankDamageIncrease*100@%</TFTBonus> increased damage to Tanks.<br><br>If an enemy under the UFO dies, Bard has a <TFTBonus>@AbductChance*100@%&nbsp;</TFTBonus>chance to abduct them and create a 1-star copy on your bench.<br><br><mainText enabled=TFT17_Astronaut_IsActive alternate=rules><spellActive enabled=TFT17_Astronaut_IsActive alternate=rules>Meep bonus:</spellActive> On combat start, grant the nearest <TFTBonus>@ModifiedNumAllies@</TFTBonus>&nbsp;(%i:set14AmpIcon%) Meeple allies an additional Meep.</mainText><br><br><rules>Friends abducted: @TFTUnitProperty.:TFT17_Bard_FriendsAbducted@</rules>",
+            "icon": "assets/characters/tft17_bard/hud/icons2d/tft17_bard_e.tex",
+            "name": "Ultra Friendly Object",
+            "variables": [
+              {
+                "name": "DamagePerSecond",
+                "value": [2, 240, 360, 3000, 5000, 2, 2]
+              },
+              {
+                "name": "SplitDamagePerSecond",
+                "value": [0, 135, 205, 1500, 2500, 0, 0]
+              },
+              {
+                "name": "Duration",
+                "value": [4, 4, 4, 4, 4, 4, 4]
+              },
+              {
+                "name": "AugmentedDuration",
+                "value": [5, 5, 5, 5, 5, 5, 5]
+              },
+              {
+                "name": "AbductChance",
+                "value": [
+                  0.4000000059604645, 0.15000000596046448, 0.20000000298023224, 1,
+                  0.4000000059604645, 0.4000000059604645, 0.4000000059604645
+                ]
+              },
+              {
+                "name": "PVEAbductionChanceModifier",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "MeepsPerMeep",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "TankDamageIncrease",
+                "value": [
+                  0.30000001192092896, 0.30000001192092896, 0.30000001192092896,
+                  0.30000001192092896, 0.30000001192092896, 0.30000001192092896, 0.30000001192092896
+                ]
+              },
+              {
+                "name": "SecondaryHexRange",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "CanAbductSecondaryTargets",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              }
+            ]
+          },
+          "apiName": "TFT17_Bard",
+          "characterName": "TFT17_Bard",
+          "cost": 5,
+          "icon": "assets/characters/tft17_bard/skins/base/images/tft17_bard_splash_centered_8.tex",
+          "name": "Bard",
+          "role": "APCaster",
+          "squareIcon": "assets/characters/tft17_bard/skins/base/images/tft17_bard_splash_tile_8.tex",
+          "stats": {
+            "armor": 40,
+            "attackSpeed": 0.8500000238418579,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 30,
+            "hp": 900,
+            "initialMana": 0,
+            "magicResist": 40,
+            "mana": 65,
+            "range": 4
+          },
+          "tileIcon": "assets/characters/tft17_bard/hud/tft17_bard_square.tex",
+          "traits": ["Meeple", "Conduit"]
+        },
+        {
+          "ability": {
+            "desc": "Drag this Tome to the Shop to open an Armory full of emblems! You will have 30 seconds to choose.",
+            "icon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+            "name": "Tome of Traits",
+            "variables": [
+              {
+                "name": "RoundsToHatch",
+                "value": [2, 2, 2, 2, 2, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT5_EmblemArmoryKey",
+          "characterName": "TFT5_EmblemArmoryKey",
+          "cost": 8,
+          "icon": "assets/ux/tft/championsplashes/tft5_emblemarmorykey.tex",
+          "name": "Tome of Traits",
+          "role": null,
+          "squareIcon": "assets/ux/tft/championsplashes/tft5_draconicegg_mobile.tex",
+          "stats": {
+            "armor": 10,
+            "attackSpeed": 1,
+            "critChance": null,
+            "critMultiplier": 0,
+            "damage": null,
+            "hp": 10,
+            "initialMana": 0,
+            "magicResist": 10,
+            "mana": 100,
+            "range": 0
+          },
+          "tileIcon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+          "traits": []
+        }
+      ],
+      "items": ["TFT17_Item_ASTraitEmblemItem", "TFT_Item_FryingPan", "TFT_Item_RecurveBow"],
+      "mutator": "TFTSet17",
+      "name": "Set17",
+      "number": 17,
+      "traits": [
+        {
+          "apiName": "TFT17_Stargazer_Wolf",
+          "desc": "Stargazers chart a different constellation every game. This game: <TFTStargazer>The Boar</TFTStargazer>.<br><br>Gain gold after winning player combat. Allies in empowered hexes gain @Wolf_Health_Teamwide*100@% Health, Attack Damage, and Ability Power. Stargazers gain more.<br><br>(Gold Earned: @TFTUnitProperty.trait:TFT17_Stargazer_Wolf_TotalGold@)<br><br><expandRow>(@MinUnits@) @Wolf_Gold@ gold, @Wolf_Health*100@% %i:scaleHealth%, @Wolf_ADAP@% %i:scaleAD%%i:scaleAP%</expandRow><br><br><rules>More hexes reveal at each player level</rules>",
+          "effects": [
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "Wolf_ADAP": 10,
+                "Wolf_Gold": 1,
+                "Wolf_Health": 0.019999999552965164,
+                "Wolf_Health_Teamwide": 0.07999999821186066,
+                "{f5b00dd5}": 8
+              }
+            },
+            {
+              "maxUnits": 4,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "Wolf_ADAP": 15,
+                "Wolf_Gold": 2,
+                "Wolf_Health": 0.07999999821186066,
+                "Wolf_Health_Teamwide": 0.07999999821186066,
+                "{f5b00dd5}": 8
+              }
+            },
+            {
+              "maxUnits": 5,
+              "minUnits": 5,
+              "style": 3,
+              "variables": {
+                "Wolf_ADAP": 25,
+                "Wolf_Gold": 4,
+                "Wolf_Health": 0.15000000596046448,
+                "Wolf_Health_Teamwide": 0.07999999821186066,
+                "{f5b00dd5}": 8
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 6,
+              "style": 5,
+              "variables": {
+                "Wolf_ADAP": 30,
+                "Wolf_Gold": 6,
+                "Wolf_Health": 0.2199999988079071,
+                "Wolf_Health_Teamwide": 0.07999999821186066,
+                "{f5b00dd5}": 8
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_stargazer.tex",
+          "name": "Stargazer"
+        },
+        {
+          "apiName": "TFT17_AnimaSquad",
+          "desc": "After losing a player combat, gain @TechPerCombat@ Tech, plus additional Tech equal to @TechPerLoss@ times the length of your loss streak. Additionally, gain @TechPerKill@ Tech per Anima takedown.<br><br>Each time Animas get @TechBreakpoint@ Tech, they prototype new Anima Weapons. You can take them, or save your Tech to get more powerful weapons next time.<br><br><row>(@MinUnits@) Start Researching! </row><br><row>(@MinUnits@) After each player combat, gain loot!</row><br><br><ShowIf.TFT17_AnimaSquad_IsDoubleUp><rules>Gain @PairsPartnerWinMultiplier*100@% Tech from losing if your partner wins a combat in Double Up.</rules></ShowIf.TFT17_AnimaSquad_IsDoubleUp>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "PairsPartnerWinMultiplier": 0.8500000238418579,
+                "TechBreakpoint": 100,
+                "TechPerCombat": 20,
+                "TechPerCombat_DU": 20,
+                "TechPerDeath_PVE": 1,
+                "TechPerKill": 2,
+                "TechPerLoss": 5,
+                "TechPerLoss_DU": 5,
+                "TechPerRound_PVE": 20
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "PairsPartnerWinMultiplier": 0.8500000238418579,
+                "TechBreakpoint": 100,
+                "TechPerCombat": 20,
+                "TechPerCombat_DU": 20,
+                "TechPerDeath_PVE": 1,
+                "TechPerKill": 2,
+                "TechPerLoss": 5,
+                "TechPerLoss_DU": 5,
+                "TechPerRound_PVE": 20
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_animatech.tex",
+          "name": "Anima"
+        },
+        {
+          "apiName": "TFT17_AssassinTrait",
+          "desc": "Rogues gain Attack Damage and Ability Power. The first time they fall below @HealthThreshold*100@% health, they slip into shadows. Enemies targeting them are redirected to a nearby unit, preferring Tanks.<br><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "AD": 0.11999999731779099,
+                "AP": 12,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 3,
+              "variables": {
+                "AD": 0.25,
+                "AP": 25,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 4,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "AD": 0.44999998807907104,
+                "AP": 45,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "AD": 0.6000000238418579,
+                "AP": 60,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_rogue.tex",
+          "name": "Rogue"
+        },
+        {
+          "apiName": "TFT17_Primordian",
+          "desc": "<row>(@MinUnits@) Dealing damage spawns Swarmlings based on unique Primordian star level.</row><br><row>(@MinUnits@) Spawn @PercentMoreSwarmlings@% more Swarmlings! After each player combat, gain a random 1 or 2-cost champion. </row><br><br><rules>@DamageTakenPercentModifier*100@% of damage taken contributes to damage dealt.</rules>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "DamageMultiplier": 1,
+                "DamageTakenPercentModifier": 0.07999999821186066,
+                "PercentMoreSwarmlings": 45,
+                "{3ed71f24}": 6
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 3,
+              "style": 5,
+              "variables": {
+                "DamageMultiplier": 1.4500000476837158,
+                "DamageTakenPercentModifier": 0.07999999821186066,
+                "PercentMoreSwarmlings": 45,
+                "{3ed71f24}": 6
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_primordian.tex",
+          "name": "Primordian"
+        },
+        {
+          "apiName": "TFT17_Astronaut",
+          "desc": "Meeple attract Meeps that empower Meeple abilities in meepy ways. They also gain bonus Health.<br><br><row>(@MinUnits@) @Meeps@ %i:set14AmpIcon%, @BonusHealth@ %i:scaleHealth%</row><br><row>(@MinUnits@) @Meeps@ %i:set14AmpIcon%, @BonusHealth@ %i:scaleHealth%</row><br><row>(@MinUnits@) @Meeps@ %i:set14AmpIcon%, @BonusHealth@ %i:scaleHealth%. Create a Cloning Slot on your bench. Gain gold and a 1-star copy of the champion placed there when cloning completes.</row><br><row>(@MinUnits@) @Meeps@ %i:set14AmpIcon%, @BonusHealth@ %i:scaleHealth%. SUMMON THE FOUR MEEPLORDS!</row><br><br><rules>Cloning time = Champion cost</rules>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "BonusHealth": 100,
+                "Meeps": 2
+              }
+            },
+            {
+              "maxUnits": 6,
+              "minUnits": 5,
+              "style": 3,
+              "variables": {
+                "BonusHealth": 350,
+                "Meeps": 3
+              }
+            },
+            {
+              "maxUnits": 9,
+              "minUnits": 7,
+              "style": 5,
+              "variables": {
+                "BonusHealth": 450,
+                "Meeps": 4
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 10,
+              "style": 6,
+              "variables": {
+                "BonusHealth": 550,
+                "Meeps": 6
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_astronaut.tex",
+          "name": "Meeple"
+        },
+        {
+          "apiName": "TFT17_ManaTrait",
+          "desc": "Innate: Conduits gain @InnateManaGain*100@% additional Mana from all sources.<br><br>Your team gains Mana Regen, increased for Conduits.<br><br><expandRow>(@MinUnits@) @TeamManaRegen@ %i:TFTManaRegen% | @ChannelerManaRegen@ %i:TFTManaRegen%</expandRow><br><br>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "ChannelerManaRegen": 3,
+                "InnateManaGain": 0.20000000298023224,
+                "TeamManaRegen": 1
+              }
+            },
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 3,
+              "variables": {
+                "ChannelerManaRegen": 5,
+                "InnateManaGain": 0.20000000298023224,
+                "TeamManaRegen": 1
+              }
+            },
+            {
+              "maxUnits": 4,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "ChannelerManaRegen": 7,
+                "InnateManaGain": 0.20000000298023224,
+                "TeamManaRegen": 2
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "ChannelerManaRegen": 9,
+                "InnateManaGain": 0.20000000298023224,
+                "TeamManaRegen": 2
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_channeler.tex",
+          "name": "Conduit"
+        }
+      ]
+    },
+    {
+      "augments": ["DA_18_FaeTraitAugment"],
+      "champions": [
+        {
+          "ability": {
+            "desc": "<Bright>Adaptor </Bright>%i:scaleAP%<Bright>:</Bright> Belch a noxious bubble at the current target that explodes on the first enemy hit, dealing @MagicDamageCalc1@ %i:scaleAP% magic damage. Enemies within a 1 hex radius of the explosion take @MagicDamageCalc2@ %i:scaleAP% magic damage over @PoisonDurationAP@ seconds.\r\\n\r\\n<dim>Adaptor </dim>%i:scaleAD%<dim>: Heavily slows the target.</dim>\r\\n\r\\nPurple Buff: Every @TraitTimer@ seconds, Gromp gains @TraitTimedAP@ Ability Power.",
+            "icon": "None",
+            "name": "Belchy Bubble",
+            "variables": []
+          },
+          "apiName": "DA_Gromp18_AP",
+          "characterName": "DA_Gromp18_AP",
+          "cost": 2,
+          "icon": "{f3b734c3102f71ed}",
+          "name": "Gromp",
+          "role": null,
+          "squareIcon": "assets/characters/tft18_gromp/skins/base/images/t_18_gromp_teamplannersplash.tex",
+          "stats": {
+            "armor": 30,
+            "attackSpeed": 0.699999988079071,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 30,
+            "hp": 550,
+            "initialMana": 0,
+            "magicResist": 30,
+            "mana": 45,
+            "range": 4
+          },
+          "tileIcon": "assets/characters/tft18_gromp/tft18_gromp_square.tex",
+          "traits": ["Riftbeast", "Adaptor"]
+        },
+        {
+          "ability": {
+            "desc": "Leap to the lowest Health enemy within @LeapHexRadius@ Hexes and deal @PhysicalDamageCalc1@ %i:scaleAD%%i:scaleAP% physical damage. The next @NumEmpoweredAttacks@ attacks gain @EmpowerAspd@ Attack Speed and deal @PhysicalDamageCalc2@ %i:scaleAD% bonus physical damage.\r\\n\r\\nGrey Buff: Gain Precision and @TraitBaseCrit@ Critical Strike Chance, increased up to @TraitBonusCrit@ based on missing Health.",
+            "icon": "None",
+            "name": "Rending Claws",
+            "variables": []
+          },
+          "apiName": "DA_Murkwolf18",
+          "characterName": "DA_Murkwolf18",
+          "cost": 2,
+          "icon": "{0ea96b4d47691e31}",
+          "name": "Murkwolf",
+          "role": null,
+          "squareIcon": "assets/characters/tft18_murkwolf/skins/base/images/t_18_murkwolf_teamplannersplash.tex",
+          "stats": {
+            "armor": 40,
+            "attackSpeed": 0.75,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 50,
+            "hp": 700,
+            "initialMana": 0,
+            "magicResist": 40,
+            "mana": 40,
+            "range": 1
+          },
+          "tileIcon": "assets/characters/tft18_murkwolf/tft18_murkwolf_square.tex",
+          "traits": ["Riftbeast", "Ravager"]
+        },
+        {
+          "ability": {
+            "desc": "Drag this Tome to the Shop to open an Armory full of emblems! You will have 30 seconds to choose.",
+            "icon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+            "name": "Tome of Traits",
+            "variables": [
+              {
+                "name": "RoundsToHatch",
+                "value": [2, 2, 2, 2, 2, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT5_EmblemArmoryKey",
+          "characterName": "TFT5_EmblemArmoryKey",
+          "cost": 8,
+          "icon": "assets/ux/tft/championsplashes/tft5_emblemarmorykey.tex",
+          "name": "Tome of Traits",
+          "role": null,
+          "squareIcon": "assets/ux/tft/championsplashes/tft5_draconicegg_mobile.tex",
+          "stats": {
+            "armor": 10,
+            "attackSpeed": 1,
+            "critChance": null,
+            "critMultiplier": 0,
+            "damage": null,
+            "hp": 10,
+            "initialMana": 0,
+            "magicResist": 10,
+            "mana": 100,
+            "range": 0
+          },
+          "tileIcon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+          "traits": []
+        }
+      ],
+      "items": ["TFT_Item_FryingPan"],
+      "mutator": "TFTSet18",
+      "name": "Set10",
+      "number": 18,
+      "traits": [
+        {
+          "apiName": "DA_18_Elderwood",
+          "desc": "Gain placeable Elderwood plants.<br><row>(@MinUnits@) A Stonebark Tree and a Lifebloom</row><br><row>(@MinUnits@) A second Stonebark Tree and Stonebark Trees gain @StonebarkTreeBonusHealth@ Health</row><br><row>(@MinUnits@) and the Deepwood Protector</row><br><row>(@MinUnits@) Plants star up to 2-star</row><br><row>(@MinUnits@) Plants star up to 3-star and the forest comes to life</row>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612
+              }
+            },
+            {
+              "maxUnits": 6,
+              "minUnits": 5,
+              "style": 3,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612,
+                "{b027c2f9}": 200
+              }
+            },
+            {
+              "maxUnits": 8,
+              "minUnits": 7,
+              "style": 5,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612
+              }
+            },
+            {
+              "maxUnits": 10,
+              "minUnits": 9,
+              "style": 5,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 11,
+              "style": 6,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_18_elderwood.tex",
+          "name": "Elderwood"
+        },
+        {
+          "apiName": "DA_18_Slayer",
+          "desc": "Ravagers gain @Omnivamp*100@% Omnivamp. Additionally, Ravagers deal bonus damage, doubled against units below @EnemyHealthThreshold*100@% Health.<br><row>(@MinUnits@) @BonusDamagePercentBase*100@% Bonus Damage</row><br><row>(@MinUnits@) @BonusDamagePercentBase*100@% Bonus Damage</row><br><row>(@MinUnits@) @BonusDamagePercentBase*100@% Bonus Damage</row>",
+          "effects": [
+            {
+              "maxUnits": 3,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "Omnivamp": 0.10000000149011612,
+                "{a9a813e7}": 0.11999999731779099,
+                "{bef0ca90}": 0.5
+              }
+            },
+            {
+              "maxUnits": 5,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "Omnivamp": 0.10000000149011612,
+                "{a9a813e7}": 0.25,
+                "{bef0ca90}": 0.5
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 6,
+              "style": 5,
+              "variables": {
+                "Omnivamp": 0.10000000149011612,
+                "{a9a813e7}": 0.4000000059604645,
+                "{bef0ca90}": 0.5
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_18_ravager.tex",
+          "name": "Ravager"
+        },
+        {
+          "apiName": "DA_18_Adaptor",
+          "desc": "Innate: Adaptor abilities change depending on if their Attack Damage or Ability Power is higher.<br><br>Adaptors gain Ability Power or Attack Damage, depending on which is higher.<br><row>(@MinUnits@) @ADAPGain*100@%  OR</row><br><row>(@MinUnits@) @ADAPGain*100@%  OR</row><br><row>(@MinUnits@) @ADAPGain*100@%  OR</row>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "{0412779a}": 0.25
+              }
+            },
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 3,
+              "variables": {
+                "{0412779a}": 0.3499999940395355
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 4,
+              "style": 5,
+              "variables": {
+                "{0412779a}": 0.5
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_18_adaptor.tex",
+          "name": "Adaptor"
+        },
+        {
+          "apiName": "DA_Riftbeast18",
+          "desc": "<row>(@MinUnits@) Use the Alpha Mark to grant a Riftbeast their unique Buff</row><br><row>(@MinUnits@) Every @OverrunCombats@ combats, your next shop is overrun with Riftbeasts.</row><br><row>(@MinUnits@) On combat start and every 5 seconds Riftbeasts grow gaining <br>@CapstoneAD*100@% %i:scaleAD% @CapstoneAP*100@% %i:scaleAP% @CapstoneAspd*100@% %i:scaleAS%<br>+@CapstoneArmor@ %i:scaleArmor% +@CapstoneMR@ %i:scaleMR%  +@CapstoneHealth@ %i:scaleHealth% +@CapstoneManaRegen@ %i:scaleManaRegen%</row><br><row>(@MinUnits@) +@TeamSize@ maximum team size</row>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {}
+            },
+            {
+              "maxUnits": 6,
+              "minUnits": 5,
+              "style": 3,
+              "variables": {
+                "{e8d16db1}": 3
+              }
+            },
+            {
+              "maxUnits": 9,
+              "minUnits": 7,
+              "style": 5,
+              "variables": {
+                "{0776b071}": 0.05000000074505806,
+                "{08cfb22e}": 50,
+                "{0d6c2c87}": 5,
+                "{1b76cfed}": 0.05000000074505806,
+                "{3230276c}": 1,
+                "{4e1998f4}": 0.059999942779541016,
+                "{a8c6eeaf}": 5
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 10,
+              "style": 5,
+              "variables": {
+                "TeamSize": 2
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_18_riftbeast.tex",
+          "name": "Riftbeast"
+        }
+      ]
+    },
+    {
+      "augments": [],
+      "champions": [
+        {
+          "ability": {
+            "desc": "Passive: For every @PercentMissingHealth@% missing Health, gain <TFTBonus>@ModifiedAS@% (%i:scaleAP%)</TFTBonus> Attack Speed<br><br>Active: Deal <physicalDamage>@ModifiedDamage@&nbsp;(%i:scaleAD%)</physicalDamage> physical damage to the target, increased by <TFTBonus>@PercentBonusDamage*100@%</TFTBonus> if they're a tank.",
+            "icon": "assets/characters/tft17_briar/hud/icons2d/tft17_briarq.tex",
+            "name": "Fish Frenzy",
+            "variables": [
+              {
+                "name": "PercentMissingHealth",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "ADDamage",
+                "value": [
+                  3.299999952316284, 120, 180, 285, 485, 3.299999952316284, 3.299999952316284
+                ]
+              },
+              {
+                "name": "APDamage",
+                "value": [0, 10, 15, 25, 45, 0, 0]
+              },
+              {
+                "name": "PercentBonusDamage",
+                "value": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+              },
+              {
+                "name": "AS",
+                "value": [2, 2, 2, 2.5, 2.5, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT17_Briar",
+          "characterName": "TFT17_Briar",
+          "cost": 1,
+          "icon": "assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_centered_10.tex",
+          "name": "Briar",
+          "role": "ADFighter",
+          "squareIcon": "assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_tile_10.tex",
+          "stats": {
+            "armor": 35,
+            "attackSpeed": 0.75,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 40,
+            "hp": 650,
+            "initialMana": 0,
+            "magicResist": 35,
+            "mana": 40,
+            "range": 1
+          },
+          "tileIcon": "assets/characters/tft17_briar/hud/tft17_briar_square.tex",
+          "traits": ["Anima", "Primordian", "Rogue"]
+        },
+        {
+          "ability": {
+            "desc": "Drag this Tome to the Shop to open an Armory full of emblems! You will have 30 seconds to choose.",
+            "icon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+            "name": "Tome of Traits",
+            "variables": [
+              {
+                "name": "RoundsToHatch",
+                "value": [2, 2, 2, 2, 2, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT5_EmblemArmoryKey",
+          "characterName": "TFT5_EmblemArmoryKey",
+          "cost": 8,
+          "icon": "assets/ux/tft/championsplashes/tft5_emblemarmorykey.tex",
+          "name": "Tome of Traits",
+          "role": null,
+          "squareIcon": "assets/ux/tft/championsplashes/tft5_draconicegg_mobile.tex",
+          "stats": {
+            "armor": 10,
+            "attackSpeed": 1,
+            "critChance": null,
+            "critMultiplier": 0,
+            "damage": null,
+            "hp": 10,
+            "initialMana": 0,
+            "magicResist": 10,
+            "mana": 100,
+            "range": 0
+          },
+          "tileIcon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+          "traits": []
+        }
+      ],
+      "items": [],
+      "mutator": "TFTSet17_PAIRS",
+      "name": "Set17",
+      "number": 17,
+      "traits": [
+        {
+          "apiName": "TFT17_AnimaSquad",
+          "desc": "After losing a player combat, gain @TechPerCombat@ Tech, plus additional Tech equal to @TechPerLoss@ times the length of your loss streak. Additionally, gain @TechPerKill@ Tech per Anima takedown.<br><br>Each time Animas get @TechBreakpoint@ Tech, they prototype new Anima Weapons. You can take them, or save your Tech to get more powerful weapons next time.<br><br><row>(@MinUnits@) Start Researching! </row><br><row>(@MinUnits@) After each player combat, gain loot!</row><br><br><ShowIf.TFT17_AnimaSquad_IsDoubleUp><rules>Gain @PairsPartnerWinMultiplier*100@% Tech from losing if your partner wins a combat in Double Up.</rules></ShowIf.TFT17_AnimaSquad_IsDoubleUp>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "PairsPartnerWinMultiplier": 0.8500000238418579,
+                "TechBreakpoint": 100,
+                "TechPerCombat": 20,
+                "TechPerCombat_DU": 20,
+                "TechPerDeath_PVE": 1,
+                "TechPerKill": 2,
+                "TechPerLoss": 5,
+                "TechPerLoss_DU": 5,
+                "TechPerRound_PVE": 20
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "PairsPartnerWinMultiplier": 0.8500000238418579,
+                "TechBreakpoint": 100,
+                "TechPerCombat": 20,
+                "TechPerCombat_DU": 20,
+                "TechPerDeath_PVE": 1,
+                "TechPerKill": 2,
+                "TechPerLoss": 5,
+                "TechPerLoss_DU": 5,
+                "TechPerRound_PVE": 20
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_animatech.tex",
+          "name": "Anima"
+        },
+        {
+          "apiName": "TFT17_AssassinTrait",
+          "desc": "Rogues gain Attack Damage and Ability Power. The first time they fall below @HealthThreshold*100@% health, they slip into shadows. Enemies targeting them are redirected to a nearby unit, preferring Tanks.<br><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "AD": 0.11999999731779099,
+                "AP": 12,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 3,
+              "variables": {
+                "AD": 0.25,
+                "AP": 25,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 4,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "AD": 0.44999998807907104,
+                "AP": 45,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "AD": 0.6000000238418579,
+                "AP": 60,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_rogue.tex",
+          "name": "Rogue"
+        },
+        {
+          "apiName": "TFT17_Primordian",
+          "desc": "<row>(@MinUnits@) Dealing damage spawns Swarmlings based on unique Primordian star level.</row><br><row>(@MinUnits@) Spawn @PercentMoreSwarmlings@% more Swarmlings! After each player combat, gain a random 1 or 2-cost champion. </row><br><br><rules>@DamageTakenPercentModifier*100@% of damage taken contributes to damage dealt.</rules>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "DamageMultiplier": 1,
+                "DamageTakenPercentModifier": 0.07999999821186066,
+                "PercentMoreSwarmlings": 45,
+                "{3ed71f24}": 6
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 3,
+              "style": 5,
+              "variables": {
+                "DamageMultiplier": 1.4500000476837158,
+                "DamageTakenPercentModifier": 0.07999999821186066,
+                "PercentMoreSwarmlings": 45,
+                "{3ed71f24}": 6
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_primordian.tex",
+          "name": "Primordian"
+        }
+      ]
+    }
+  ]
+}

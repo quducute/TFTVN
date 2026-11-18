@@ -1,0 +1,44 @@
+name: ETL
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      set:
+        description: "So Set can nap (de trong = Set hien tai)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: etl
+  cancel-in-progress: false
+
+jobs:
+  sync-gamedata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Sync game data
+        env:
+          DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVALIDATE_URL: ${{ secrets.REVALIDATE_URL }}
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          SET_NUMBER: ${{ inputs.set }}
+        run: |
+          if [ -n "$SET_NUMBER" ]; then
+            pnpm etl sync-gamedata --set "$SET_NUMBER"
+          else
+            pnpm etl sync-gamedata
+          fi

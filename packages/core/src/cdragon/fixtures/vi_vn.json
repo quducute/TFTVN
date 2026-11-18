@@ -1,0 +1,1028 @@
+{
+  "items": [
+    {
+      "apiName": "TFT17_Item_ASTraitEmblemItem",
+      "associatedTraits": [],
+      "composition": ["TFT_Item_FryingPan", "TFT_Item_RecurveBow"],
+      "desc": "Chủ sở hữu nhận thêm hệ Thách Đấu. Khi hạ gục, mỗi đòn trong @NumAttacks@ đòn đánh tiếp theo của chủ sở hồi máu bằng @PercentHealthHeal*100@% máu tối đa.",
+      "effects": {
+        "AS": 30,
+        "NumAttacks": 3,
+        "PercentHealthHeal": 0.05000000074505806
+      },
+      "from": null,
+      "icon": "assets/maps/particles/tft/item_icons/traits/spatula/set17/tft17_emblem_challenger.tex",
+      "id": null,
+      "incompatibleTraits": ["TFT17_ASTrait"],
+      "isAugment": false,
+      "name": "Ấn Thách Đấu",
+      "tags": ["{ebcd1bac}"],
+      "unique": true
+    },
+    {
+      "apiName": "TFT_Item_RecurveBow",
+      "associatedTraits": [],
+      "composition": [],
+      "desc": "%i:scaleAS% +@AS@% Tốc Độ Đánh",
+      "effects": {
+        "AS": 10
+      },
+      "from": null,
+      "icon": "assets/maps/tft/icons/items/hexcore/tft_item_recurvebow.tex",
+      "id": null,
+      "incompatibleTraits": [],
+      "isAugment": false,
+      "name": "Cung Gỗ",
+      "tags": ["component"],
+      "unique": false
+    },
+    {
+      "apiName": "TFT_Item_FryingPan",
+      "associatedTraits": [],
+      "composition": [],
+      "desc": "<tftitemrules>...còn lý do nào khác để nó ở đây nữa?</tftitemrules>",
+      "effects": {},
+      "from": null,
+      "icon": "assets/maps/tft/icons/items/hexcore/tft_item_fryingpan.tex",
+      "id": null,
+      "incompatibleTraits": [],
+      "isAugment": false,
+      "name": "Chảo Vàng",
+      "tags": ["component"],
+      "unique": false
+    },
+    {
+      "apiName": "TFT10_Augment_LittleBuddies",
+      "associatedTraits": [],
+      "composition": [],
+      "desc": "Tướng 4 vàng và 5 vàng của bạn nhận @health@ Máu và @AttackSpeed*100@% Tốc Độ Đánh với mỗi tướng 1 vàng và 2 vàng trên bàn đấu của bạn.<br><br>@TFTUnitProperty.item:TFT_Augment_LittleBuddies_Tooltip@",
+      "effects": {
+        "AttackSpeed": 0.07000000029802322,
+        "Health": 65,
+        "{0d14760d}": 4,
+        "{82aeb8a7}": 2
+      },
+      "from": null,
+      "icon": "assets/maps/tft/icons/augments/hexcore/little-buddies-ii.tex",
+      "id": null,
+      "incompatibleTraits": [],
+      "isAugment": true,
+      "name": "Những Người Bạn Nhỏ",
+      "tags": ["{ce1fd21c}", "{b72bd3bf}", "{d02ae323}", "{ee609993}", "{807eed8a}"],
+      "unique": false
+    },
+    {
+      "apiName": "DA_18_FaeTraitAugment",
+      "associatedTraits": ["DA_18_Fae"],
+      "composition": [],
+      "desc": "Các Pix Tiên Linh giờ trở nên lớn hơn và trao thêm @BonusMultiplier*100@% Sức Mạnh Công Kích & Sức Mạnh Phép Thuật. Các tướng Tiên Linh nhận @UpfrontADAP*100@% Sức Mạnh Công Kích và Sức Mạnh Phép Thuật ngay lập tức. Nhận 1 Xayah và 1 Rakan.",
+      "effects": {
+        "BonusMultiplier": 0.3499999940395355,
+        "{020fc56b}": 0.18000000715255737
+      },
+      "from": null,
+      "icon": "assets/maps/tft/icons/augments/hexcore/missing-t2.tex",
+      "id": null,
+      "incompatibleTraits": [],
+      "isAugment": true,
+      "name": "Hóa Lớn",
+      "tags": ["{ce1fd21c}"],
+      "unique": false
+    }
+  ],
+  "setData": [
+    {
+      "augments": ["TFT10_Augment_LittleBuddies"],
+      "champions": [
+        {
+          "ability": {
+            "desc": "Nội tại: Với mỗi @PercentMissingHealth@% Máu đã mất, nhận <TFTBonus>@ModifiedAS@% (%i:scaleAP%)</TFTBonus> Tốc Độ Đánh<br><br>Kích hoạt: Gây <physicalDamage>@ModifiedDamage@&nbsp;(%i:scaleAD%)</physicalDamage> sát thương vật lý lên mục tiêu, tăng thêm <TFTBonus>@PercentBonusDamage*100@%</TFTBonus> nếu chúng là tướng Đỡ Đòn.",
+            "icon": "assets/characters/tft17_briar/hud/icons2d/tft17_briarq.tex",
+            "name": "Cá Càn Quét",
+            "variables": [
+              {
+                "name": "PercentMissingHealth",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "ADDamage",
+                "value": [
+                  3.299999952316284, 120, 180, 285, 485, 3.299999952316284, 3.299999952316284
+                ]
+              },
+              {
+                "name": "APDamage",
+                "value": [0, 10, 15, 25, 45, 0, 0]
+              },
+              {
+                "name": "PercentBonusDamage",
+                "value": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+              },
+              {
+                "name": "AS",
+                "value": [2, 2, 2, 2.5, 2.5, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT17_Briar",
+          "characterName": "TFT17_Briar",
+          "cost": 1,
+          "icon": "assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_centered_10.tex",
+          "name": "Briar",
+          "role": "ADFighter",
+          "squareIcon": "assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_tile_10.tex",
+          "stats": {
+            "armor": 35,
+            "attackSpeed": 0.75,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 40,
+            "hp": 650,
+            "initialMana": 0,
+            "magicResist": 35,
+            "mana": 40,
+            "range": 1
+          },
+          "tileIcon": "assets/characters/tft17_briar/hud/tft17_briar_square.tex",
+          "traits": ["Siêu Thú", "Tộc Thượng Cổ", "Vô Pháp"]
+        },
+        {
+          "ability": {
+            "desc": "Triệu hồi một đĩa bay phía trên mục tiêu hiện tại, tồn tại trong <ShowIf.TFT17_Augment_Concentration_Active><TFTRadiantItemBonus>@AugmentedDuration@</TFTRadiantItemBonus></ShowIf.TFT17_Augment_Concentration_Active><ShowIfNot.TFT17_Augment_Concentration_Active>@Duration@</ShowIfNot.TFT17_Augment_Concentration_Active> giây. Mỗi giây, nó gây <magicDamage>@ModifiedDamagePerSecond@&nbsp;(%i:scaleAP%)</magicDamage>&nbsp;sát thương phép lên mục tiêu, cộng thêm <magicDamage>@ModifiedSplitDamagePerSecond@&nbsp;(%i:scaleAP%)</magicDamage>&nbsp;sát thương phép chia đều cho tất cả kẻ địch trong @SecondaryHexRange@&nbsp;ô. Đĩa bay gây thêm <TFTBonus>@TankDamageIncrease*100@%</TFTBonus> sát thương lên các Tướng Đỡ Đòn.<br><br>Nếu một kẻ địch bên dưới UFO bị hạ gục, Bard có <TFTBonus>@AbductChance*100@%&nbsp;</TFTBonus> cơ hội bắt cóc và tạo một bản sao 1 sao của tướng đó trên hàng chờ của bạn.<br><br><mainText enabled=TFT17_Astronaut_IsActive alternate=rules><spellActive enabled=TFT17_Astronaut_IsActive alternate=rules>Thưởng Meep:</spellActive> Khi bắt đầu giao tranh, <TFTBonus>@ModifiedNumAllies@</TFTBonus>&nbsp;(%i:set14AmpIcon%) đồng minh Tinh Linh Chuông gần nhất nhận thêm 1 Meep.</mainText><br><br><rules>Người bạn bị bắt cóc: @TFTUnitProperty.:TFT17_Bard_FriendsAbducted@</rules>",
+            "icon": "assets/characters/tft17_bard/hud/icons2d/tft17_bard_e.tex",
+            "name": "Vật Thể Siêu Thân Thiện",
+            "variables": [
+              {
+                "name": "DamagePerSecond",
+                "value": [2, 240, 360, 3000, 5000, 2, 2]
+              },
+              {
+                "name": "SplitDamagePerSecond",
+                "value": [0, 135, 205, 1500, 2500, 0, 0]
+              },
+              {
+                "name": "Duration",
+                "value": [4, 4, 4, 4, 4, 4, 4]
+              },
+              {
+                "name": "AugmentedDuration",
+                "value": [5, 5, 5, 5, 5, 5, 5]
+              },
+              {
+                "name": "AbductChance",
+                "value": [
+                  0.4000000059604645, 0.15000000596046448, 0.20000000298023224, 1,
+                  0.4000000059604645, 0.4000000059604645, 0.4000000059604645
+                ]
+              },
+              {
+                "name": "PVEAbductionChanceModifier",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "MeepsPerMeep",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "TankDamageIncrease",
+                "value": [
+                  0.30000001192092896, 0.30000001192092896, 0.30000001192092896,
+                  0.30000001192092896, 0.30000001192092896, 0.30000001192092896, 0.30000001192092896
+                ]
+              },
+              {
+                "name": "SecondaryHexRange",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "CanAbductSecondaryTargets",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              }
+            ]
+          },
+          "apiName": "TFT17_Bard",
+          "characterName": "TFT17_Bard",
+          "cost": 5,
+          "icon": "assets/characters/tft17_bard/skins/base/images/tft17_bard_splash_centered_8.tex",
+          "name": "Bard",
+          "role": "APCaster",
+          "squareIcon": "assets/characters/tft17_bard/skins/base/images/tft17_bard_splash_tile_8.tex",
+          "stats": {
+            "armor": 40,
+            "attackSpeed": 0.8500000238418579,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 30,
+            "hp": 900,
+            "initialMana": 0,
+            "magicResist": 40,
+            "mana": 65,
+            "range": 4
+          },
+          "tileIcon": "assets/characters/tft17_bard/hud/tft17_bard_square.tex",
+          "traits": ["Tinh Linh Chuông", "Dẫn Truyền"]
+        },
+        {
+          "ability": {
+            "desc": "Kéo Cẩm Nang này vào Cửa Hàng để mở ra Kho Vũ Khí đầy đủ của các ấn! Bạn có 30 giây để lựa chọn.",
+            "icon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+            "name": "Sách Chọn Ấn",
+            "variables": [
+              {
+                "name": "RoundsToHatch",
+                "value": [2, 2, 2, 2, 2, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT5_EmblemArmoryKey",
+          "characterName": "TFT5_EmblemArmoryKey",
+          "cost": 8,
+          "icon": "assets/ux/tft/championsplashes/tft5_emblemarmorykey.tex",
+          "name": "Sách Chọn Ấn",
+          "role": null,
+          "squareIcon": "assets/ux/tft/championsplashes/tft5_draconicegg_mobile.tex",
+          "stats": {
+            "armor": 10,
+            "attackSpeed": 1,
+            "critChance": null,
+            "critMultiplier": 0,
+            "damage": null,
+            "hp": 10,
+            "initialMana": 0,
+            "magicResist": 10,
+            "mana": 100,
+            "range": 0
+          },
+          "tileIcon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+          "traits": []
+        }
+      ],
+      "items": ["TFT17_Item_ASTraitEmblemItem", "TFT_Item_FryingPan", "TFT_Item_RecurveBow"],
+      "mutator": "TFTSet17",
+      "name": "Set17",
+      "number": 17,
+      "traits": [
+        {
+          "apiName": "TFT17_Stargazer_Wolf",
+          "desc": "Trận này, tướng Chiêm Tinh dệt nên chòm sao: <TFTStargazer>Heo Rừng</TFTStargazer>.<br>Nhận vàng khi thắng giao tranh người chơi. Đồng minh trên ô cường hóa nhận thêm @Wolf_Health_Teamwide*100@% Máu, Sức Mạnh Công Kích và Sức Mạnh Phép Thuật. Tướng Chiêm Tinh nhận nhiều hơn.<br>(Vàng Kiếm Được: @TFTUnitProperty.trait:TFT17_Stargazer_Wolf_TotalGold@)<br><expandRow>(@MinUnits@) @Wolf_Gold@ vàng, @Wolf_Health*100@% %i:scaleHealth%, @Wolf_ADAP@% %i:scaleAD%%i:scaleAP%</expandRow><br><rules>Mỗi cấp người chơi sẽ mở thêm ô.</rules>",
+          "effects": [
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "Wolf_ADAP": 10,
+                "Wolf_Gold": 1,
+                "Wolf_Health": 0.019999999552965164,
+                "Wolf_Health_Teamwide": 0.07999999821186066,
+                "{f5b00dd5}": 8
+              }
+            },
+            {
+              "maxUnits": 4,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "Wolf_ADAP": 15,
+                "Wolf_Gold": 2,
+                "Wolf_Health": 0.07999999821186066,
+                "Wolf_Health_Teamwide": 0.07999999821186066,
+                "{f5b00dd5}": 8
+              }
+            },
+            {
+              "maxUnits": 5,
+              "minUnits": 5,
+              "style": 3,
+              "variables": {
+                "Wolf_ADAP": 25,
+                "Wolf_Gold": 4,
+                "Wolf_Health": 0.15000000596046448,
+                "Wolf_Health_Teamwide": 0.07999999821186066,
+                "{f5b00dd5}": 8
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 6,
+              "style": 5,
+              "variables": {
+                "Wolf_ADAP": 30,
+                "Wolf_Gold": 6,
+                "Wolf_Health": 0.2199999988079071,
+                "Wolf_Health_Teamwide": 0.07999999821186066,
+                "{f5b00dd5}": 8
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_stargazer.tex",
+          "name": "Chiêm Tinh"
+        },
+        {
+          "apiName": "TFT17_AnimaSquad",
+          "desc": "Sau khi thua một giao tranh người chơi, nhận @TechPerCombat@ Linh Kiện, cộng thêm số Linh Kiện bằng @TechPerLoss@ lần độ dài chuỗi thua của bạn. Ngoài ra, nhận thêm @TechPerKill@ Linh Kiện mỗi khi tướng Siêu Thú tham gia hạ gục.<br><br>Mỗi khi tướng Siêu Thú tích đủ @TechBreakpoint@ Linh Kiện, họ sẽ thử nghiệm các Vũ Khí Siêu Thú mới. Bạn có thể nhận chúng ngay hoặc tích thêm Linh Kiện để nhận được những vũ khí mạnh mẽ hơn ở lần sau.<br><br><row>(@MinUnits@) Bắt Đầu Nghiên Cứu!</row><br><row>(@MinUnits@) Sau mỗi giao tranh người chơi, nhận báu vật!</row><br><br><ShowIf.TFT17_AnimaSquad_IsDoubleUp><rules>Nhận @PairsPartnerWinMultiplier*100@% Linh Kiện khi thua nếu đồng đội của bạn thắng giao tranh trong Cặp Đôi Hoàn Hảo.</rules></ShowIf.TFT17_AnimaSquad_IsDoubleUp>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "PairsPartnerWinMultiplier": 0.8500000238418579,
+                "TechBreakpoint": 100,
+                "TechPerCombat": 20,
+                "TechPerCombat_DU": 20,
+                "TechPerDeath_PVE": 1,
+                "TechPerKill": 2,
+                "TechPerLoss": 5,
+                "TechPerLoss_DU": 5,
+                "TechPerRound_PVE": 20
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "PairsPartnerWinMultiplier": 0.8500000238418579,
+                "TechBreakpoint": 100,
+                "TechPerCombat": 20,
+                "TechPerCombat_DU": 20,
+                "TechPerDeath_PVE": 1,
+                "TechPerKill": 2,
+                "TechPerLoss": 5,
+                "TechPerLoss_DU": 5,
+                "TechPerRound_PVE": 20
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_animatech.tex",
+          "name": "Siêu Thú"
+        },
+        {
+          "apiName": "TFT17_AssassinTrait",
+          "desc": "Tướng Vô Pháp nhận thêm Sức Mạnh Công Kích và Sức Mạnh Phép Thuật. Lần đầu tiên khi xuống dưới @HealthThreshold*100@% máu, họ sẽ trốn vào trong bóng tối. Kẻ địch đang nhắm vào họ sẽ chuyển hướng sang một đơn vị ở gần, ưu tiên tướng Đỡ Đòn.<br><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "AD": 0.11999999731779099,
+                "AP": 12,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 3,
+              "variables": {
+                "AD": 0.25,
+                "AP": 25,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 4,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "AD": 0.44999998807907104,
+                "AP": 45,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "AD": 0.6000000238418579,
+                "AP": 60,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_rogue.tex",
+          "name": "Vô Pháp"
+        },
+        {
+          "apiName": "TFT17_Primordian",
+          "desc": "<row>(@MinUnits@) Gây sát thương sẽ sinh ra Bầy Đàn Hiểm Họa dựa trên cấp sao độc nhất của tướng Tộc Thượng Cổ.</row><br><row>(@MinUnits@) Sinh ra thêm @PercentMoreSwarmlings@% Bầy Đàn! Sau mỗi giao tranh người chơi, nhận 1 tướng 1 vàng hoặc 2 vàng ngẫu nhiên. </row><br><br><rules>@DamageTakenPercentModifier*100@% sát thương gánh chịu được tính vào sát thương gây ra.</rules>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "DamageMultiplier": 1,
+                "DamageTakenPercentModifier": 0.07999999821186066,
+                "PercentMoreSwarmlings": 45,
+                "{3ed71f24}": 6
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 3,
+              "style": 5,
+              "variables": {
+                "DamageMultiplier": 1.4500000476837158,
+                "DamageTakenPercentModifier": 0.07999999821186066,
+                "PercentMoreSwarmlings": 45,
+                "{3ed71f24}": 6
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_primordian.tex",
+          "name": "Tộc Thượng Cổ"
+        },
+        {
+          "apiName": "TFT17_Astronaut",
+          "desc": "Tướng Tinh Linh Chuông sẽ thu hút Meep đến gia hộ kỹ năng của họ theo cách riêng. Họ còn được nhận Máu cộng thêm.<br><row>(@MinUnits@) @Meeps@ %i:set14AmpIcon%, @BonusHealth@ %i:scaleHealth%</row><br><row>(@MinUnits@) @Meeps@ %i:set14AmpIcon%, @BonusHealth@ %i:scaleHealth%</row><br><row>(@MinUnits@) @Meeps@ %i:set14AmpIcon%, @BonusHealth@ %i:scaleHealth%. Tạo ra một Ô Nhân Bản trên hàng dự bị của bạn. Nhận vàng và 1 bản sao 1 sao của vị tướng được đặt trên đó khi quá trình nhân bản hoàn tất.</row><br><row>(@MinUnits@) @Meeps@ %i:set14AmpIcon%, @BonusHealth@ %i:scaleHealth%. TRIỆU HỒI TỨ ĐẠI MEEP CHÚA!</row><br><rules>Thời gian nhân bản = Giá tướng</rules>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "BonusHealth": 100,
+                "Meeps": 2
+              }
+            },
+            {
+              "maxUnits": 6,
+              "minUnits": 5,
+              "style": 3,
+              "variables": {
+                "BonusHealth": 350,
+                "Meeps": 3
+              }
+            },
+            {
+              "maxUnits": 9,
+              "minUnits": 7,
+              "style": 5,
+              "variables": {
+                "BonusHealth": 450,
+                "Meeps": 4
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 10,
+              "style": 6,
+              "variables": {
+                "BonusHealth": 550,
+                "Meeps": 6
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_astronaut.tex",
+          "name": "Tinh Linh Chuông"
+        },
+        {
+          "apiName": "TFT17_ManaTrait",
+          "desc": "Thiên Phú: Tướng Dẫn Truyền nhận thêm @InnateManaGain*100@% Năng Lượng từ mọi nguồn.<br><br>Đội của bạn được tăng Hồi Năng Lượng, tướng Dẫn Truyền nhận được nhiều hơn.<br><br><expandRow>(@MinUnits@) @TeamManaRegen@ %i:TFTManaRegen% | @ChannelerManaRegen@ %i:TFTManaRegen%</expandRow><br><br>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "ChannelerManaRegen": 3,
+                "InnateManaGain": 0.20000000298023224,
+                "TeamManaRegen": 1
+              }
+            },
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 3,
+              "variables": {
+                "ChannelerManaRegen": 5,
+                "InnateManaGain": 0.20000000298023224,
+                "TeamManaRegen": 1
+              }
+            },
+            {
+              "maxUnits": 4,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "ChannelerManaRegen": 7,
+                "InnateManaGain": 0.20000000298023224,
+                "TeamManaRegen": 2
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "ChannelerManaRegen": 9,
+                "InnateManaGain": 0.20000000298023224,
+                "TeamManaRegen": 2
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_channeler.tex",
+          "name": "Dẫn Truyền"
+        }
+      ]
+    },
+    {
+      "augments": ["DA_18_FaeTraitAugment"],
+      "champions": [
+        {
+          "ability": {
+            "desc": "<Bright>Thích Ứng </Bright>%i:scaleAP%<Bright>:</Bright> Phun ra một bong bóng độc hại về phía mục tiêu hiện tại, phát nổ khi trúng kẻ địch đầu tiên, gây @MagicDamageCalc1@ %i:scaleAP% sát thương phép. Kẻ địch trong bán kính 1 ô quanh vụ nổ chịu @MagicDamageCalc2@ %i:scaleAP% sát thương phép trong vòng @PoisonDurationAP@ giây.\r\\n\r\\n<dim>Thích Ứng </dim>%i:scaleAD%<dim>: Làm chậm mạnh mục tiêu.</dim>\r\\n\r\\nBùa Tím: Mỗi @TraitTimer@ giây, Cóc Thành Tinh Gromp nhận @TraitTimedAP@ Sức Mạnh Phép Thuật.",
+            "icon": "None",
+            "name": "Bong Bóng Ợ Hơi",
+            "variables": []
+          },
+          "apiName": "DA_Gromp18_AP",
+          "characterName": "DA_Gromp18_AP",
+          "cost": 2,
+          "icon": "{f3b734c3102f71ed}",
+          "name": "Cóc Thành Tinh",
+          "role": null,
+          "squareIcon": "assets/characters/tft18_gromp/skins/base/images/t_18_gromp_teamplannersplash.tex",
+          "stats": {
+            "armor": 30,
+            "attackSpeed": 0.699999988079071,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 30,
+            "hp": 550,
+            "initialMana": 0,
+            "magicResist": 30,
+            "mana": 45,
+            "range": 4
+          },
+          "tileIcon": "assets/characters/tft18_gromp/tft18_gromp_square.tex",
+          "traits": ["Quái Rừng", "Thích Ứng"]
+        },
+        {
+          "ability": {
+            "desc": "Nhảy đến kẻ địch thấp Máu nhất trong phạm vi @LeapHexRadius@ Ô và gây @PhysicalDamageCalc1@ %i:scaleAD%%i:scaleAP% sát thương vật lý. @NumEmpoweredAttacks@ đòn đánh tiếp theo được tăng @EmpowerAspd@ Tốc Độ Đánh và gây @PhysicalDamageCalc2@ %i:scaleAD% sát thương vật lý cộng thêm.\r\\n\r\\nBùa Xám: Nhận thêm Chuẩn Xác và @TraitBaseCrit@ Tỉ Lệ Chí Mạng, tăng lên tối đa @TraitBonusCrit@ dựa trên Máu đã mất.",
+            "icon": "None",
+            "name": "Vuốt Xé",
+            "variables": []
+          },
+          "apiName": "DA_Murkwolf18",
+          "characterName": "DA_Murkwolf18",
+          "cost": 2,
+          "icon": "{0ea96b4d47691e31}",
+          "name": "Sói Hắc Ám",
+          "role": null,
+          "squareIcon": "assets/characters/tft18_murkwolf/skins/base/images/t_18_murkwolf_teamplannersplash.tex",
+          "stats": {
+            "armor": 40,
+            "attackSpeed": 0.75,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 50,
+            "hp": 700,
+            "initialMana": 0,
+            "magicResist": 40,
+            "mana": 40,
+            "range": 1
+          },
+          "tileIcon": "assets/characters/tft18_murkwolf/tft18_murkwolf_square.tex",
+          "traits": ["Quái Rừng", "Tàn Phá"]
+        },
+        {
+          "ability": {
+            "desc": "Kéo Cẩm Nang này vào Cửa Hàng để mở ra Kho Vũ Khí đầy đủ của các ấn! Bạn có 30 giây để lựa chọn.",
+            "icon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+            "name": "Sách Chọn Ấn",
+            "variables": [
+              {
+                "name": "RoundsToHatch",
+                "value": [2, 2, 2, 2, 2, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT5_EmblemArmoryKey",
+          "characterName": "TFT5_EmblemArmoryKey",
+          "cost": 8,
+          "icon": "assets/ux/tft/championsplashes/tft5_emblemarmorykey.tex",
+          "name": "Sách Chọn Ấn",
+          "role": null,
+          "squareIcon": "assets/ux/tft/championsplashes/tft5_draconicegg_mobile.tex",
+          "stats": {
+            "armor": 10,
+            "attackSpeed": 1,
+            "critChance": null,
+            "critMultiplier": 0,
+            "damage": null,
+            "hp": 10,
+            "initialMana": 0,
+            "magicResist": 10,
+            "mana": 100,
+            "range": 0
+          },
+          "tileIcon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+          "traits": []
+        }
+      ],
+      "items": ["TFT_Item_FryingPan"],
+      "mutator": "TFTSet18",
+      "name": "Set10",
+      "number": 18,
+      "traits": [
+        {
+          "apiName": "DA_18_Elderwood",
+          "desc": "Nhận các cây Thần Rừng có thể đặt được.<br><row>(@MinUnits@) 1 Cây Vỏ Đá và 1 Hoa Sinh Mệnh</row><br><row>(@MinUnits@) Cây Vỏ Đá thứ hai & các Cây Vỏ Đá được tăng @StonebarkTreeBonusHealth@ Máu</row><br><row>(@MinUnits@) và Hộ Vệ Rừng</row><br><row>(@MinUnits@) Các cây trở thành 2 sao</row><br><row>(@MinUnits@) Các cây trở thành 3 sao và khu rừng được hình thành</row>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612
+              }
+            },
+            {
+              "maxUnits": 6,
+              "minUnits": 5,
+              "style": 3,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612,
+                "{b027c2f9}": 200
+              }
+            },
+            {
+              "maxUnits": 8,
+              "minUnits": 7,
+              "style": 5,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612
+              }
+            },
+            {
+              "maxUnits": 10,
+              "minUnits": 9,
+              "style": 5,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 11,
+              "style": 6,
+              "variables": {
+                "{0f90e7a4}": 0.25,
+                "{4013f48e}": 0.10000000149011612
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_18_elderwood.tex",
+          "name": "Thần Rừng"
+        },
+        {
+          "apiName": "DA_18_Slayer",
+          "desc": "Tướng Tàn Phá nhận @Omnivamp*100@% Hút Máu Toàn Phần. Ngoài ra, tướng Tàn Phá sẽ gây thêm sát thương, tăng gấp đôi khi tấn công kẻ địch còn dưới @EnemyHealthThreshold*100@% Máu.<br><row>(@MinUnits@) @BonusDamagePercentBase*100@% Sát Thương Cộng Thêm</row><br><row>(@MinUnits@) @BonusDamagePercentBase*100@% Sát Thương Cộng Thêm</row><br><row>(@MinUnits@) @BonusDamagePercentBase*100@% Sát Thương Cộng Thêm</row>",
+          "effects": [
+            {
+              "maxUnits": 3,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "Omnivamp": 0.10000000149011612,
+                "{a9a813e7}": 0.11999999731779099,
+                "{bef0ca90}": 0.5
+              }
+            },
+            {
+              "maxUnits": 5,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "Omnivamp": 0.10000000149011612,
+                "{a9a813e7}": 0.25,
+                "{bef0ca90}": 0.5
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 6,
+              "style": 5,
+              "variables": {
+                "Omnivamp": 0.10000000149011612,
+                "{a9a813e7}": 0.4000000059604645,
+                "{bef0ca90}": 0.5
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_18_ravager.tex",
+          "name": "Tàn Phá"
+        },
+        {
+          "apiName": "DA_18_Adaptor",
+          "desc": "Thiên Phú: Kỹ năng của tướng Thích Ứng sẽ thay đổi tùy theo việc Sức Mạnh Công Kích hay Sức Mạnh Phép Thuật của họ cao hơn.<br><br>Tướng Thích Ứng nhận thêm Sức Mạnh Phép Thuật hoặc Sức Mạnh Công Kích, tùy vào chỉ số nào cao hơn.<br><row>(@MinUnits@) @ADAPGain*100@% HOẶC </row><br><row>(@MinUnits@) @ADAPGain*100@% HOẶC </row><br><row>(@MinUnits@) @ADAPGain*100@% HOẶC </row>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "{0412779a}": 0.25
+              }
+            },
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 3,
+              "variables": {
+                "{0412779a}": 0.3499999940395355
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 4,
+              "style": 5,
+              "variables": {
+                "{0412779a}": 0.5
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_18_adaptor.tex",
+          "name": "Thích Ứng"
+        },
+        {
+          "apiName": "DA_Riftbeast18",
+          "desc": "<row>(@MinUnits@) Sử dụng Dấu Ấn Đầu Đàn để trao Bùa Lợi độc nhất cho một tướng Quái Rừng</row><br><row>(@MinUnits@) Mỗi @OverrunCombats@ giao tranh, cửa hàng tiếp theo của bạn sẽ tràn ngập tướng Quái Rừng.</row><br><row>(@MinUnits@) Khi bắt đầu giao tranh và cứ mỗi 5 giây, tướng Quái Rừng tăng trưởng và nhận <br>@CapstoneAD*100@% %i:scaleAD% @CapstoneAP*100@% %i:scaleAP% @CapstoneAspd*100@% %i:scaleAS%<br>+@CapstoneArmor@ %i:scaleArmor% +@CapstoneMR@ %i:scaleMR% +@CapstoneHealth@ %i:scaleHealth% +@CapstoneManaRegen@ %i:scaleManaRegen%</row><br><row>(@MinUnits@) +@TeamSize@ số lượng tướng tối đa</row>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {}
+            },
+            {
+              "maxUnits": 6,
+              "minUnits": 5,
+              "style": 3,
+              "variables": {
+                "{e8d16db1}": 3
+              }
+            },
+            {
+              "maxUnits": 9,
+              "minUnits": 7,
+              "style": 5,
+              "variables": {
+                "{0776b071}": 0.05000000074505806,
+                "{08cfb22e}": 50,
+                "{0d6c2c87}": 5,
+                "{1b76cfed}": 0.05000000074505806,
+                "{3230276c}": 1,
+                "{4e1998f4}": 0.059999942779541016,
+                "{a8c6eeaf}": 5
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 10,
+              "style": 5,
+              "variables": {
+                "TeamSize": 2
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_18_riftbeast.tex",
+          "name": "Quái Rừng"
+        }
+      ]
+    },
+    {
+      "augments": [],
+      "champions": [
+        {
+          "ability": {
+            "desc": "Nội tại: Với mỗi @PercentMissingHealth@% Máu đã mất, nhận <TFTBonus>@ModifiedAS@% (%i:scaleAP%)</TFTBonus> Tốc Độ Đánh<br><br>Kích hoạt: Gây <physicalDamage>@ModifiedDamage@&nbsp;(%i:scaleAD%)</physicalDamage> sát thương vật lý lên mục tiêu, tăng thêm <TFTBonus>@PercentBonusDamage*100@%</TFTBonus> nếu chúng là tướng Đỡ Đòn.",
+            "icon": "assets/characters/tft17_briar/hud/icons2d/tft17_briarq.tex",
+            "name": "Cá Càn Quét",
+            "variables": [
+              {
+                "name": "PercentMissingHealth",
+                "value": [1, 1, 1, 1, 1, 1, 1]
+              },
+              {
+                "name": "ADDamage",
+                "value": [
+                  3.299999952316284, 120, 180, 285, 485, 3.299999952316284, 3.299999952316284
+                ]
+              },
+              {
+                "name": "APDamage",
+                "value": [0, 10, 15, 25, 45, 0, 0]
+              },
+              {
+                "name": "PercentBonusDamage",
+                "value": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+              },
+              {
+                "name": "AS",
+                "value": [2, 2, 2, 2.5, 2.5, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT17_Briar",
+          "characterName": "TFT17_Briar",
+          "cost": 1,
+          "icon": "assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_centered_10.tex",
+          "name": "Briar",
+          "role": "ADFighter",
+          "squareIcon": "assets/characters/tft17_briar/skins/base/images/tft17_briar_splash_tile_10.tex",
+          "stats": {
+            "armor": 35,
+            "attackSpeed": 0.75,
+            "critChance": 0.25,
+            "critMultiplier": 1.399999976158142,
+            "damage": 40,
+            "hp": 650,
+            "initialMana": 0,
+            "magicResist": 35,
+            "mana": 40,
+            "range": 1
+          },
+          "tileIcon": "assets/characters/tft17_briar/hud/tft17_briar_square.tex",
+          "traits": ["Siêu Thú", "Tộc Thượng Cổ", "Vô Pháp"]
+        },
+        {
+          "ability": {
+            "desc": "Kéo Cẩm Nang này vào Cửa Hàng để mở ra Kho Vũ Khí đầy đủ của các ấn! Bạn có 30 giây để lựa chọn.",
+            "icon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+            "name": "Sách Chọn Ấn",
+            "variables": [
+              {
+                "name": "RoundsToHatch",
+                "value": [2, 2, 2, 2, 2, 2, 2]
+              }
+            ]
+          },
+          "apiName": "TFT5_EmblemArmoryKey",
+          "characterName": "TFT5_EmblemArmoryKey",
+          "cost": 8,
+          "icon": "assets/ux/tft/championsplashes/tft5_emblemarmorykey.tex",
+          "name": "Sách Chọn Ấn",
+          "role": null,
+          "squareIcon": "assets/ux/tft/championsplashes/tft5_draconicegg_mobile.tex",
+          "stats": {
+            "armor": 10,
+            "attackSpeed": 1,
+            "critChance": null,
+            "critMultiplier": 0,
+            "damage": null,
+            "hp": 10,
+            "initialMana": 0,
+            "magicResist": 10,
+            "mana": 100,
+            "range": 0
+          },
+          "tileIcon": "assets/characters/tft8_teamupprop/hud/icons2d/tft5_emblemarmorykey_square.tex",
+          "traits": []
+        }
+      ],
+      "items": [],
+      "mutator": "TFTSet17_PAIRS",
+      "name": "Set17",
+      "number": 17,
+      "traits": [
+        {
+          "apiName": "TFT17_AnimaSquad",
+          "desc": "Sau khi thua một giao tranh người chơi, nhận @TechPerCombat@ Linh Kiện, cộng thêm số Linh Kiện bằng @TechPerLoss@ lần độ dài chuỗi thua của bạn. Ngoài ra, nhận thêm @TechPerKill@ Linh Kiện mỗi khi tướng Siêu Thú tham gia hạ gục.<br><br>Mỗi khi tướng Siêu Thú tích đủ @TechBreakpoint@ Linh Kiện, họ sẽ thử nghiệm các Vũ Khí Siêu Thú mới. Bạn có thể nhận chúng ngay hoặc tích thêm Linh Kiện để nhận được những vũ khí mạnh mẽ hơn ở lần sau.<br><br><row>(@MinUnits@) Bắt Đầu Nghiên Cứu!</row><br><row>(@MinUnits@) Sau mỗi giao tranh người chơi, nhận báu vật!</row><br><br><ShowIf.TFT17_AnimaSquad_IsDoubleUp><rules>Nhận @PairsPartnerWinMultiplier*100@% Linh Kiện khi thua nếu đồng đội của bạn thắng giao tranh trong Cặp Đôi Hoàn Hảo.</rules></ShowIf.TFT17_AnimaSquad_IsDoubleUp>",
+          "effects": [
+            {
+              "maxUnits": 4,
+              "minUnits": 3,
+              "style": 1,
+              "variables": {
+                "PairsPartnerWinMultiplier": 0.8500000238418579,
+                "TechBreakpoint": 100,
+                "TechPerCombat": 20,
+                "TechPerCombat_DU": 20,
+                "TechPerDeath_PVE": 1,
+                "TechPerKill": 2,
+                "TechPerLoss": 5,
+                "TechPerLoss_DU": 5,
+                "TechPerRound_PVE": 20
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "PairsPartnerWinMultiplier": 0.8500000238418579,
+                "TechBreakpoint": 100,
+                "TechPerCombat": 20,
+                "TechPerCombat_DU": 20,
+                "TechPerDeath_PVE": 1,
+                "TechPerKill": 2,
+                "TechPerLoss": 5,
+                "TechPerLoss_DU": 5,
+                "TechPerRound_PVE": 20
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_animatech.tex",
+          "name": "Siêu Thú"
+        },
+        {
+          "apiName": "TFT17_AssassinTrait",
+          "desc": "Tướng Vô Pháp nhận thêm Sức Mạnh Công Kích và Sức Mạnh Phép Thuật. Lần đầu tiên khi xuống dưới @HealthThreshold*100@% máu, họ sẽ trốn vào trong bóng tối. Kẻ địch đang nhắm vào họ sẽ chuyển hướng sang một đơn vị ở gần, ưu tiên tướng Đỡ Đòn.<br><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row><br><row>(@MinUnits@) @AP@% %i:scaleAD% %i:scaleAP%</row>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "AD": 0.11999999731779099,
+                "AP": 12,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 3,
+              "minUnits": 3,
+              "style": 3,
+              "variables": {
+                "AD": 0.25,
+                "AP": 25,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 4,
+              "minUnits": 4,
+              "style": 3,
+              "variables": {
+                "AD": 0.44999998807907104,
+                "AP": 45,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 5,
+              "style": 5,
+              "variables": {
+                "AD": 0.6000000238418579,
+                "AP": 60,
+                "Duration": 3,
+                "HealthThreshold": 0.5
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_rogue.tex",
+          "name": "Vô Pháp"
+        },
+        {
+          "apiName": "TFT17_Primordian",
+          "desc": "<row>(@MinUnits@) Gây sát thương sẽ sinh ra Bầy Đàn Hiểm Họa dựa trên cấp sao độc nhất của tướng Tộc Thượng Cổ.</row><br><row>(@MinUnits@) Sinh ra thêm @PercentMoreSwarmlings@% Bầy Đàn! Sau mỗi giao tranh người chơi, nhận 1 tướng 1 vàng hoặc 2 vàng ngẫu nhiên. </row><br><br><rules>@DamageTakenPercentModifier*100@% sát thương gánh chịu được tính vào sát thương gây ra.</rules>",
+          "effects": [
+            {
+              "maxUnits": 2,
+              "minUnits": 2,
+              "style": 1,
+              "variables": {
+                "DamageMultiplier": 1,
+                "DamageTakenPercentModifier": 0.07999999821186066,
+                "PercentMoreSwarmlings": 45,
+                "{3ed71f24}": 6
+              }
+            },
+            {
+              "maxUnits": 25000,
+              "minUnits": 3,
+              "style": 5,
+              "variables": {
+                "DamageMultiplier": 1.4500000476837158,
+                "DamageTakenPercentModifier": 0.07999999821186066,
+                "PercentMoreSwarmlings": 45,
+                "{3ed71f24}": 6
+              }
+            }
+          ],
+          "icon": "assets/ux/traiticons/trait_icon_17_primordian.tex",
+          "name": "Tộc Thượng Cổ"
+        }
+      ]
+    }
+  ]
+}
