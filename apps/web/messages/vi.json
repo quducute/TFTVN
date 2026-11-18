@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "title": "TFTVN - Trợ thủ Đấu Trường Chân Lý",
+    "description": "Thư viện, thống kê, đội hình và cộng đồng Đấu Trường Chân Lý cho người chơi Việt Nam"
+  },
+  "nav": {
+    "language": "Ngôn ngữ"
+  },
+  "home": {
+    "heading": "Trợ thủ Đấu Trường Chân Lý",
+    "tagline": "Thư viện, thống kê, đội hình meta và cộng đồng cho người chơi Việt Nam",
+    "status": "Trạng thái hệ thống",
+    "database": "Database",
+    "api": "API",
+    "currentSet": "Set hiện tại",
+    "noSet": "Chưa có dữ liệu Set",
+    "ok": "Hoạt động",
+    "error": "Lỗi",
+    "checking": "Đang kiểm tra..."
+  }
+}

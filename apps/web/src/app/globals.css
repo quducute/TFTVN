@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@config "../../tailwind.config.mjs";
+
+@theme {
+  --color-*: initial;
+}

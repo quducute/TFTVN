@@ -1,0 +1,28 @@
+{
+  "name": "tftvn",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @tftvn/web dev",
+    "build": "pnpm --filter @tftvn/web build",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "db:check": "pnpm --filter @tftvn/db check",
+    "db:migrate": "pnpm --filter @tftvn/db migrate",
+    "db:pull": "pnpm --filter @tftvn/db pull",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.73.0"
+  }
+}

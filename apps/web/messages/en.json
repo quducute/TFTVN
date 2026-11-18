@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "title": "TFTVN - Teamfight Tactics Assistant",
+    "description": "Teamfight Tactics library, statistics, comps and community for Vietnamese players"
+  },
+  "nav": {
+    "language": "Language"
+  },
+  "home": {
+    "heading": "Teamfight Tactics Assistant",
+    "tagline": "Library, statistics, meta comps and community for Vietnamese players",
+    "status": "System status",
+    "database": "Database",
+    "api": "API",
+    "currentSet": "Current Set",
+    "noSet": "No Set data yet",
+    "ok": "Online",
+    "error": "Error",
+    "checking": "Checking..."
+  }
+}
