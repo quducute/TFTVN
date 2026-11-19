@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { ItemData } from "@tftvn/core";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
@@ -15,9 +16,17 @@ const TIER_TEXT: Record<(typeof TIER_ORDER)[number], string> = {
   unknown: "text-muted",
 };
 
-export default async function AugmentsPage({
+export default function AugmentsPage({ params }: PageProps<"/[locale]/library/[set]/augments">) {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
+      <AugmentsContent params={params} />
+    </Suspense>
+  );
+}
+
+async function AugmentsContent({
   params,
-}: PageProps<"/[locale]/library/[set]/augments">) {
+}: Pick<PageProps<"/[locale]/library/[set]/augments">, "params">) {
   const { set: setParam } = await params;
   const locale = await currentLocale();
   const set = await resolveLibrarySet(setParam);

@@ -86,6 +86,26 @@ test.describe("auth routes", () => {
     expect((await send("GET", "/api/auth/me")).status).toBe(401);
   });
 
+  test("session answers guests without an error and renews expired access", async () => {
+    const { send, cookies } = setup();
+    const guest = await send("GET", "/api/auth/session");
+    expect(guest.status).toBe(200);
+    expect(await guest.json()).toEqual({ ok: true, user: null });
+
+    await send("POST", "/api/auth/register", VALID_ACCOUNT);
+    const before = cookies()[REFRESH_COOKIE];
+    delete cookies()[ACCESS_COOKIE];
+    const renewed = await send("GET", "/api/auth/session");
+    expect(await renewed.json()).toMatchObject({ ok: true, user: { username: "qudu_18" } });
+    expect(cookies()[ACCESS_COOKIE]).toBeDefined();
+    expect(cookies()[REFRESH_COOKIE]).not.toBe(before);
+
+    delete cookies()[ACCESS_COOKIE];
+    cookies()[REFRESH_COOKIE] = "khong-hop-le";
+    const invalid = await send("GET", "/api/auth/session");
+    expect(await invalid.json()).toEqual({ ok: true, user: null });
+  });
+
   test("refresh issues new cookies and logout clears them", async () => {
     const { send, cookies } = setup();
     await send("POST", "/api/auth/register", VALID_ACCOUNT);

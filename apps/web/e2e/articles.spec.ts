@@ -78,7 +78,9 @@ test.describe("articles and admin", () => {
     await expect(page).toHaveURL(/\/articles\/[0-9a-f-]{36}$/);
     articleUrl = new URL(page.url()).pathname;
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
-    await expect(page.getByText("Bài đang chờ admin duyệt")).toBeVisible();
+    await expect(
+      page.getByText("Bài đang chờ admin duyệt").filter({ visible: true }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "Mo dau bai viet" })).toBeVisible();
     await expect(page.locator(".article-body strong")).toHaveText(
       "Noi dung dam du dai de qua kiem tra",
@@ -109,7 +111,9 @@ test.describe("articles and admin", () => {
     await expect(page.getByRole("heading", { name: title })).toHaveCount(0);
 
     await authorPage.goto(articleUrl);
-    await expect(authorPage.getByText("Admin đã từ chối bài này: Cần thêm ví dụ")).toBeVisible();
+    await expect(
+      authorPage.getByText("Admin đã từ chối bài này: Cần thêm ví dụ").filter({ visible: true }),
+    ).toBeVisible();
   });
 
   test("sends an edited article back to review, then approves it", async ({ page: guest }) => {
@@ -119,7 +123,9 @@ test.describe("articles and admin", () => {
     await authorPage.getByLabel("Tiêu đề", { exact: true }).fill(`${title} bản 2`);
     await authorPage.getByRole("button", { name: "Gửi bài" }).click();
     await expect(authorPage.getByRole("heading", { level: 1 })).toHaveText(`${title} bản 2`);
-    await expect(authorPage.getByText("Bài đang chờ admin duyệt")).toBeVisible();
+    await expect(
+      authorPage.getByText("Bài đang chờ admin duyệt").filter({ visible: true }),
+    ).toBeVisible();
 
     await adminPage.goto("/admin");
     const card = adminPage.getByRole("listitem").filter({ hasText: `${title} bản 2` });

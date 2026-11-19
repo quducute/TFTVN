@@ -7,9 +7,10 @@ interface GameIconProps {
   alt: string;
   size?: number;
   className?: string;
+  eager?: boolean;
 }
 
-export function GameIcon({ path, alt, size = 48, className }: GameIconProps) {
+export function GameIcon({ path, alt, size = 48, className, eager = false }: GameIconProps) {
   const src = assetUrl(path);
   if (!src) {
     return (
@@ -27,6 +28,7 @@ export function GameIcon({ path, alt, size = 48, className }: GameIconProps) {
       width={size}
       height={size}
       unoptimized
+      loading={eager ? "eager" : "lazy"}
       className={cn("rounded-md object-cover", className)}
     />
   );

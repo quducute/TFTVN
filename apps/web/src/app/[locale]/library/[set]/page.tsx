@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { GameEntityKind } from "@tftvn/core";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
@@ -14,7 +15,15 @@ const SECTION_KIND: Record<LibrarySection, GameEntityKind> = {
   roles: "role",
 };
 
-export default async function LibraryHubPage({ params }: PageProps<"/[locale]/library/[set]">) {
+export default function LibraryHubPage({ params }: PageProps<"/[locale]/library/[set]">) {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
+      <LibraryHubContent params={params} />
+    </Suspense>
+  );
+}
+
+async function LibraryHubContent({ params }: Pick<PageProps<"/[locale]/library/[set]">, "params">) {
   const { set: setParam } = await params;
   const locale = await currentLocale();
   const set = await resolveLibrarySet(setParam);

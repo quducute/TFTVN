@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { type ChampionData, type ItemData, effectiveRole } from "@tftvn/core";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
@@ -15,7 +16,17 @@ import {
 } from "@/server/library";
 import { resolveLibrarySet } from "@/server/library-params";
 
-export default async function RolesPage({ params }: PageProps<"/[locale]/library/[set]/roles">) {
+export default function RolesPage({ params }: PageProps<"/[locale]/library/[set]/roles">) {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
+      <RolesContent params={params} />
+    </Suspense>
+  );
+}
+
+async function RolesContent({
+  params,
+}: Pick<PageProps<"/[locale]/library/[set]/roles">, "params">) {
   const { set: setParam } = await params;
   const locale = await currentLocale();
   const set = await resolveLibrarySet(setParam);

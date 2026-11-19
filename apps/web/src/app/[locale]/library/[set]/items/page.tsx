@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { ITEM_CATEGORIES, type ItemData } from "@tftvn/core";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
@@ -5,7 +6,17 @@ import { ItemCard } from "@/components/library/item-card";
 import { getEntities, localized } from "@/server/library";
 import { resolveLibrarySet } from "@/server/library-params";
 
-export default async function ItemsPage({ params }: PageProps<"/[locale]/library/[set]/items">) {
+export default function ItemsPage({ params }: PageProps<"/[locale]/library/[set]/items">) {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
+      <ItemsContent params={params} />
+    </Suspense>
+  );
+}
+
+async function ItemsContent({
+  params,
+}: Pick<PageProps<"/[locale]/library/[set]/items">, "params">) {
   const { set: setParam } = await params;
   const locale = await currentLocale();
   const set = await resolveLibrarySet(setParam);

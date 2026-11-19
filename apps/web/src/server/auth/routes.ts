@@ -86,6 +86,23 @@ export function createAuthRoutes(service: AuthService, options: AuthRouteOptions
       return c.json({ ok: true });
     })
     .get("/auth/me", requireUser, (c) => c.json({ ok: true, user: toPublicUser(c.get("user")) }))
+    .get("/auth/session", async (c) => {
+      const user = await service.currentUser(getCookie(c, ACCESS_COOKIE));
+      if (user) {
+        return c.json({ ok: true, user: toPublicUser(user) });
+      }
+      const refreshToken = getCookie(c, REFRESH_COOKIE);
+      if (!refreshToken) {
+        return c.json({ ok: true, user: null });
+      }
+      const result = await service.refresh(refreshToken);
+      if (!result.ok) {
+        clearSession(c);
+        return c.json({ ok: true, user: null });
+      }
+      setSession(c, result.value);
+      return c.json({ ok: true, user: result.value.user });
+    })
     .post("/auth/forgot-password", async (c) => {
       const result = await service.forgotPassword(
         await readBody(c),

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { ChampionData, TraitData } from "@tftvn/core";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
@@ -10,7 +11,17 @@ import { libraryPath } from "@/lib/library-paths";
 import { getEntities, localized } from "@/server/library";
 import { resolveLibrarySet } from "@/server/library-params";
 
-export default async function TraitsPage({ params }: PageProps<"/[locale]/library/[set]/traits">) {
+export default function TraitsPage({ params }: PageProps<"/[locale]/library/[set]/traits">) {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
+      <TraitsContent params={params} />
+    </Suspense>
+  );
+}
+
+async function TraitsContent({
+  params,
+}: Pick<PageProps<"/[locale]/library/[set]/traits">, "params">) {
   const { set: setParam } = await params;
   const locale = await currentLocale();
   const set = await resolveLibrarySet(setParam);

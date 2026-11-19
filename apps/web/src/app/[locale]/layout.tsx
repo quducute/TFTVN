@@ -33,8 +33,11 @@ export default async function LocaleLayout({ children }: Readonly<{ children: Re
   const t = await getTranslations("nav");
 
   return (
-    <html lang={locale}>
-      <body className={`${font.className} min-h-dvh bg-bg text-text antialiased`}>
+    <html lang={locale} suppressHydrationWarning>
+      <body
+        className={`${font.className} min-h-dvh bg-bg text-text antialiased`}
+        suppressHydrationWarning
+      >
         <NextIntlClientProvider>
           <AuthProvider>
             <header className="border-b border-line/10">
@@ -50,7 +53,7 @@ export default async function LocaleLayout({ children }: Readonly<{ children: Re
                       { href: "/articles", label: t("articles") },
                       { href: riotPath.players(), label: t("players") },
                       { href: riotPath.leaderboard(), label: t("leaderboard") },
-                      { href: "/stats", label: t("stats") },
+                      { href: riotPath.stats("challenger", "champions"), label: t("stats") },
                     ].map((item) => (
                       <Link
                         key={item.href}

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { type ChampionData, type TraitData, UNKNOWN_VALUE, effectiveRole } from "@tftvn/core";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -27,9 +28,19 @@ export async function generateStaticParams({
   return championStaticParams(params.set);
 }
 
-export default async function ChampionPage({
+export default function ChampionPage({
   params,
 }: PageProps<"/[locale]/library/[set]/champions/[apiName]">) {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
+      <ChampionContent params={params} />
+    </Suspense>
+  );
+}
+
+async function ChampionContent({
+  params,
+}: Pick<PageProps<"/[locale]/library/[set]/champions/[apiName]">, "params">) {
   const { set: setParam, apiName: rawApiName } = await params;
   const locale = await currentLocale();
   const set = await resolveLibrarySet(setParam);
@@ -64,6 +75,7 @@ export default async function ChampionPage({
             path={champion.data.squareIcon ?? champion.data.tileIcon}
             alt={text.name}
             size={96}
+            eager
             className={cn("border-2", COST_BORDER[cost] ?? "border-line/20")}
           />
           <div>

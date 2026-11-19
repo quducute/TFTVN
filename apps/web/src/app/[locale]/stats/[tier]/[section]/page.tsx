@@ -41,15 +41,26 @@ export async function generateMetadata({ params }: Readonly<{ params: Params }>)
 }
 
 export default async function StatsPage({ params }: Readonly<{ params: Params }>) {
+  const t = await getTranslations({ locale: await currentLocale(), namespace: "stats" });
+  return (
+    <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
+      <h1 className="text-3xl font-bold text-primary">{t("title")}</h1>
+      <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
+        <StatsBody params={params} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function StatsBody({ params }: Readonly<{ params: Params }>) {
   const { tier, section } = await params;
   if (!isTier(tier) || !isSection(section)) {
     notFound();
   }
-  const t = await getTranslations({ locale: await currentLocale(), namespace: "stats" });
+  const t = await getTranslations("stats");
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
-      <h1 className="text-3xl font-bold text-primary">{t("title")}</h1>
+    <>
       <nav className="flex flex-wrap gap-6">
         <Tabs
           items={RANK_TIERS.map((value) => ({
@@ -69,7 +80,7 @@ export default async function StatsPage({ params }: Readonly<{ params: Params }>
       <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
         <StatsContent tier={tier} section={section} />
       </Suspense>
-    </main>
+    </>
   );
 }
 

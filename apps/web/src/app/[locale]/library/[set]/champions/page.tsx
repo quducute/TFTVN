@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { ChampionData, TraitData } from "@tftvn/core";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
@@ -9,9 +10,17 @@ import { libraryPath } from "@/lib/library-paths";
 import { getEntities, localized } from "@/server/library";
 import { resolveLibrarySet } from "@/server/library-params";
 
-export default async function ChampionsPage({
+export default function ChampionsPage({ params }: PageProps<"/[locale]/library/[set]/champions">) {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-surface/5" />}>
+      <ChampionsContent params={params} />
+    </Suspense>
+  );
+}
+
+async function ChampionsContent({
   params,
-}: PageProps<"/[locale]/library/[set]/champions">) {
+}: Pick<PageProps<"/[locale]/library/[set]/champions">, "params">) {
   const { set: setParam } = await params;
   const locale = await currentLocale();
   const set = await resolveLibrarySet(setParam);
@@ -38,7 +47,7 @@ export default async function ChampionsPage({
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {champions
               .filter((champion) => (champion.cost ?? 0) === cost)
-              .map((champion) => {
+              .map((champion, position) => {
                 const name = localized(champion, locale).name;
                 return (
                   <li key={champion.apiName}>
@@ -50,6 +59,7 @@ export default async function ChampionsPage({
                         path={champion.data.squareIcon ?? champion.data.tileIcon}
                         alt={name}
                         size={64}
+                        eager={cost === costs[0] && position < 12}
                         className={cn("border-2", COST_BORDER[cost] ?? "border-line/20")}
                       />
                       <span className="font-medium">{name}</span>

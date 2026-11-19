@@ -35,7 +35,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   const reload = useCallback(async () => {
     try {
-      const response = await api.get<{ user: PublicUser }>("/auth/me");
+      const response = await api.get<{ user: PublicUser | null }>("/auth/session");
       setUser(response.data.user);
     } catch {
       setUser(null);
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   useEffect(() => {
     let active = true;
-    api.get<{ user: PublicUser }>("/auth/me").then(
+    api.get<{ user: PublicUser | null }>("/auth/session").then(
       (response) => active && setUser(response.data.user),
       () => active && setUser(null),
     );
