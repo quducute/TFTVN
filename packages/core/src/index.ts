@@ -1,3 +1,4 @@
+export * from "./auth/schemas";
 export * from "./cdragon/assets";
 export * from "./cdragon/classify";
 export * from "./cdragon/game-text";

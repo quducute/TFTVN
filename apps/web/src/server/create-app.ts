@@ -1,5 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { Hono } from "hono";
+import { type AuthRouteOptions, createAuthRoutes } from "./auth/routes";
+import type { AuthService } from "./auth/service";
 
 const REVALIDATABLE_TAG = /^(?:gamedata|snapshot:\d+|roles:\d+)$/;
 
@@ -7,6 +9,7 @@ export interface AppDependencies {
   revalidateSecret: () => string | undefined;
   revalidate: (tag: string, profile: "max") => void;
   databaseVersion: () => Promise<string | null>;
+  auth?: { service: AuthService; options: AuthRouteOptions };
 }
 
 function hasValidSecret(secret: string | undefined, header: string | undefined): boolean {
@@ -37,6 +40,10 @@ export function createApp(dependencies: AppDependencies) {
       dependencies.revalidate(tag, "max");
       return c.json({ ok: true, tag });
     });
+
+  if (dependencies.auth) {
+    app.route("/", createAuthRoutes(dependencies.auth.service, dependencies.auth.options));
+  }
 
   app.onError((error, c) => {
     console.error(error);

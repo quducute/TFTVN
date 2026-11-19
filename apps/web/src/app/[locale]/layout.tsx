@@ -3,6 +3,8 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
+import { AuthProvider } from "@/components/auth/auth-provider";
+import { UserMenu } from "@/components/auth/user-menu";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { currentLocale } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
@@ -33,22 +35,27 @@ export default async function LocaleLayout({ children }: Readonly<{ children: Re
     <html lang={locale}>
       <body className={`${font.className} min-h-dvh bg-bg text-text antialiased`}>
         <NextIntlClientProvider>
-          <header className="border-b border-line/10">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-              <div className="flex items-center gap-6">
-                <Link href="/" className="text-lg font-bold tracking-tight">
-                  TFT<span className="text-primary">VN</span>
-                </Link>
-                <nav className="flex gap-4 text-sm">
-                  <Link href={libraryPath.root()} className="text-muted hover:text-primary">
-                    {t("library")}
+          <AuthProvider>
+            <header className="border-b border-line/10">
+              <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-6">
+                  <Link href="/" className="text-lg font-bold tracking-tight">
+                    TFT<span className="text-primary">VN</span>
                   </Link>
-                </nav>
+                  <nav className="flex gap-4 text-sm">
+                    <Link href={libraryPath.root()} className="text-muted hover:text-primary">
+                      {t("library")}
+                    </Link>
+                  </nav>
+                </div>
+                <div className="flex items-center gap-4">
+                  <UserMenu />
+                  <LanguageSwitcher />
+                </div>
               </div>
-              <LanguageSwitcher />
-            </div>
-          </header>
-          {children}
+            </header>
+            {children}
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

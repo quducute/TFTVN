@@ -323,14 +323,25 @@ tftvn/
 
 ## 7. Auth và bảo mật
 
-- Cùng domain nên dùng **cookie httpOnly**:
-  - Access JWT khoảng 15 phút + refresh token xoay vòng lưu trong DB (thu hồi được), cả hai trong cookie `httpOnly; Secure; SameSite=Lax`.
-  - CSRF: kiểm tra header `Origin` cho mọi request ghi + double-submit token.
-- Mật khẩu: **argon2id** (`@node-rs/argon2`).
-- HTML bài viết: `sanitize-html` khi lưu + DOMPurify khi render.
-- **CSP và các security header** đặt trong `next.config` (`headers()`).
-- Rate limit (bảng `rate_limits`): đăng ký, đăng nhập, quên mật khẩu, tra cứu người chơi.
-- Secret trong Vercel Environment Variables (tách Preview và Production) và GitHub Actions secrets.
+**Đã làm (P3).** Code trong `apps/web/src/server/auth/`, giao diện trong `apps/web/src/components/auth/`.
+
+- **Cấu trúc**: `service.ts` chứa toàn bộ logic và nhận mọi phụ thuộc qua tham số (repository, băm mật khẩu, token, mailer, tra Riot, đồng hồ). `db-repository.ts` là bản thật (Drizzle + Neon); `memory-repository.ts` là bản trong bộ nhớ cho unit test. `routes.ts` (Hono) chỉ lo cookie, CSRF, mã HTTP.
+- **Cookie httpOnly**, `SameSite=Lax`, `Secure` khi `NODE_ENV=production`:
+  - `tftvn_access`: JWT HS256 (`jose`), sống 15 phút, `Path=/`. Chứa `sub` (id), `username`, `role`.
+  - `tftvn_refresh`: chuỗi ngẫu nhiên 32 byte, sống 30 ngày, `Path=/api`. DB chỉ lưu SHA-256 trong `user_tokens (kind = refresh)`.
+  - **Xoay vòng**: mỗi lần `/api/auth/refresh` đánh dấu token cũ đã dùng và cấp token mới. Dùng lại token cũ (dấu hiệu bị lộ) thì **thu hồi toàn bộ** refresh token của user.
+  - Axios client gặp 401 thì tự gọi `/api/auth/refresh` một lần rồi thử lại (`src/lib/api-client.ts`).
+- **CSRF**: mọi request ghi tới `/api/auth/*` và `/api/users/*` phải có header `Origin` trùng origin của site (hoặc nằm trong `APP_ORIGINS`), nếu không trả 403 `forbiddenOrigin`. Kết hợp `SameSite=Lax` nên không cần double-submit token.
+- **Mật khẩu**: argon2id (`@node-rs/argon2`). Đăng nhập sai tên hay sai mật khẩu đều trả cùng một lỗi `invalidCredentials`; user không tồn tại vẫn chạy `verify` với một hash giả để thời gian phản hồi giống nhau.
+- **Quên mật khẩu**: luôn trả 200 (không lộ email nào đã đăng ký). Mã đặt lại là chuỗi ngẫu nhiên, lưu SHA-256, hiệu lực 30 phút, dùng một lần; yêu cầu mã mới thì mã cũ bị xóa; đặt lại xong thì thu hồi mọi phiên đăng nhập. Email gửi theo ngôn ngữ đang dùng, qua Resend (gọi bằng axios); không có `RESEND_API_KEY` thì in link ra terminal.
+- **Profile**: đổi username / email (kiểm tra trùng, không phân biệt hoa thường nhờ `citext`); đổi mật khẩu cần mật khẩu hiện tại và đăng xuất các thiết bị khác, giữ phiên hiện tại.
+- **Riot ID**: kiểm tra định dạng (tên 3-16 ký tự, tag 3-5 chữ/số). Có `RIOT_API_KEY` thì tra `account-v1` (cụm `asia`) để lấy PUUID; chưa có key thì lưu dạng "chưa xác minh".
+- **Rate limit** (bảng `rate_limits`, theo IP): đăng ký 5 lần/giờ, đăng nhập 20 lần/5 phút, quên mật khẩu 5 lần/giờ. Tra cứu người chơi thêm ở P4.
+- **Validate dùng chung**: schema zod trong `packages/core/src/auth/schemas.ts` trả về **mã lỗi** (`usernameTooShort`, `emailTaken`...); giao diện dịch mã sang vi / en (`auth.errors.*`), test kiểm tra mã nào cũng có bản dịch. Ô trống được coi là chưa nhập (`dropEmptyStrings`).
+- **Chưa làm**: xác thực email (`email_verify` đã có trong enum), "nhớ đăng nhập", đăng nhập bằng Google / Riot.
+- HTML bài viết: `sanitize-html` khi lưu + DOMPurify khi render (P5).
+- **CSP và các security header** đặt trong `next.config` (`headers()`) (P6).
+- Secret trong Vercel Environment Variables (tách Preview và Production) và GitHub Actions secrets. Biến mới ở P3: `JWT_SECRET` (ít nhất 32 ký tự), `RESEND_API_KEY`, `MAIL_FROM`, `APP_ORIGINS`.
 
 ---
 
@@ -363,10 +374,10 @@ tftvn/
   pnpm etl sync-gamedata          # nạp dữ liệu game
   pnpm etl sync-matches           # nạp thống kê (cần RIOT_API_KEY)
   pnpm test                       # unit test (Playwright)
-  pnpm e2e                        # e2e (Playwright + Chromium)
+  pnpm e2e                        # e2e (Playwright + Edge có sẵn)
   ```
 
-- Ổ C và D đều đã dùng hơn 90%: nên dọn trước vài GB (`node_modules`, `.next`, Playwright browsers).
+- Ổ C và D đều đã dùng hơn 90%: nên dọn trước vài GB (`node_modules`, `.next`).
 
 ---
 
@@ -377,8 +388,7 @@ tftvn/
 - **Unit test** (`pnpm test`, file `playwright.config.ts`, không cần trình duyệt; file `*.test.ts`):
   - Project `core`: HashResolver, FNV-1a, parser CommunityDragon (fixture cắt từ dữ liệu thật của **2 Set**), điền placeholder, phân loại item / augment, đọc markup, role.
   - Project `web`: màu chỉ dùng tên CSS, hai file ngôn ngữ cùng bộ key, route Hono (`createApp` nhận dependency qua tham số nên không cần mock module).
-- **E2E** (`pnpm e2e`, file `playwright.e2e.config.ts`, Chromium; file `apps/web/e2e/*.spec.ts`): tự build production rồi chạy server cổng 3100, cần DB có dữ liệu. Hiện kiểm tra trang chủ hai ngôn ngữ, giữ tiếng Việt với trình duyệt tiếng Anh, chọn Set, mở tướng, nhóm trang bị / lõi, đổi ngôn ngữ giữ nguyên trang, Set không tồn tại. Sau thêm: đăng ký -> tạo comp -> bookmark -> viết bài -> admin duyệt.
-  - Cài trình duyệt một lần: `pnpm e2e:install`.
+- **E2E** (`pnpm e2e`, file `playwright.e2e.config.ts`, dùng **Microsoft Edge có sẵn** trên máy qua `channel: "msedge"`, không tải trình duyệt riêng; file `apps/web/e2e/*.spec.ts`): tự build production rồi chạy server cổng 3100, cần DB có dữ liệu. Hiện kiểm tra trang chủ hai ngôn ngữ, giữ tiếng Việt với trình duyệt tiếng Anh, chọn Set, mở tướng, nhóm trang bị / lõi, đổi ngôn ngữ giữ nguyên trang, Set không tồn tại. Sau thêm: đăng ký -> tạo comp -> bookmark -> viết bài -> admin duyệt.
 - Import JSON dùng cú pháp chuẩn `with { type: "json" }` (Playwright chạy test bằng ES module của Node).
 - **`ci.yml`**: `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm build`. E2E chưa chạy trong CI vì cần DB có dữ liệu.
 

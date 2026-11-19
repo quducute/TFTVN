@@ -107,5 +107,95 @@
         "HFighter": "Đấu Sĩ Lai"
       }
     }
+  },
+  "auth": {
+    "nav": {
+      "login": "Đăng nhập",
+      "register": "Đăng ký",
+      "profile": "Tài khoản",
+      "logout": "Đăng xuất"
+    },
+    "fields": {
+      "username": "Tên đăng nhập",
+      "email": "Email",
+      "password": "Mật khẩu",
+      "identifier": "Tên đăng nhập hoặc email",
+      "currentPassword": "Mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "gameName": "Tên trong game",
+      "tagLine": "Tag"
+    },
+    "login": {
+      "title": "Đăng nhập",
+      "submit": "Đăng nhập",
+      "noAccount": "Chưa có tài khoản?",
+      "forgot": "Quên mật khẩu?"
+    },
+    "register": {
+      "title": "Tạo tài khoản",
+      "submit": "Đăng ký",
+      "hasAccount": "Đã có tài khoản?",
+      "usernameHint": "3-24 ký tự: chữ không dấu, số, dấu gạch dưới hoặc dấu chấm.",
+      "passwordHint": "Ít nhất 8 ký tự."
+    },
+    "forgot": {
+      "title": "Quên mật khẩu",
+      "description": "Nhập email đã đăng ký, TFTVN sẽ gửi link đặt lại mật khẩu (hiệu lực 30 phút).",
+      "submit": "Gửi link",
+      "sent": "Nếu email này đã đăng ký, link đặt lại mật khẩu đã được gửi."
+    },
+    "reset": {
+      "title": "Đặt lại mật khẩu",
+      "submit": "Lưu mật khẩu mới",
+      "done": "Đã đổi mật khẩu. Hãy đăng nhập lại.",
+      "missingToken": "Link không hợp lệ hoặc thiếu mã đặt lại."
+    },
+    "profile": {
+      "title": "Tài khoản của bạn",
+      "account": "Thông tin tài khoản",
+      "save": "Lưu thay đổi",
+      "saved": "Đã lưu thay đổi.",
+      "password": "Đổi mật khẩu",
+      "changePassword": "Đổi mật khẩu",
+      "passwordChanged": "Đã đổi mật khẩu. Các thiết bị khác đã bị đăng xuất.",
+      "riot": "Tài khoản Riot",
+      "riotDescription": "Liên kết Riot ID để xem rank và lịch sử đấu (máy chủ VN).",
+      "link": "Liên kết",
+      "unlink": "Hủy liên kết",
+      "linked": "Đã liên kết {riotId}",
+      "unverified": "Chưa xác minh với Riot vì máy chủ chưa có Riot API key.",
+      "notLinked": "Chưa liên kết Riot ID.",
+      "admin": "Quản trị viên"
+    },
+    "submitting": "Đang xử lý...",
+    "errors": {
+      "required": "Vui lòng nhập trường này.",
+      "usernameTooShort": "Tên đăng nhập cần ít nhất 3 ký tự.",
+      "usernameTooLong": "Tên đăng nhập tối đa 24 ký tự.",
+      "usernameInvalid": "Chỉ dùng chữ không dấu, số, dấu gạch dưới hoặc dấu chấm.",
+      "emailInvalid": "Email không hợp lệ.",
+      "passwordTooShort": "Mật khẩu cần ít nhất 8 ký tự.",
+      "passwordTooLong": "Mật khẩu tối đa 128 ký tự.",
+      "nothingToUpdate": "Bạn chưa thay đổi gì.",
+      "tokenInvalid": "Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.",
+      "gameNameInvalid": "Tên trong game cần 3-16 ký tự và không chứa dấu #.",
+      "tagLineInvalid": "Tag gồm 3-5 chữ hoặc số.",
+      "invalidCredentials": "Sai tên đăng nhập hoặc mật khẩu.",
+      "usernameTaken": "Tên đăng nhập đã có người dùng.",
+      "emailTaken": "Email đã được đăng ký.",
+      "currentPasswordWrong": "Mật khẩu hiện tại không đúng.",
+      "riotNotFound": "Không tìm thấy tài khoản Riot này.",
+      "riotUnavailable": "Không kết nối được Riot, hãy thử lại sau.",
+      "rateLimited": "Bạn thao tác quá nhanh, hãy thử lại sau ít phút.",
+      "forbiddenOrigin": "Yêu cầu bị chặn vì không đến từ trang TFTVN.",
+      "unauthorized": "Bạn cần đăng nhập.",
+      "unknown": "Có lỗi xảy ra, hãy thử lại sau."
+    },
+    "email": {
+      "passwordReset": {
+        "subject": "Đặt lại mật khẩu TFTVN",
+        "body": "Xin chào,\n\nBạn (hoặc ai đó) vừa yêu cầu đặt lại mật khẩu tài khoản TFTVN. Mở link sau trong vòng 30 phút để đặt mật khẩu mới:\n\n{link}\n\nNếu không phải bạn, hãy bỏ qua email này."
+      }
+    }
   }
 }

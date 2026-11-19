@@ -107,5 +107,95 @@
         "HFighter": "Hybrid Fighter"
       }
     }
+  },
+  "auth": {
+    "nav": {
+      "login": "Log in",
+      "register": "Sign up",
+      "profile": "Account",
+      "logout": "Log out"
+    },
+    "fields": {
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "identifier": "Username or email",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "gameName": "Game name",
+      "tagLine": "Tag"
+    },
+    "login": {
+      "title": "Log in",
+      "submit": "Log in",
+      "noAccount": "No account yet?",
+      "forgot": "Forgot password?"
+    },
+    "register": {
+      "title": "Create an account",
+      "submit": "Sign up",
+      "hasAccount": "Already have an account?",
+      "usernameHint": "3-24 characters: letters without accents, digits, underscore or dot.",
+      "passwordHint": "At least 8 characters."
+    },
+    "forgot": {
+      "title": "Forgot password",
+      "description": "Enter your registered email and TFTVN will send a reset link (valid for 30 minutes).",
+      "submit": "Send link",
+      "sent": "If this email is registered, a reset link has been sent."
+    },
+    "reset": {
+      "title": "Reset password",
+      "submit": "Save new password",
+      "done": "Password changed. Please log in again.",
+      "missingToken": "The link is invalid or missing its reset code."
+    },
+    "profile": {
+      "title": "Your account",
+      "account": "Account details",
+      "save": "Save changes",
+      "saved": "Changes saved.",
+      "password": "Change password",
+      "changePassword": "Change password",
+      "passwordChanged": "Password changed. Other devices have been logged out.",
+      "riot": "Riot account",
+      "riotDescription": "Link your Riot ID to see your rank and match history (VN server).",
+      "link": "Link",
+      "unlink": "Unlink",
+      "linked": "Linked {riotId}",
+      "unverified": "Not verified with Riot because the server has no Riot API key yet.",
+      "notLinked": "No Riot ID linked.",
+      "admin": "Administrator"
+    },
+    "submitting": "Working...",
+    "errors": {
+      "required": "This field is required.",
+      "usernameTooShort": "Username needs at least 3 characters.",
+      "usernameTooLong": "Username can have at most 24 characters.",
+      "usernameInvalid": "Use only letters without accents, digits, underscore or dot.",
+      "emailInvalid": "Invalid email.",
+      "passwordTooShort": "Password needs at least 8 characters.",
+      "passwordTooLong": "Password can have at most 128 characters.",
+      "nothingToUpdate": "Nothing has changed.",
+      "tokenInvalid": "The reset link is invalid or has expired.",
+      "gameNameInvalid": "Game name needs 3-16 characters and no # sign.",
+      "tagLineInvalid": "Tag has 3-5 letters or digits.",
+      "invalidCredentials": "Wrong username or password.",
+      "usernameTaken": "This username is taken.",
+      "emailTaken": "This email is already registered.",
+      "currentPasswordWrong": "Current password is wrong.",
+      "riotNotFound": "This Riot account was not found.",
+      "riotUnavailable": "Cannot reach Riot right now, try again later.",
+      "rateLimited": "Too many attempts, try again in a few minutes.",
+      "forbiddenOrigin": "Request blocked because it did not come from TFTVN.",
+      "unauthorized": "Please log in.",
+      "unknown": "Something went wrong, try again later."
+    },
+    "email": {
+      "passwordReset": {
+        "subject": "Reset your TFTVN password",
+        "body": "Hello,\n\nYou (or someone else) asked to reset the password of your TFTVN account. Open this link within 30 minutes to choose a new password:\n\n{link}\n\nIf this was not you, ignore this email."
+      }
+    }
   }
 }
