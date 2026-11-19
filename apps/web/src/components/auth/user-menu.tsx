@@ -27,8 +27,15 @@ export function UserMenu() {
     );
   }
   return (
-    <Link href="/profile" className="text-sm font-medium text-primary hover:text-primary-hover">
-      {user.username}
-    </Link>
+    <div className="flex items-center gap-3 text-sm">
+      {user.role === "admin" ? (
+        <Link href="/admin" className="text-muted hover:text-primary">
+          {t("admin")}
+        </Link>
+      ) : null}
+      <Link href="/profile" className="font-medium text-primary hover:text-primary-hover">
+        {user.username}
+      </Link>
+    </div>
   );
 }

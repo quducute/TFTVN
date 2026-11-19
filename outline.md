@@ -81,8 +81,8 @@ tftvn/
 
 **Package gợi ý**
 
-- **web (giao diện)**: `next`, `react`, `tailwindcss`, `@tailwindcss/postcss`, `clsx`, `tailwind-merge`, `axios`, `@tanstack/react-query` (cho phần tương tác phía client), `@tiptap/react`, `dompurify`, `lucide-react`, `next-intl`.
-- **web (server)**: `hono`, `zod`, `@hono/zod-validator`, `jose` (JWT), `@node-rs/argon2`, `sanitize-html`, `nodemailer`, `axios`, `drizzle-orm`, `@neondatabase/serverless`.
+- **web (giao diện)**: `next`, `react`, `tailwindcss`, `@tailwindcss/postcss`, `clsx`, `tailwind-merge`, `axios`, `@tiptap/react` + `@tiptap/starter-kit` + `@tiptap/pm` (editor bài viết), `next-intl`. Không dùng thư viện icon riêng: mọi icon game (tướng, trang bị, tộc hệ, chỉ số, vai trò) lấy từ CDN CommunityDragon.
+- **web (server)**: `hono`, `zod`, `jose` (JWT), `@node-rs/argon2`, `sanitize-html`, `nodemailer`, `axios`, `drizzle-orm`, `@neondatabase/serverless`.
 - **etl**: `axios`, `bottleneck` (rate limiter Riot).
 - **dev**: `typescript`, `@playwright/test`, `drizzle-kit`, `eslint`, `eslint-config-next`, `typescript-eslint`, `prettier`, `prettier-plugin-tailwindcss`.
 
@@ -265,7 +265,9 @@ tftvn/
 - Trang Trang bị hiện các nhóm chính, nhóm "khác" (khoảng 440 item cơ chế / Set cũ) thu gọn và chỉ có icon + tên.
 - **Thống kê**: Server Component đọc `entity_stats` + `stat_totals`, cache theo tag `stats`; hiển thị thời điểm cập nhật từ `etl_runs`.
 - **Player / leaderboard**: Server Component gọi service (đã có `riot_cache`), cache ngắn.
-- **Phần tương tác** (builder, editor, reaction, bookmark): Client Component gọi `/api/*` bằng axios (instance `api`), quản lý cache / trạng thái bằng TanStack Query.
+- **Phần tương tác** (builder, editor, reaction, bookmark): Client Component gọi `/api/*` bằng axios (instance `api`), giữ trạng thái bằng `useState`; sau khi ghi thì `router.refresh()`. Không cần TanStack Query.
+- **Đọc người xem ở server** (`getViewer` trong `server/auth/viewer.ts`): JWT chỉ xác định là ai, còn `role` và `username` luôn đọc lại từ DB, nên hạ quyền admin có hiệu lực ngay. Access token sống 15 phút nên có lúc server thấy "chưa đăng nhập" trong khi client đã làm mới token; `<ViewerSync>` so user ở client với server và gọi `router.refresh()` một lần khi lệch.
+- **Ghi dữ liệu người dùng** (comp, bài viết, role) gọi `revalidateTag(tag, { expire: 0 })` trong route Hono (`updateTag` chỉ dùng được trong Server Action), nên người dùng thấy thay đổi ngay ở lần tải sau.
 - **Song ngữ Việt - Anh (Việt là chính)** bằng `next-intl`:
   - Locale `vi` (mặc định) và `en`. Tiếng Việt không có tiền tố URL, tiếng Anh có `/en` (`localePrefix: "as-needed"`). **Không đoán ngôn ngữ theo trình duyệt** (`localeDetection: false`): URL quyết định ngôn ngữ, `/` luôn là tiếng Việt kể cả khi trình duyệt dùng tiếng Anh (e2e có kiểm tra).
   - Locale đọc bằng `next/root-params` (Next 16.3+) trong `src/i18n/request.ts`; trang lấy locale bằng `currentLocale()` (`getLocale`). Không dùng `setRequestLocale` (đã deprecate trong next-intl 4.15).
@@ -320,8 +322,13 @@ tftvn/
 - Bảng xếp hạng `/leaderboard?page=N`: Thách Đấu VN sắp theo LP, 20 người/trang, tên lấy từ `account-v1` (cache 1 ngày).
 - Thống kê `/stats/[tier]/[section]` (`/stats` chuyển tới `challenger/champions`): 3 bậc x 3 mục, bảng sắp xếp ở client. Tướng kèm 3 trang bị hay dùng nhất (từ dòng item có variant là tướng), trang bị kèm 3 tướng hay cầm, tộc hệ kèm mốc. Cảnh báo khi mẫu dưới 100 trận.
 
-- Composition builder (Client Component): mã team planner đọc tiền tố/hậu tố và bảng code **theo Set** (`02` + 30 hex + `TFTSet<N>`).
-- Editor bài viết: TipTap, render qua DOMPurify.
+- **Đội hình** (P5): `/comps` (meta theo tier S/A/B/C/X), `/comps/latest` (lọc theo tướng), `/comps/mine`, `/comps/bookmarks`, `/comps/new`, `/comps/[id]`, `/comps/[id]/edit`.
+  - **Builder** (Client Component): bàn cờ lục giác 4 x 7, bấm hoặc kéo thả tướng, chọn tướng rồi bấm trang bị để gắn (tối đa 3), chỉnh sao 1-3, tối đa 10 tướng, 3 lõi. Tộc hệ tính trực tiếp (`countTraits` trong core): mỗi tướng chỉ tính một lần dù có 2 bản, Ấn cộng thêm tộc nếu tướng chưa có. Ấn của Set 18 không có `associatedTraits` nên suy tộc từ apiName (`DA_18_EmblemVanguard` -> `DA_18_Vanguard`).
+  - **Mã team planner**: `02` + 10 ô x 3 hex + `TFTSet<N>`, `000` là ô trống. Xuất từ bàn cờ và nhập ngược lại (từ chối mã của Set khác). Set 17 có một quái PvE mang mã `000` nên bị loại khỏi phần mã.
+  - Server kiểm tra tướng, trang bị (chỉ nhóm thành phẩm, Ấn, Ánh Sáng, Tạo Tác, Hỗ trợ) và lõi có thuộc Set; chỉ chủ comp hoặc admin được sửa / xóa; admin đặt meta tier (gắn với patch hiện tại của Set); comp đang meta không xóa được (kiểm tra ở service, CHECK trong DB là lớp cuối).
+- **Bài viết** (P5): `/articles` (lọc chuyên mục, thẻ), `/articles/mine`, `/articles/new`, `/articles/[id]`, `/articles/[id]/edit`. Editor TipTap (StarterKit v3: tiêu đề H2/H3, danh sách, trích dẫn, link). Bài của user chờ duyệt; user sửa bài thì quay lại hàng chờ; bài admin viết được đăng ngay. Bài chưa duyệt chỉ tác giả và admin xem được (người khác nhận 404). Gắn tối đa 5 comp bằng cách dán link. Mỗi người một reaction (yêu thích / hay / chưa hay) trên bài đã duyệt.
+- **Admin** (P5): `/admin` duyệt bài (từ chối phải ghi lý do, tác giả thấy lý do); `/admin/roles` gán vai trò cho tướng và chọn tối đa 8 trang bị gợi ý cho mỗi vai trò, theo Set. Thay đổi hiện ngay ở trang Vai trò của thư viện (tag `roles:<set>`). Link "Quản trị" chỉ hiện với admin; API kiểm tra quyền bằng role trong DB.
+- **Icon từ CommunityDragon**: icon chỉ số (máu, giáp, kháng phép, tốc đánh...) và icon trong mô tả (`%i:scaleAD%`) lấy từ `plugins/rcp-be-lol-game-data/global/default/assets/ux/fonts/texticons/lol/statsicon/`; icon vai trò lấy từ `.../texticons/tft/characterroles/` (AD = attack, AP = magic, H = hybrid). Icon không có trên CDN (như `set14AmpIcon`) thì hiện chữ. Dữ liệu ghi icon là `None` (icon kỹ năng ở Set 18) thì coi như không có icon.
 
 ---
 
@@ -343,7 +350,7 @@ tftvn/
 - **Rate limit** (bảng `rate_limits`, theo IP): đăng ký 5 lần/giờ, đăng nhập 20 lần/5 phút, quên mật khẩu 5 lần/giờ. Tra cứu người chơi thêm ở P4.
 - **Validate dùng chung**: schema zod trong `packages/core/src/auth/schemas.ts` trả về **mã lỗi** (`usernameTooShort`, `emailTaken`...); giao diện dịch mã sang vi / en (`auth.errors.*`), test kiểm tra mã nào cũng có bản dịch. Ô trống được coi là chưa nhập (`dropEmptyStrings`).
 - **Chưa làm**: xác thực email (`email_verify` đã có trong enum), "nhớ đăng nhập", đăng nhập bằng Google / Riot.
-- HTML bài viết: `sanitize-html` khi lưu + DOMPurify khi render (P5).
+- **HTML bài viết**: chỉ lọc một lần bằng `sanitize-html` khi lưu (thẻ cho phép: p, br, h2, h3, strong, em, u, s, a, ul, ol, li, blockquote, code, pre, hr; link chỉ http/https/mailto, luôn thêm `rel="noopener noreferrer nofollow"` và `target="_blank"`; bỏ mọi class, style, sự kiện). Không thêm DOMPurify khi render vì phía server cần jsdom (nặng cho serverless) mà chỉ lọc lại thứ đã lọc; DB chỉ chứa HTML đã sạch.
 - **CSP và các security header** đặt trong `next.config` (`headers()`) (P6).
 - Secret trong Vercel Environment Variables (tách Preview và Production) và GitHub Actions secrets. Biến mới ở P3: `JWT_SECRET` (ít nhất 32 ký tự), `SMTP_USER`, `SMTP_APP_PASSWORD`, `MAIL_FROM` (mặc định `TFTVN <SMTP_USER>`), `APP_ORIGINS`.
 
@@ -392,7 +399,7 @@ tftvn/
 - **Unit test** (`pnpm test`, file `playwright.config.ts`, không cần trình duyệt; file `*.test.ts`):
   - Project `core`: HashResolver, FNV-1a, parser CommunityDragon (fixture cắt từ dữ liệu thật của **2 Set**), điền placeholder, phân loại item / augment, đọc markup, role.
   - Project `web`: màu chỉ dùng tên CSS, hai file ngôn ngữ cùng bộ key, route Hono (`createApp` nhận dependency qua tham số nên không cần mock module).
-- **E2E** (`pnpm e2e`, file `playwright.e2e.config.ts`, dùng **Microsoft Edge có sẵn** trên máy qua `channel: "msedge"`, không tải trình duyệt riêng; file `apps/web/e2e/*.spec.ts`): tự build production rồi chạy server cổng 3100, cần DB có dữ liệu. Hiện kiểm tra trang chủ hai ngôn ngữ, giữ tiếng Việt với trình duyệt tiếng Anh, chọn Set, mở tướng, nhóm trang bị / lõi, đổi ngôn ngữ giữ nguyên trang, Set không tồn tại. Sau thêm: đăng ký -> tạo comp -> bookmark -> viết bài -> admin duyệt.
+- **E2E** (`pnpm e2e`, file `playwright.e2e.config.ts`, dùng **Microsoft Edge có sẵn** trên máy qua `channel: "msedge"`, không tải trình duyệt riêng; file `apps/web/e2e/*.spec.ts`): tự build production rồi chạy server cổng 3100, cần DB có dữ liệu. Hiện kiểm tra trang chủ hai ngôn ngữ, giữ tiếng Việt với trình duyệt tiếng Anh, chọn Set, mở tướng, nhóm trang bị / lõi, đổi ngôn ngữ giữ nguyên trang, Set không tồn tại. Thêm ở P4-P5: thống kê, bảng xếp hạng, tra cứu (khi có `RIOT_API_KEY`); tạo comp bằng builder -> bookmark -> sửa -> nhập mã planner -> admin đặt meta -> chặn xóa; viết bài -> admin từ chối có lý do -> sửa -> duyệt -> reaction; admin gán vai trò tướng; user thường bị chặn khỏi admin. Next 16 giữ trang cũ ở trạng thái ẩn (`<Activity>`) sau khi chuyển trang, nên test tìm phần tử theo role hoặc lọc `visible` để không bị trùng.
 - Import JSON dùng cú pháp chuẩn `with { type: "json" }` (Playwright chạy test bằng ES module của Node).
 - **`ci.yml`**: `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm build`. E2E chưa chạy trong CI vì cần DB có dữ liệu.
 
@@ -417,11 +424,13 @@ tftvn/
 ## 12. Quyết định cần chốt
 
 1. Nộp đơn xin Riot Personal / Production key sớm (duyệt mất thời gian).
-2. Phạm vi Set cũ: chỉ giữ thư viện, hay giữ cả thống kê và meta comps?
 
 **Đã chốt**:
 
-- **Role**: admin tự gán role cho từng tướng (`champion_roles`), vì CommunityDragon thiếu role ở Set 18.
+- **Role**: admin tự gán role cho từng tướng (`champion_roles`), vì CommunityDragon thiếu role ở Set 18. Màn hình gán đã có ở `/admin/roles` (P5).
+- **Set cũ chỉ giữ thư viện**: thống kê, meta comps và tạo / sửa comp chỉ dùng Set hiện tại (server trả `setInvalid` cho Set cũ); trang thư viện vẫn chọn được mọi Set.
+- HTML bài viết chỉ lọc bằng `sanitize-html` khi lưu (không dùng DOMPurify).
+- Icon game lấy hết từ CDN CommunityDragon, không dùng thư viện icon.
 - Chỉ dùng **một bản TypeScript 6** ở root.
 
 - **Next.js + Vercel cho toàn bộ**: frontend và backend Node (Hono) trong cùng một project.

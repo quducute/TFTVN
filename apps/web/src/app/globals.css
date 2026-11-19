@@ -4,3 +4,47 @@
 @theme {
   --color-*: initial;
 }
+
+.article-body {
+  @apply space-y-4 leading-relaxed;
+}
+
+.article-body h2 {
+  @apply mt-8 text-2xl font-bold text-primary;
+}
+
+.article-body h3 {
+  @apply mt-6 text-xl font-semibold text-primary;
+}
+
+.article-body a {
+  @apply text-primary underline underline-offset-2;
+}
+
+.article-body ul {
+  @apply list-disc space-y-1 pl-6;
+}
+
+.article-body ol {
+  @apply list-decimal space-y-1 pl-6;
+}
+
+.article-body blockquote {
+  @apply border-l-4 border-primary/60 pl-4 text-muted italic;
+}
+
+.article-body code {
+  @apply rounded bg-surface/10 px-1 py-0.5 font-mono text-sm;
+}
+
+.article-body pre {
+  @apply overflow-x-auto rounded-lg bg-surface/10 p-4;
+}
+
+.article-body pre code {
+  @apply bg-transparent p-0;
+}
+
+.article-body hr {
+  @apply border-line/20;
+}

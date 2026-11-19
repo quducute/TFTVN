@@ -38,6 +38,7 @@ function rewrite(source) {
     output.push(
       line
         .replaceAll(".default(')", '.default("")')
+        .replaceAll('.array().default([""])', ".array().default([])")
         .replace(/\bi18N: jsonb\(\)/, 'i18n: jsonb("i18n")'),
     );
   }

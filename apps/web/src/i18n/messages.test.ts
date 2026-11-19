@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { AUTH_ERROR_CODES } from "@tftvn/core";
+import { ARTICLE_ERROR_CODES, AUTH_ERROR_CODES, COMP_ERROR_CODES } from "@tftvn/core";
 import { catalogs, flattenKeys, getMessagesFor } from "./messages";
 
 test.describe("messages", () => {
@@ -17,4 +17,16 @@ test.describe("messages", () => {
     const missing = AUTH_ERROR_CODES.filter((code) => !keys.has(`auth.errors.${code}`));
     expect(missing).toEqual([]);
   });
+
+  test("every comp error code has a message", () => {
+    const keys = new Set(flattenKeys(catalogs.vi));
+    const missing = COMP_ERROR_CODES.filter((code) => !keys.has(`comps.errors.${code}`));
+    expect(missing).toEqual([]);
+  });
+});
+
+test("every article error code has a message", () => {
+  const keys = new Set(flattenKeys(catalogs.vi));
+  const missing = ARTICLE_ERROR_CODES.filter((code) => !keys.has(`articles.errors.${code}`));
+  expect(missing).toEqual([]);
 });

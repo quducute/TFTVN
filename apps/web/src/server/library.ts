@@ -3,12 +3,14 @@ import { championRoles, gameEntities, gameSets, getDb, patches, roleItems } from
 import { and, asc, desc, eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import type { Locale } from "@/i18n/routing";
+import { rolesTag } from "./cache-tags";
 
 export const GAMEDATA_TAG = "gamedata";
-export const rolesTag = (setId: number) => `roles:${setId}`;
+export { rolesTag } from "./cache-tags";
 
 export interface LibrarySet {
   id: number;
+  mutator: string;
   isCurrent: boolean;
   patch: string;
   snapshotId: number;
@@ -33,6 +35,7 @@ export async function getLibrarySets(): Promise<LibrarySet[]> {
   const rows = await getDb()
     .select({
       id: gameSets.id,
+      mutator: gameSets.mutator,
       isCurrent: gameSets.isCurrent,
       patch: patches.id,
       snapshotId: patches.snapshotId,

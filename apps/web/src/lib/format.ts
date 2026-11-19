@@ -1,7 +1,6 @@
 export const STAT_KEYS = [
   "hp",
   "mana",
-  "initialMana",
   "damage",
   "attackSpeed",
   "armor",
@@ -11,6 +10,27 @@ export const STAT_KEYS = [
 ] as const;
 
 export type StatKey = (typeof STAT_KEYS)[number];
+
+export const STAT_ICON: Record<StatKey, string> = {
+  hp: "scaleHealth",
+  mana: "scaleMana",
+  damage: "scaleAD",
+  attackSpeed: "scaleAS",
+  armor: "scaleArmor",
+  magicResist: "scaleMR",
+  critChance: "scaleCrit",
+  range: "scaleRange",
+};
+
+export function formatStatRow(
+  key: StatKey,
+  stats: Readonly<Record<string, number | null | undefined>>,
+): string {
+  if (key === "mana") {
+    return `${formatStat("mana", stats.initialMana ?? 0)}/${formatStat("mana", stats.mana)}`;
+  }
+  return formatStat(key, stats[key]);
+}
 
 export function formatStat(key: StatKey, value: number | null | undefined): string {
   if (value == null) {

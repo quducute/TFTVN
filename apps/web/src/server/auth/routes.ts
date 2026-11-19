@@ -1,25 +1,24 @@
 import { type Context, Hono } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
-import { createMiddleware } from "hono/factory";
 import { ACCESS_TOKEN_SECONDS, REFRESH_TOKEN_SECONDS } from "./crypto";
 import { type AuthService, toPublicUser } from "./service";
-import type { ServiceResult, Session, UserRecord } from "./types";
+import { ACCESS_COOKIE, type AuthEnv, REFRESH_COOKIE, createGuards } from "./guards";
+import type { ServiceResult, Session } from "./types";
 
-export const ACCESS_COOKIE = "tftvn_access";
-export const REFRESH_COOKIE = "tftvn_refresh";
+export { ACCESS_COOKIE, REFRESH_COOKIE } from "./guards";
 
 export interface AuthRouteOptions {
   secureCookies: boolean;
   allowedOrigins?: string[];
 }
 
-type AuthEnv = { Variables: { user: UserRecord } };
 type Failure = Extract<ServiceResult<unknown>, { ok: false }>;
 
-const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
-
 export function createAuthRoutes(service: AuthService, options: AuthRouteOptions) {
-  const allowedOrigins = new Set(options.allowedOrigins ?? []);
+  const { sameOrigin, requireUser } = createGuards(
+    (token) => service.currentUser(token),
+    options.allowedOrigins,
+  );
   const cookieBase = { httpOnly: true, secure: options.secureCookies, sameSite: "Lax" as const };
 
   const setSession = (
@@ -52,26 +51,6 @@ export function createAuthRoutes(service: AuthService, options: AuthRouteOptions
 
   const failure = (c: Context, result: Failure) =>
     c.json({ ok: false, code: result.code, fields: result.fields ?? {} }, result.status);
-
-  const sameOrigin = createMiddleware(async (c, next) => {
-    if (!SAFE_METHODS.has(c.req.method)) {
-      const origin = c.req.header("origin");
-      const ownOrigin = new URL(c.req.url).origin;
-      if (!origin || (origin !== ownOrigin && !allowedOrigins.has(origin))) {
-        return c.json({ ok: false, code: "forbiddenOrigin", fields: {} }, 403);
-      }
-    }
-    await next();
-  });
-
-  const requireUser = createMiddleware<AuthEnv>(async (c, next) => {
-    const user = await service.currentUser(getCookie(c, ACCESS_COOKIE));
-    if (!user) {
-      return c.json({ ok: false, code: "unauthorized", fields: {} }, 401);
-    }
-    c.set("user", user);
-    await next();
-  });
 
   return new Hono<AuthEnv>()
     .use("/auth/*", sameOrigin)

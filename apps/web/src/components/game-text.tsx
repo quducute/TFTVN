@@ -1,6 +1,7 @@
 import { type GameTextNode, parseGameText } from "@tftvn/core";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { TextIcon } from "./text-icon";
 
 const TAG_CLASSES: Record<string, string> = {
   row: "block",
@@ -34,6 +35,12 @@ const ICON_LABELS: Record<string, string> = {
   scaleDA: "DA",
   scaleDR: "DR",
   scaleSV: "Omnivamp",
+  scaleRange: "Range",
+  scaleManaRegen: "Mana",
+  scaleHPRegen: "HP",
+  goldCoins: "Gold",
+  TFTManaRegen: "Mana",
+  TFTBaseAD: "AD",
 };
 
 function renderNodes(nodes: readonly GameTextNode[]): ReactNode[] {
@@ -45,9 +52,11 @@ function renderNodes(nodes: readonly GameTextNode[]): ReactNode[] {
         return <br key={index} />;
       case "icon":
         return (
-          <span key={index} className="mx-0.5 rounded bg-surface/10 px-1 text-xs text-muted">
-            {ICON_LABELS[node.name] ?? node.name.replace(/^scale/, "")}
-          </span>
+          <TextIcon
+            key={index}
+            name={node.name}
+            label={ICON_LABELS[node.name] ?? node.name.replace(/^scale/, "")}
+          />
         );
       case "element":
         return (

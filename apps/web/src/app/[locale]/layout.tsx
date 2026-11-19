@@ -38,14 +38,16 @@ export default async function LocaleLayout({ children }: Readonly<{ children: Re
         <NextIntlClientProvider>
           <AuthProvider>
             <header className="border-b border-line/10">
-              <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-                <div className="flex items-center gap-6">
+              <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
+                <div className="contents md:flex md:items-center md:gap-6">
                   <Link href="/" className="text-lg font-bold tracking-tight">
                     TFT<span className="text-primary">VN</span>
                   </Link>
-                  <nav className="flex gap-4 text-sm">
+                  <nav className="order-last -mx-4 flex w-[calc(100%+2rem)] gap-4 overflow-x-auto px-4 text-sm whitespace-nowrap md:order-none md:mx-0 md:w-auto md:overflow-visible md:px-0">
                     {[
                       { href: libraryPath.root(), label: t("library") },
+                      { href: "/comps", label: t("comps") },
+                      { href: "/articles", label: t("articles") },
                       { href: riotPath.players(), label: t("players") },
                       { href: riotPath.leaderboard(), label: t("leaderboard") },
                       { href: "/stats", label: t("stats") },

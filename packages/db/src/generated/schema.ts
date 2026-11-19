@@ -176,8 +176,8 @@ export const comps = pgTable(
     playstyle: text(),
     avatarChampionApiName: text("avatar_champion_api_name"),
     board: jsonb().notNull(),
-    champions: text().array().default([""]).notNull(),
-    augments: text().array().default([""]).notNull(),
+    champions: text().array().default([]).notNull(),
+    augments: text().array().default([]).notNull(),
     metaTier: metaTier("meta_tier"),
     metaPatchId: text("meta_patch_id"),
     metaUpdatedAt: timestamp("meta_updated_at", { withTimezone: true, mode: "string" }),
@@ -248,7 +248,7 @@ export const articles = pgTable(
     setId: integer("set_id"),
     title: text().notNull(),
     category: text().notNull(),
-    tags: text().array().default([""]).notNull(),
+    tags: text().array().default([]).notNull(),
     body: text().notNull(),
     status: articleStatus().default("queued").notNull(),
     reviewedBy: bigint("reviewed_by", { mode: "number" }),
@@ -489,7 +489,7 @@ export const roleItems = pgTable(
   {
     setId: integer("set_id").notNull(),
     roleApiName: text("role_api_name").notNull(),
-    items: text().array().default([""]).notNull(),
+    items: text().array().default([]).notNull(),
     updatedBy: bigint("updated_by", { mode: "number" }),
     updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" })
       .defaultNow()

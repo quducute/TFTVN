@@ -1,4 +1,4 @@
-import type { AuthErrorCode, FieldErrors } from "@tftvn/core";
+import type { AuthErrorCode } from "@tftvn/core";
 import axios, { type InternalAxiosRequestConfig, isAxiosError } from "axios";
 
 export const api = axios.create({
@@ -39,14 +39,16 @@ api.interceptors.response.use(undefined, async (error: unknown) => {
   throw error;
 });
 
-export interface ApiFailure {
-  code: AuthErrorCode;
-  fields: FieldErrors;
+export interface ApiFailure<Code extends string = AuthErrorCode> {
+  code: Code | "unknown";
+  fields: Partial<Record<string, Code>>;
 }
 
-export function toApiFailure(error: unknown): ApiFailure {
+export function toApiFailure<Code extends string = AuthErrorCode>(
+  error: unknown,
+): ApiFailure<Code> {
   const data = isAxiosError(error)
-    ? (error.response?.data as Partial<ApiFailure> | undefined)
+    ? (error.response?.data as Partial<ApiFailure<Code>> | undefined)
     : undefined;
   return { code: data?.code ?? "unknown", fields: data?.fields ?? {} };
 }

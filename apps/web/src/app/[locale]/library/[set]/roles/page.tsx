@@ -2,6 +2,7 @@ import { type ChampionData, type ItemData, effectiveRole } from "@tftvn/core";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
 import { GameIcon } from "@/components/game-icon";
+import { RoleIcon } from "@/components/role-icon";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { COST_BORDER } from "@/lib/format";
@@ -42,7 +43,10 @@ export default async function RolesPage({ params }: PageProps<"/[locale]/library
           .filter((item) => item != null);
         return (
           <li key={role.apiName} className="rounded-xl border border-line/10 bg-surface/5 p-5">
-            <h2 className="text-lg font-semibold text-primary">{roleName(role.apiName)}</h2>
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-primary">
+              <RoleIcon roleApiName={role.apiName} label="" size={28} />
+              {roleName(role.apiName)}
+            </h2>
             <p className="text-xs text-muted">{role.apiName}</p>
 
             <p className="mt-4 mb-2 text-xs text-muted uppercase">{t("champions")}</p>

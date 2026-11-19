@@ -1,7 +1,14 @@
 import { timingSafeEqual } from "node:crypto";
 import { Hono } from "hono";
 import { type AuthRouteOptions, createAuthRoutes } from "./auth/routes";
+import { createAdminRoutes } from "./admin/routes";
+import type { AdminService } from "./admin/service";
+import { createArticleRoutes } from "./articles/routes";
+import type { ArticleService } from "./articles/service";
+import { createGuards } from "./auth/guards";
 import type { AuthService } from "./auth/service";
+import { createCompRoutes } from "./comps/routes";
+import type { CompService } from "./comps/service";
 
 const REVALIDATABLE_TAG = /^(?:gamedata|stats|snapshot:\d+|roles:\d+)$/;
 
@@ -10,6 +17,9 @@ export interface AppDependencies {
   revalidate: (tag: string, profile: "max") => void;
   databaseVersion: () => Promise<string | null>;
   auth?: { service: AuthService; options: AuthRouteOptions };
+  comps?: { service: CompService; expireTag: (tag: string) => void };
+  articles?: { service: ArticleService; expireTag: (tag: string) => void };
+  admin?: { service: AdminService; expireTag: (tag: string) => void };
 }
 
 function hasValidSecret(secret: string | undefined, header: string | undefined): boolean {
@@ -41,8 +51,39 @@ export function createApp(dependencies: AppDependencies) {
       return c.json({ ok: true, tag });
     });
 
-  if (dependencies.auth) {
-    app.route("/", createAuthRoutes(dependencies.auth.service, dependencies.auth.options));
+  const { auth, comps, articles, admin } = dependencies;
+  if (auth) {
+    app.route("/", createAuthRoutes(auth.service, auth.options));
+    const currentUser = (token: string | undefined) => auth.service.currentUser(token);
+    const guards = createGuards(currentUser, auth.options.allowedOrigins);
+    if (comps) {
+      app.route(
+        "/",
+        createCompRoutes({
+          service: comps.service,
+          guards,
+          currentUser,
+          expireTag: comps.expireTag,
+        }),
+      );
+    }
+    if (articles) {
+      app.route(
+        "/",
+        createArticleRoutes({
+          service: articles.service,
+          guards,
+          currentUser,
+          expireTag: articles.expireTag,
+        }),
+      );
+    }
+    if (admin) {
+      app.route(
+        "/",
+        createAdminRoutes({ service: admin.service, guards, expireTag: admin.expireTag }),
+      );
+    }
   }
 
   app.onError((error, c) => {

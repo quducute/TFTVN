@@ -1,4 +1,4 @@
-import type { ChampionData } from "@tftvn/core";
+import type { ChampionData, TraitData } from "@tftvn/core";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
 import { GameIcon } from "@/components/game-icon";
@@ -17,10 +17,15 @@ export default async function ChampionsPage({
   const set = await resolveLibrarySet(setParam);
   const [champions, traits, t] = await Promise.all([
     getEntities<ChampionData>(set.snapshotId, "champion"),
-    getEntities(set.snapshotId, "trait"),
+    getEntities<TraitData>(set.snapshotId, "trait"),
     getTranslations({ locale, namespace: "library.champions" }),
   ]);
-  const traitName = new Map(traits.map((trait) => [trait.apiName, localized(trait, locale).name]));
+  const traitInfo = new Map(
+    traits.map((trait) => [
+      trait.apiName,
+      { name: localized(trait, locale).name, icon: trait.data.icon },
+    ]),
+  );
   const costs = [...new Set(champions.map((champion) => champion.cost ?? 0))].sort((a, b) => a - b);
 
   return (
@@ -48,11 +53,22 @@ export default async function ChampionsPage({
                         className={cn("border-2", COST_BORDER[cost] ?? "border-line/20")}
                       />
                       <span className="font-medium">{name}</span>
-                      <span className="text-xs text-muted">
-                        {(champion.traits ?? [])
-                          .map((apiName) => traitName.get(apiName) ?? apiName)
-                          .join(", ")}
-                      </span>
+                      <ul className="flex flex-col items-start gap-1 text-xs text-muted">
+                        {(champion.traits ?? []).map((apiName) => {
+                          const trait = traitInfo.get(apiName);
+                          return (
+                            <li key={apiName} className="flex items-center gap-1">
+                              <GameIcon
+                                path={trait?.icon}
+                                alt=""
+                                size={16}
+                                className="rounded-none"
+                              />
+                              {trait?.name ?? apiName}
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </Link>
                   </li>
                 );

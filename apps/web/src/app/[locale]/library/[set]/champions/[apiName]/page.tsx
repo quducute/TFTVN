@@ -1,4 +1,4 @@
-import { type ChampionData, UNKNOWN_VALUE, effectiveRole } from "@tftvn/core";
+import { type ChampionData, type TraitData, UNKNOWN_VALUE, effectiveRole } from "@tftvn/core";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { currentLocale } from "@/i18n/locale";
@@ -6,7 +6,15 @@ import { GameIcon } from "@/components/game-icon";
 import { GameText } from "@/components/game-text";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
-import { COST_BORDER, COST_TEXT, STAT_KEYS, formatStarValues, formatStat } from "@/lib/format";
+import { TextIcon } from "@/components/text-icon";
+import {
+  COST_BORDER,
+  COST_TEXT,
+  STAT_ICON,
+  STAT_KEYS,
+  formatStarValues,
+  formatStatRow,
+} from "@/lib/format";
 import { libraryPath } from "@/lib/library-paths";
 import { getChampionRoleAssignments, getEntities, localized } from "@/server/library";
 import { championStaticParams, resolveLibrarySet } from "@/server/library-params";
@@ -28,7 +36,7 @@ export default async function ChampionPage({
   const apiName = decodeURIComponent(rawApiName);
   const [champions, traits, assignments, t, tStats, tRoles] = await Promise.all([
     getEntities<ChampionData>(set.snapshotId, "champion"),
-    getEntities(set.snapshotId, "trait"),
+    getEntities<TraitData>(set.snapshotId, "trait"),
     getChampionRoleAssignments(set.id),
     getTranslations({ locale, namespace: "library.champions" }),
     getTranslations({ locale, namespace: "library.stats" }),
@@ -75,8 +83,14 @@ export default async function ChampionPage({
                 <Link
                   key={traitApiName}
                   href={libraryPath.trait(set.id, traitApiName)}
-                  className="rounded-full border border-line/20 px-3 py-1 text-sm hover:border-primary hover:text-primary"
+                  className="flex items-center gap-2 rounded-full border border-line/20 py-1 pr-3 pl-1 text-sm hover:border-primary hover:text-primary"
                 >
+                  <GameIcon
+                    path={trait?.data.icon}
+                    alt=""
+                    size={22}
+                    className="rounded-full bg-surface/10 p-0.5"
+                  />
                   {trait ? localized(trait, locale).name : traitApiName}
                 </Link>
               );
@@ -94,8 +108,13 @@ export default async function ChampionPage({
           <dl className="divide-y divide-line/10 rounded-xl border border-line/10 bg-surface/5">
             {STAT_KEYS.map((key) => (
               <div key={key} className="flex justify-between px-4 py-2 text-sm">
-                <dt className="text-muted">{tStats(key)}</dt>
-                <dd className="font-medium">{formatStat(key, champion.data.stats[key])}</dd>
+                <dt className="flex items-center gap-2 text-muted">
+                  <TextIcon name={STAT_ICON[key]} label="" size={18} className="mx-0" />
+                  {tStats(key)}
+                </dt>
+                <dd className="font-medium tabular-nums">
+                  {formatStatRow(key, champion.data.stats)}
+                </dd>
               </div>
             ))}
           </dl>

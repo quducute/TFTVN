@@ -11,6 +11,8 @@ export default defineConfig({
   testDir: "apps/web/e2e",
   testMatch: "**/*.spec.ts",
   globalTeardown: "./apps/web/e2e/teardown.ts",
+  workers: 1,
+  expect: { timeout: 10_000 },
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : "list",
