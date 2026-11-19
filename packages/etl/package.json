@@ -4,11 +4,13 @@
   "type": "module",
   "scripts": {
     "sync-gamedata": "tsx --env-file-if-exists=../../.env.local src/sync-gamedata.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sync-matches": "tsx --env-file-if-exists=../../.env.local src/sync-matches.ts"
   },
   "dependencies": {
     "@tftvn/core": "workspace:*",
     "@tftvn/db": "workspace:*",
+    "@tftvn/riot": "workspace:*",
     "axios": "^1.21.1",
     "drizzle-orm": "^0.45.4"
   },

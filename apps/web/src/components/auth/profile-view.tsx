@@ -3,8 +3,9 @@
 import { changePasswordSchema, riotIdSchema, updateProfileSchema } from "@tftvn/core";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { api } from "@/lib/api-client";
+import { riotPath } from "@/lib/riot-paths";
 import type { PublicUser } from "@/server/auth/types";
 import { useAuth } from "./auth-provider";
 import { FormNotice, SubmitButton, TextField } from "./form-controls";
@@ -133,6 +134,12 @@ function RiotForm({ user }: Readonly<{ user: PublicUser }>) {
             {user.riot.verified ? null : (
               <p className="text-xs text-muted">{t("profile.unverified")}</p>
             )}
+            <Link
+              href={riotPath.player(user.riot.gameName, user.riot.tagLine)}
+              className="text-xs text-primary hover:underline"
+            >
+              {t("profile.viewPlayer")}
+            </Link>
           </div>
           <button
             type="button"

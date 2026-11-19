@@ -6,7 +6,10 @@
   "nav": {
     "language": "Ngôn ngữ",
     "home": "Trang chủ",
-    "library": "Thư viện"
+    "library": "Thư viện",
+    "players": "Tra cứu",
+    "leaderboard": "Bảng xếp hạng",
+    "stats": "Thống kê"
   },
   "home": {
     "heading": "Trợ thủ Đấu Trường Chân Lý",
@@ -165,7 +168,8 @@
       "linked": "Đã liên kết {riotId}",
       "unverified": "Chưa xác minh với Riot vì máy chủ chưa có Riot API key.",
       "notLinked": "Chưa liên kết Riot ID.",
-      "admin": "Quản trị viên"
+      "admin": "Quản trị viên",
+      "viewPlayer": "Xem trang người chơi"
     },
     "submitting": "Đang xử lý...",
     "errors": {
@@ -197,5 +201,93 @@
         "body": "Xin chào,\n\nBạn (hoặc ai đó) vừa yêu cầu đặt lại mật khẩu tài khoản TFTVN. Mở link sau trong vòng 30 phút để đặt mật khẩu mới:\n\n{link}\n\nNếu không phải bạn, hãy bỏ qua email này."
       }
     }
+  },
+  "riot": {
+    "tiers": {
+      "CHALLENGER": "Thách Đấu",
+      "GRANDMASTER": "Đại Cao Thủ",
+      "MASTER": "Cao Thủ",
+      "DIAMOND": "Kim Cương",
+      "EMERALD": "Lục Bảo",
+      "PLATINUM": "Bạch Kim",
+      "GOLD": "Vàng",
+      "SILVER": "Bạc",
+      "BRONZE": "Đồng",
+      "IRON": "Sắt"
+    },
+    "queues": {
+      "NORMAL_TFT": "Thường",
+      "RANKED_TFT": "Xếp hạng",
+      "RANKED_TFT_TURBO": "Siêu Tốc",
+      "RANKED_TFT_DOUBLE_UP": "Nhân Đôi",
+      "other": "Chế độ khác"
+    },
+    "errors": {
+      "notFound": "Không tìm thấy người chơi này trên máy chủ VN.",
+      "rateLimited": "Riot đang giới hạn số yêu cầu, hãy thử lại sau ít phút.",
+      "unauthorized": "Máy chủ chưa có Riot API key hợp lệ.",
+      "unavailable": "Không kết nối được Riot, hãy thử lại sau.",
+      "tooManyLookups": "Bạn tra cứu quá nhiều, hãy thử lại sau ít phút."
+    }
+  },
+  "players": {
+    "title": "Tra cứu người chơi",
+    "description": "Nhập Riot ID dạng Tên#Tag để xem rank và trận gần đây (máy chủ VN).",
+    "placeholder": "Ví dụ: Tên#VN2",
+    "search": "Tìm",
+    "invalid": "Hãy nhập Riot ID dạng Tên#Tag.",
+    "level": "Cấp {level}",
+    "ranks": "Xếp hạng",
+    "unranked": "Chưa có rank ở chế độ nào.",
+    "record": "{wins} thắng / {losses} thua",
+    "lp": "{lp} LP",
+    "recent": "Trận gần đây",
+    "noMatches": "Chưa có trận nào gần đây.",
+    "placement": "Hạng {placement}",
+    "duration": "{minutes} phút",
+    "playerLevel": "Cấp {level}",
+    "lobby": "Xem cả 8 người chơi",
+    "viewProfile": "Xem hồ sơ"
+  },
+  "leaderboard": {
+    "title": "Bảng xếp hạng Thách Đấu",
+    "description": "Top người chơi Thách Đấu máy chủ VN, cập nhật 5 phút một lần.",
+    "rank": "#",
+    "player": "Người chơi",
+    "lp": "LP",
+    "wins": "Thắng",
+    "losses": "Thua",
+    "hotStreak": "Đang chuỗi thắng",
+    "previous": "Trang trước",
+    "next": "Trang sau",
+    "page": "Trang {page}/{pages}",
+    "unknownName": "Chưa rõ tên"
+  },
+  "stats": {
+    "title": "Thống kê",
+    "description": "Số liệu từ {matches} trận xếp hạng gần đây của top người chơi {tier} máy chủ VN.",
+    "updated": "Cập nhật {time}",
+    "noData": "Chưa có dữ liệu thống kê cho bậc này.",
+    "smallSample": "Mẫu còn nhỏ, số liệu chỉ nên tham khảo.",
+    "tiers": {
+      "challenger": "Thách Đấu",
+      "grandmaster": "Đại Cao Thủ",
+      "master": "Cao Thủ"
+    },
+    "sections": {
+      "champions": "Tướng",
+      "traits": "Tộc / Hệ",
+      "items": "Trang bị"
+    },
+    "columns": {
+      "name": "Tên",
+      "games": "Số trận",
+      "pickRate": "Tỉ lệ chọn",
+      "averagePlacement": "Hạng TB",
+      "top4Rate": "Top 4",
+      "top1Rate": "Top 1",
+      "variants": "Phổ biến nhất"
+    },
+    "variantLevel": "Mốc {level}"
   }
 }

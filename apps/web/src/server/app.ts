@@ -1,7 +1,7 @@
 import { revalidateTag } from "next/cache";
 import { argon2Hasher, createAccessTokens, randomToken, sha256 } from "./auth/crypto";
 import { createDbAuthRepository } from "./auth/db-repository";
-import { createMailer } from "./auth/mailer";
+import { createGmailTransport, createMailer } from "./auth/mailer";
 import { createRiotAccountLookup } from "./auth/riot-account";
 import { createAuthService } from "./auth/service";
 import { createApp } from "./create-app";
@@ -13,7 +13,10 @@ const authService = createAuthService({
   repository: createDbAuthRepository(),
   passwords: argon2Hasher,
   accessTokens: createAccessTokens(() => env.JWT_SECRET),
-  mailer: createMailer({ resendApiKey: env.RESEND_API_KEY, from: env.MAIL_FROM }),
+  mailer: createMailer({
+    transport: createGmailTransport({ user: env.SMTP_USER, appPassword: env.SMTP_APP_PASSWORD }),
+    from: env.MAIL_FROM ?? (env.SMTP_USER ? `TFTVN <${env.SMTP_USER}>` : undefined),
+  }),
   riot: createRiotAccountLookup(env.RIOT_API_KEY),
   randomToken,
   hashToken: sha256,

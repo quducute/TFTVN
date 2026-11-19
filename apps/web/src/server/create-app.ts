@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { type AuthRouteOptions, createAuthRoutes } from "./auth/routes";
 import type { AuthService } from "./auth/service";
 
-const REVALIDATABLE_TAG = /^(?:gamedata|snapshot:\d+|roles:\d+)$/;
+const REVALIDATABLE_TAG = /^(?:gamedata|stats|snapshot:\d+|roles:\d+)$/;
 
 export interface AppDependencies {
   revalidateSecret: () => string | undefined;

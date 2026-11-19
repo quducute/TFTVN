@@ -10,5 +10,5 @@ export default getRequestConfig(async ({ locale: explicitLocale }) => {
   if (!hasLocale(routing.locales, candidate)) {
     notFound();
   }
-  return { locale: candidate, messages: getMessagesFor(candidate) };
+  return { locale: candidate, timeZone: "Asia/Ho_Chi_Minh", messages: getMessagesFor(candidate) };
 });

@@ -27,4 +27,11 @@ export const C = {
   damageTrue: "white",
   heal: "limegreen",
   shield: "lightsteelblue",
+  traitBronze: "peru",
+  traitSilver: "silver",
+  traitGold: "gold",
+  traitPrismatic: "violet",
+  placementWin: "gold",
+  placementTop: "limegreen",
+  placementBottom: "darkgray",
 };

@@ -1,11 +1,27 @@
-import axios from "axios";
+import nodemailer from "nodemailer";
 import { getMessagesFor } from "@/i18n/messages";
 import type { Mailer } from "./types";
 
+export interface MailMessage {
+  from: string;
+  to: string;
+  subject: string;
+  text: string;
+}
+
+export interface MailTransport {
+  sendMail(message: MailMessage): Promise<unknown>;
+}
+
 export interface MailerConfig {
-  resendApiKey?: string;
+  transport?: MailTransport;
   from?: string;
   log?: (line: string) => void;
+}
+
+export interface GmailCredentials {
+  user?: string;
+  appPassword?: string;
 }
 
 function messageAt(locale: "vi" | "en", path: string, values: Record<string, string> = {}): string {
@@ -22,21 +38,33 @@ function messageAt(locale: "vi" | "en", path: string, values: Record<string, str
   return node.replace(/\{(\w+)\}/g, (match, name: string) => values[name] ?? match);
 }
 
-export function createMailer({ resendApiKey, from, log = console.info }: MailerConfig): Mailer {
+export function createGmailTransport({
+  user,
+  appPassword,
+}: GmailCredentials): MailTransport | undefined {
+  if (!user || !appPassword) {
+    return undefined;
+  }
+  return nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: { user, pass: appPassword.replace(/\s+/g, "") },
+  });
+}
+
+export function createMailer({ transport, from, log = console.info }: MailerConfig): Mailer {
   return {
     async sendPasswordReset({ to, link, locale }) {
       const subject = messageAt(locale, "auth.email.passwordReset.subject");
       const text = messageAt(locale, "auth.email.passwordReset.body", { link });
 
-      if (!resendApiKey || !from) {
+      if (!transport || !from) {
         log(`[mail] ${to} | ${subject} | ${link}`);
         return;
       }
-      await axios.post(
-        "https://api.resend.com/emails",
-        { from, to, subject, text },
-        { headers: { Authorization: `Bearer ${resendApiKey}` }, timeout: 15_000 },
-      );
+      await transport.sendMail({ from, to, subject, text });
     },
   };
 }

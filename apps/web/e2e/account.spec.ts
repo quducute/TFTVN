@@ -109,7 +109,23 @@ test.describe("account", () => {
     await page.getByLabel("Tên trong game").fill("Quý Đức");
     await page.getByLabel("Tag", { exact: true }).fill("VN2");
     await page.getByRole("button", { name: "Liên kết" }).click();
-    await expect(page.getByText("Đã liên kết Quý Đức#VN2")).toBeVisible();
+
+    let riotId = "Quý Đức#VN2";
+    if (process.env.RIOT_API_KEY) {
+      await expect(page.getByText("Không tìm thấy tài khoản Riot này.")).toBeVisible();
+      await page.goto("/leaderboard");
+      riotId = (await page.getByRole("table").getByRole("link").first().textContent()) ?? "";
+      const separator = riotId.lastIndexOf("#");
+      await page.goto("/profile");
+      await page.getByLabel("Tên trong game").fill(riotId.slice(0, separator));
+      await page.getByLabel("Tag", { exact: true }).fill(riotId.slice(separator + 1));
+      await page.getByRole("button", { name: "Liên kết" }).click();
+    }
+    await expect(page.getByText(`Đã liên kết ${riotId}`)).toBeVisible();
+    await expect(page.getByRole("link", { name: "Xem trang người chơi" })).toHaveAttribute(
+      "href",
+      /^\/players\/[^/]+\/[^/]+$/,
+    );
 
     await page.getByRole("button", { name: "Hủy liên kết" }).click();
     await expect(page.getByText("Chưa liên kết Riot ID.")).toBeVisible();

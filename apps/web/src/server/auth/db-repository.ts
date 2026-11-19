@@ -1,5 +1,6 @@
-import { getDb, rateLimits, userTokens, users } from "@tftvn/db";
-import { and, eq, gt, isNull, ne, or, sql } from "drizzle-orm";
+import { getDb, userTokens, users } from "@tftvn/db";
+import { and, eq, gt, isNull, ne, or } from "drizzle-orm";
+import { hitRateLimit } from "../rate-limit";
 import { type AuthRepository, UniqueViolationError, type UserRecord } from "./types";
 
 const userColumns = {
@@ -125,20 +126,6 @@ export function createDbAuthRepository(): AuthRepository {
         .where(and(eq(userTokens.userId, userId), eq(userTokens.kind, kind)));
     },
 
-    async hitRateLimit(bucket, windowSeconds) {
-      const [row] = await db()
-        .insert(rateLimits)
-        .values({
-          bucket,
-          windowStart: sql`to_timestamp(floor(extract(epoch from now()) / ${windowSeconds}) * ${windowSeconds})`,
-          hits: 1,
-        })
-        .onConflictDoUpdate({
-          target: [rateLimits.bucket, rateLimits.windowStart],
-          set: { hits: sql`${rateLimits.hits} + 1` },
-        })
-        .returning({ hits: rateLimits.hits });
-      return row?.hits ?? 1;
-    },
+    hitRateLimit,
   };
 }

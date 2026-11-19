@@ -11,7 +11,7 @@ if (existsSync(rootEnvFile)) {
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
-  transpilePackages: ["@tftvn/db", "@tftvn/core"],
+  transpilePackages: ["@tftvn/db", "@tftvn/core", "@tftvn/riot"],
   images: {
     remotePatterns: [{ protocol: "https", hostname: "raw.communitydragon.org" }],
   },

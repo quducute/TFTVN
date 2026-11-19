@@ -37,7 +37,7 @@
   Trình duyệt --> Vercel (một project Next.js)
                   |- Trang (Server Components): đọc thẳng DB, cache ISR theo tag
                   `- /api/* (Hono): auth, bài viết, đội hình, bookmark, meta, player, leaderboard
-                       `--> Neon Postgres, Riot API, Resend
+                       `--> Neon Postgres, Riot API, Gmail SMTP
 ```
 
 | Thành phần           | Bản đồ án                            | Bản mới                                                              |
@@ -52,7 +52,7 @@
 | Cache API            | Caffeine (RAM)                       | Bảng UNLOGGED trong Postgres                                         |
 | Lưu file gốc CDragon | Không có                             | GitHub Release asset theo từng patch                                 |
 | Chatbot AI           | FastAPI + ChromaDB + Groq            | **Bỏ**                                                               |
-| Email                | Gmail SMTP                           | Resend (dev: in link ra terminal)                                    |
+| Email                | Gmail SMTP                           | Gmail SMTP qua `nodemailer` (dev: in link ra terminal)               |
 | Auth                 | JWT 7 ngày trong localStorage        | Access token ngắn hạn + refresh token xoay vòng, **cookie httpOnly** |
 | XSS                  | DOMPurify phía client                | `sanitize-html` khi lưu + DOMPurify khi render + CSP header          |
 | Schema               | `ddl-auto=update`                    | SQL migration có version + `drizzle-kit pull` sinh type              |
@@ -82,7 +82,7 @@ tftvn/
 **Package gợi ý**
 
 - **web (giao diện)**: `next`, `react`, `tailwindcss`, `@tailwindcss/postcss`, `clsx`, `tailwind-merge`, `axios`, `@tanstack/react-query` (cho phần tương tác phía client), `@tiptap/react`, `dompurify`, `lucide-react`, `next-intl`.
-- **web (server)**: `hono`, `zod`, `@hono/zod-validator`, `jose` (JWT), `@node-rs/argon2`, `sanitize-html`, `resend`, `axios`, `drizzle-orm`, `@neondatabase/serverless`.
+- **web (server)**: `hono`, `zod`, `@hono/zod-validator`, `jose` (JWT), `@node-rs/argon2`, `sanitize-html`, `nodemailer`, `axios`, `drizzle-orm`, `@neondatabase/serverless`.
 - **etl**: `axios`, `bottleneck` (rate limiter Riot).
 - **dev**: `typescript`, `@playwright/test`, `drizzle-kit`, `eslint`, `eslint-config-next`, `typescript-eslint`, `prettier`, `prettier-plugin-tailwindcss`.
 
@@ -218,9 +218,9 @@ tftvn/
 
 ### 4.2 `sync-matches` (vài giờ một lần)
 
-- Lấy Challenger / Grandmaster / Master, chỉ tải match chưa có.
-- `bottleneck` giới hạn theo hai ngưỡng 20 req/s và 100 req/2 phút; gặp 429 thì đọc `Retry-After`.
-- Lọc theo `tft_set_number`, `game_version`, queue ranked. Insert + cộng dồn `entity_stats` và `stat_totals` trong một transaction.
+- Lấy Challenger / Grandmaster / Master (máy chủ `vn2`), mỗi bậc top `--players` người theo LP (mặc định 10), mỗi người `--matches` trận gần nhất (mặc định 10). Một trận thuộc bậc đầu tiên thấy nó. Chỉ tải match chưa có trong `matches`.
+- Client Riot riêng (`packages/riot`, axios): bộ giới hạn tự viết theo hai cửa sổ 20 req/1 giây và 100 req/2 phút (đúng dev key); gặp 429 thì chờ `Retry-After`, 5xx thì thử lại tối đa 3 lần. Không cần `bottleneck`.
+- Lọc queue ranked `1100` và `tft_set_number` của Set hiện tại. `game_version` bị Riot che ("TFT Unreal Version ?.?.?.?") nên patch của trận suy ra từ `patches.released_at` so với thời điểm chơi (`patchForMatch`). Insert + cộng dồn `entity_stats` và `stat_totals` trong một transaction; chạy lại không đếm trùng (đã kiểm: lần 2 lưu 0 trận).
 - Xong thì gọi `POST /api/revalidate` với tag `stats`.
 - **Bắt buộc**: xin Riot Personal hoặc Production API key (dev key hết hạn sau 24 giờ).
 
@@ -230,7 +230,7 @@ tftvn/
 
 ### 4.4 Nơi chạy ETL
 
-- **GitHub Actions cron** (`etl.yml`): job lâu, gọi Riot nhiều, nên tránh giới hạn thời gian của Vercel Function. Có `workflow_dispatch` để admin chạy tay.
+- **GitHub Actions cron**: `etl.yml` (sync-gamedata, 03:17 hằng ngày) và `matches.yml` (sync-matches, 6 giờ một lần, phút 41). Job lâu, gọi Riot nhiều, nên tránh giới hạn thời gian của Vercel Function. Có `workflow_dispatch` để admin chạy tay.
 - Vercel Cron chỉ dùng cho việc nhẹ (health check) nếu cần.
 
 ---
@@ -316,6 +316,10 @@ tftvn/
 
 ### 6.3 Tính năng chính
 
+- Tra cứu người chơi `/players` -> `/players/[gameName]/[tagLine]`: rank mọi chế độ, 5 trận gần nhất (tộc hệ tô màu theo mốc, tướng viền theo giá + sao + trang bị, cả sảnh 8 người trong `<details>`). Gọi Riot qua `riot_cache` (account 1 giờ, rank và match ids 5 phút, match 7 ngày), giới hạn 30 lượt/phút/IP qua `rate_limits`. Dấu `.` trong tên được mã hóa thành `%2E` và `proxy.ts` chỉ bỏ qua đuôi file tĩnh, để tên có dấu chấm vẫn qua i18n.
+- Bảng xếp hạng `/leaderboard?page=N`: Thách Đấu VN sắp theo LP, 20 người/trang, tên lấy từ `account-v1` (cache 1 ngày).
+- Thống kê `/stats/[tier]/[section]` (`/stats` chuyển tới `challenger/champions`): 3 bậc x 3 mục, bảng sắp xếp ở client. Tướng kèm 3 trang bị hay dùng nhất (từ dòng item có variant là tướng), trang bị kèm 3 tướng hay cầm, tộc hệ kèm mốc. Cảnh báo khi mẫu dưới 100 trận.
+
 - Composition builder (Client Component): mã team planner đọc tiền tố/hậu tố và bảng code **theo Set** (`02` + 30 hex + `TFTSet<N>`).
 - Editor bài viết: TipTap, render qua DOMPurify.
 
@@ -333,7 +337,7 @@ tftvn/
   - Axios client gặp 401 thì tự gọi `/api/auth/refresh` một lần rồi thử lại (`src/lib/api-client.ts`).
 - **CSRF**: mọi request ghi tới `/api/auth/*` và `/api/users/*` phải có header `Origin` trùng origin của site (hoặc nằm trong `APP_ORIGINS`), nếu không trả 403 `forbiddenOrigin`. Kết hợp `SameSite=Lax` nên không cần double-submit token.
 - **Mật khẩu**: argon2id (`@node-rs/argon2`). Đăng nhập sai tên hay sai mật khẩu đều trả cùng một lỗi `invalidCredentials`; user không tồn tại vẫn chạy `verify` với một hash giả để thời gian phản hồi giống nhau.
-- **Quên mật khẩu**: luôn trả 200 (không lộ email nào đã đăng ký). Mã đặt lại là chuỗi ngẫu nhiên, lưu SHA-256, hiệu lực 30 phút, dùng một lần; yêu cầu mã mới thì mã cũ bị xóa; đặt lại xong thì thu hồi mọi phiên đăng nhập. Email gửi theo ngôn ngữ đang dùng, qua Resend (gọi bằng axios); không có `RESEND_API_KEY` thì in link ra terminal.
+- **Quên mật khẩu**: luôn trả 200 (không lộ email nào đã đăng ký). Mã đặt lại là chuỗi ngẫu nhiên, lưu SHA-256, hiệu lực 30 phút, dùng một lần; yêu cầu mã mới thì mã cũ bị xóa; đặt lại xong thì thu hồi mọi phiên đăng nhập. Email gửi theo ngôn ngữ đang dùng, qua **Gmail SMTP** (`smtp.gmail.com:587`, STARTTLS, `nodemailer`) bằng app password; thiếu `SMTP_USER` / `SMTP_APP_PASSWORD` thì in link ra terminal. Không cần domain riêng; giới hạn của Gmail khoảng 500 email/ngày.
 - **Profile**: đổi username / email (kiểm tra trùng, không phân biệt hoa thường nhờ `citext`); đổi mật khẩu cần mật khẩu hiện tại và đăng xuất các thiết bị khác, giữ phiên hiện tại.
 - **Riot ID**: kiểm tra định dạng (tên 3-16 ký tự, tag 3-5 chữ/số). Có `RIOT_API_KEY` thì tra `account-v1` (cụm `asia`) để lấy PUUID; chưa có key thì lưu dạng "chưa xác minh".
 - **Rate limit** (bảng `rate_limits`, theo IP): đăng ký 5 lần/giờ, đăng nhập 20 lần/5 phút, quên mật khẩu 5 lần/giờ. Tra cứu người chơi thêm ở P4.
@@ -341,24 +345,24 @@ tftvn/
 - **Chưa làm**: xác thực email (`email_verify` đã có trong enum), "nhớ đăng nhập", đăng nhập bằng Google / Riot.
 - HTML bài viết: `sanitize-html` khi lưu + DOMPurify khi render (P5).
 - **CSP và các security header** đặt trong `next.config` (`headers()`) (P6).
-- Secret trong Vercel Environment Variables (tách Preview và Production) và GitHub Actions secrets. Biến mới ở P3: `JWT_SECRET` (ít nhất 32 ký tự), `RESEND_API_KEY`, `MAIL_FROM`, `APP_ORIGINS`.
+- Secret trong Vercel Environment Variables (tách Preview và Production) và GitHub Actions secrets. Biến mới ở P3: `JWT_SECRET` (ít nhất 32 ký tự), `SMTP_USER`, `SMTP_APP_PASSWORD`, `MAIL_FROM` (mặc định `TFTVN <SMTP_USER>`), `APP_ORIGINS`.
 
 ---
 
 ## 8. Deploy
 
 - **Một project Vercel** cho `apps/web` (Next.js, có cả API). Không có runtime beta nào.
-- Dịch vụ ngoài: Neon (Postgres, qua Vercel Marketplace), Resend (email), Riot API key. Không cần Redis, không cần Blob.
+- Dịch vụ ngoài: Neon (Postgres, qua Vercel Marketplace), Gmail SMTP (email), Riot API key. Không cần Redis, không cần Blob.
 - Preview deployment cho mỗi PR, dùng Neon branch database riêng.
 - Domain: dùng `*.vercel.app` hay domain riêng đều được (không ảnh hưởng auth vì FE và API cùng domain).
 
 ### Biến môi trường dự kiến
 
-| Nơi                         | Biến                                                                                                                           |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Vercel                      | `DATABASE_URL`, `JWT_SECRET`, `RIOT_API_KEY`, `RESEND_API_KEY`, `REVALIDATE_SECRET`                                            |
-| GitHub Actions (etl)        | `DATABASE_URL_DIRECT`, `RIOT_API_KEY`, `REVALIDATE_URL`, `REVALIDATE_SECRET`, `GITHUB_TOKEN` (tự có, để đính file vào Release) |
-| Local `apps/web/.env.local` | `DATABASE_URL`, `JWT_SECRET`, `RIOT_API_KEY`, `MAIL_MODE=log`, `REVALIDATE_SECRET`                                             |
+| Nơi                           | Biến                                                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Vercel                        | `DATABASE_URL`, `JWT_SECRET`, `RIOT_API_KEY`, `SMTP_USER`, `SMTP_APP_PASSWORD`, `REVALIDATE_SECRET`                            |
+| GitHub Actions (etl, matches) | `DATABASE_URL_DIRECT`, `RIOT_API_KEY`, `REVALIDATE_URL`, `REVALIDATE_SECRET`, `GITHUB_TOKEN` (tự có, để đính file vào Release) |
+| Local `.env.local` ở gốc repo | Như `.env.example`; thiếu `SMTP_*` thì mail chỉ in ra log                                                                      |
 
 ---
 

@@ -6,7 +6,10 @@
   "nav": {
     "language": "Language",
     "home": "Home",
-    "library": "Library"
+    "library": "Library",
+    "players": "Players",
+    "leaderboard": "Leaderboard",
+    "stats": "Stats"
   },
   "home": {
     "heading": "Teamfight Tactics Assistant",
@@ -165,7 +168,8 @@
       "linked": "Linked {riotId}",
       "unverified": "Not verified with Riot because the server has no Riot API key yet.",
       "notLinked": "No Riot ID linked.",
-      "admin": "Administrator"
+      "admin": "Administrator",
+      "viewPlayer": "View player page"
     },
     "submitting": "Working...",
     "errors": {
@@ -197,5 +201,93 @@
         "body": "Hello,\n\nYou (or someone else) asked to reset the password of your TFTVN account. Open this link within 30 minutes to choose a new password:\n\n{link}\n\nIf this was not you, ignore this email."
       }
     }
+  },
+  "riot": {
+    "tiers": {
+      "CHALLENGER": "Challenger",
+      "GRANDMASTER": "Grandmaster",
+      "MASTER": "Master",
+      "DIAMOND": "Diamond",
+      "EMERALD": "Emerald",
+      "PLATINUM": "Platinum",
+      "GOLD": "Gold",
+      "SILVER": "Silver",
+      "BRONZE": "Bronze",
+      "IRON": "Iron"
+    },
+    "queues": {
+      "NORMAL_TFT": "Normal",
+      "RANKED_TFT": "Ranked",
+      "RANKED_TFT_TURBO": "Hyper Roll",
+      "RANKED_TFT_DOUBLE_UP": "Double Up",
+      "other": "Other mode"
+    },
+    "errors": {
+      "notFound": "This player was not found on the VN server.",
+      "rateLimited": "Riot is rate limiting requests, try again in a few minutes.",
+      "unauthorized": "The server has no valid Riot API key.",
+      "unavailable": "Cannot reach Riot right now, try again later.",
+      "tooManyLookups": "Too many lookups, try again in a few minutes."
+    }
+  },
+  "players": {
+    "title": "Player lookup",
+    "description": "Enter a Riot ID as Name#Tag to see rank and recent matches (VN server).",
+    "placeholder": "For example: Name#VN2",
+    "search": "Search",
+    "invalid": "Enter a Riot ID as Name#Tag.",
+    "level": "Level {level}",
+    "ranks": "Ranked",
+    "unranked": "Not ranked in any mode.",
+    "record": "{wins} wins / {losses} losses",
+    "lp": "{lp} LP",
+    "recent": "Recent matches",
+    "noMatches": "No recent matches.",
+    "placement": "Place {placement}",
+    "duration": "{minutes} min",
+    "playerLevel": "Level {level}",
+    "lobby": "Show all 8 players",
+    "viewProfile": "View profile"
+  },
+  "leaderboard": {
+    "title": "Challenger leaderboard",
+    "description": "Top Challenger players on the VN server, refreshed every 5 minutes.",
+    "rank": "#",
+    "player": "Player",
+    "lp": "LP",
+    "wins": "Wins",
+    "losses": "Losses",
+    "hotStreak": "On a hot streak",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page}/{pages}",
+    "unknownName": "Unknown name"
+  },
+  "stats": {
+    "title": "Statistics",
+    "description": "Data from {matches} recent ranked matches of top {tier} players on the VN server.",
+    "updated": "Updated {time}",
+    "noData": "No statistics for this tier yet.",
+    "smallSample": "Small sample, treat the numbers as a rough guide.",
+    "tiers": {
+      "challenger": "Challenger",
+      "grandmaster": "Grandmaster",
+      "master": "Master"
+    },
+    "sections": {
+      "champions": "Champions",
+      "traits": "Traits",
+      "items": "Items"
+    },
+    "columns": {
+      "name": "Name",
+      "games": "Games",
+      "pickRate": "Pick rate",
+      "averagePlacement": "Avg place",
+      "top4Rate": "Top 4",
+      "top1Rate": "Top 1",
+      "variants": "Most common"
+    },
+    "variantLevel": "Level {level}"
   }
 }

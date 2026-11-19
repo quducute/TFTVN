@@ -9,11 +9,11 @@ import {
   parseSet,
 } from "@tftvn/core";
 import { createNodeDb } from "@tftvn/db/node";
-import axios from "axios";
 import { archiveToGithubRelease } from "./archive";
 import { downloadCDragon } from "./cdragon-client";
-import { optionalEnv, requireEnv } from "./env";
+import { requireEnv } from "./env";
 import { trackEtlRun } from "./etl-run";
+import { revalidate } from "./revalidate";
 import { readCurrentSetOverride, setSnapshotArchive, storeParsedSet } from "./store";
 
 const { values: args } = parseArgs({
@@ -47,20 +47,6 @@ function summarize(parsed: ParsedSet) {
     ),
     ...(args.verbose ? { missingPlaceholders: missing } : {}),
   };
-}
-
-async function revalidate(tag: string): Promise<boolean> {
-  const url = optionalEnv("REVALIDATE_URL");
-  const secret = optionalEnv("REVALIDATE_SECRET");
-  if (!url || !secret) {
-    return false;
-  }
-  await axios.post(
-    url,
-    { tag },
-    { headers: { Authorization: `Bearer ${secret}` }, timeout: 30_000 },
-  );
-  return true;
 }
 
 async function main() {

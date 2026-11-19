@@ -9,5 +9,6 @@ export * from "./cdragon/fnv";
 export * from "./cdragon/hash-resolver";
 export * from "./cdragon/parse";
 export * from "./cdragon/roles";
+export * from "./stats/aggregate";
 export type * from "./cdragon/types";
 export { default as hashOverrides } from "./hash-overrides.json" with { type: "json" };
