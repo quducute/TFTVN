@@ -4,6 +4,7 @@ import {
   renderDescription,
   renderTraitDescription,
 } from "./description";
+import { augmentTier, itemCategory } from "./classify";
 import { findMainSet } from "./detect-set";
 import type { HashResolver } from "./hash-resolver";
 import { collectRoleApiNames } from "./roles";
@@ -197,6 +198,15 @@ export function parseSet({ sources, teamPlanner, setNumber, resolver }: ParseInp
         unique: item.unique ?? false,
         associatedTraits: item.associatedTraits ?? [],
         incompatibleTraits: item.incompatibleTraits ?? [],
+        ...(kind === "item"
+          ? {
+              category: itemCategory({
+                apiName: item.apiName,
+                composition: item.composition ?? [],
+                tags: item.tags ?? [],
+              }),
+            }
+          : { tier: augmentTier(item.icon) }),
       },
       cost: null,
       traits: null,

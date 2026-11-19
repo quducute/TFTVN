@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { expect, test } from "@playwright/test";
 import { detectCurrentSet, mainSets } from "./detect-set";
-import en from "./fixtures/en_us.json";
-import teamPlanner from "./fixtures/teamplanner.json";
-import vi from "./fixtures/vi_vn.json";
+import en from "./fixtures/en_us.json" with { type: "json" };
+import teamPlanner from "./fixtures/teamplanner.json" with { type: "json" };
+import vi from "./fixtures/vi_vn.json" with { type: "json" };
 import { HashResolver, collectVocabulary } from "./hash-resolver";
 import { type ParsedSet, parseSet } from "./parse";
 import type { RawGameData } from "./types";
@@ -18,25 +18,25 @@ const entity = (parsed: ParsedSet, apiName: string) => {
   return found;
 };
 
-describe("detectCurrentSet", () => {
-  it("only keeps main mutators", () => {
+test.describe("detectCurrentSet", () => {
+  test("only keeps main mutators", () => {
     expect(mainSets(sources.vi).map((set) => set.mutator)).toEqual(["TFTSet17", "TFTSet18"]);
   });
 
-  it("picks the highest main set", () => {
+  test("picks the highest main set", () => {
     expect(detectCurrentSet(sources.vi).number).toBe(18);
   });
 
-  it("respects an admin override", () => {
+  test("respects an admin override", () => {
     expect(detectCurrentSet(sources.vi, 17).number).toBe(17);
     expect(() => detectCurrentSet(sources.vi, 99)).toThrow();
   });
 });
 
-describe("parseSet on Set 18", () => {
+test.describe("parseSet on Set 18", () => {
   const parsed = parse(18);
 
-  it("keeps only playable champions from the team planner", () => {
+  test("keeps only playable champions from the team planner", () => {
     const champions = parsed.entities.filter((candidate) => candidate.kind === "champion");
     expect(champions.map((champion) => champion.apiName).sort()).toEqual([
       "DA_Gromp18_AP",
@@ -44,41 +44,41 @@ describe("parseSet on Set 18", () => {
     ]);
   });
 
-  it("maps champion traits to api names and encodes the planner code", () => {
+  test("maps champion traits to api names and encodes the planner code", () => {
     const gromp = entity(parsed, "DA_Gromp18_AP");
     expect(gromp.traits).toEqual(["DA_Riftbeast18", "DA_18_Adaptor"]);
     expect(gromp.plannerCode).toBe("402");
     expect(gromp.i18n.en.name).toBe("Gromp");
   });
 
-  it("fills row breakpoints of traits", () => {
+  test("fills row breakpoints of traits", () => {
     const elderwood = entity(parsed, "DA_18_Elderwood");
     expect(elderwood.i18n.vi.description).toContain("<row>(3)");
     expect(elderwood.i18n.vi.description).not.toContain("@");
   });
 
-  it("fills augment placeholders through hashed keys", () => {
+  test("fills augment placeholders through hashed keys", () => {
     const augment = parsed.entities.find((candidate) => candidate.kind === "augment");
     expect(augment?.i18n.vi.description).not.toMatch(/@|\?/);
   });
 
-  it("reports no missing placeholders outside champion abilities", () => {
+  test("reports no missing placeholders outside champion abilities", () => {
     const missing = parsed.report.missingPlaceholders.filter((entry) => entry.kind !== "champion");
     expect(missing).toEqual([]);
   });
 });
 
-describe("parseSet on Set 17", () => {
+test.describe("parseSet on Set 17", () => {
   const parsed = parse(17);
 
-  it("expands expandRow breakpoints", () => {
+  test("expands expandRow breakpoints", () => {
     const description = entity(parsed, "TFT17_Stargazer_Wolf").i18n.vi.description;
     expect(description).toContain("<row>(3)");
     expect(description).toContain("<row>(5)");
     expect(description).not.toContain("<expandRow>");
   });
 
-  it("keeps item recipes and fills item values", () => {
+  test("keeps item recipes and fills item values", () => {
     const emblem = entity(parsed, "TFT17_Item_ASTraitEmblemItem");
     expect(emblem.kind).toBe("item");
     expect(emblem.data.composition).toEqual(["TFT_Item_FryingPan", "TFT_Item_RecurveBow"]);
@@ -86,7 +86,7 @@ describe("parseSet on Set 17", () => {
     expect(emblem.i18n.vi.description).toContain("5%");
   });
 
-  it("fills augment text even when unused keys stay hashed", () => {
+  test("fills augment text even when unused keys stay hashed", () => {
     const augment = entity(parsed, "TFT10_Augment_LittleBuddies");
     expect(augment.kind).toBe("augment");
     expect(augment.i18n.vi.description).toContain("65 Máu");
@@ -94,7 +94,7 @@ describe("parseSet on Set 17", () => {
     expect(parsed.report.unresolvedHashes).toBeGreaterThan(0);
   });
 
-  it("collects roles from playable champions", () => {
+  test("collects roles from playable champions", () => {
     const roles = parsed.entities.filter((candidate) => candidate.kind === "role");
     expect(roles.length).toBeGreaterThan(0);
   });

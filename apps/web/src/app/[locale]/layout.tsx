@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
-import { notFound } from "next/navigation";
-import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { currentLocale } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { libraryPath } from "@/lib/library-paths";
 import "../globals.css";
 
 const font = Be_Vietnam_Pro({
@@ -17,18 +20,14 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "meta" });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
   return { title: t("title"), description: t("description") };
 }
 
-export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
-  const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
-  setRequestLocale(locale);
+export default async function LocaleLayout({ children }: Readonly<{ children: ReactNode }>) {
+  const locale = await currentLocale();
+  const t = await getTranslations("nav");
 
   return (
     <html lang={locale}>
@@ -36,9 +35,16 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         <NextIntlClientProvider>
           <header className="border-b border-line/10">
             <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-              <span className="text-lg font-bold tracking-tight">
-                TFT<span className="text-primary">VN</span>
-              </span>
+              <div className="flex items-center gap-6">
+                <Link href="/" className="text-lg font-bold tracking-tight">
+                  TFT<span className="text-primary">VN</span>
+                </Link>
+                <nav className="flex gap-4 text-sm">
+                  <Link href={libraryPath.root()} className="text-muted hover:text-primary">
+                    {t("library")}
+                  </Link>
+                </nav>
+              </div>
               <LanguageSwitcher />
             </div>
           </header>

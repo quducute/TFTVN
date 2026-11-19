@@ -4,7 +4,9 @@
     "description": "Teamfight Tactics library, statistics, comps and community for Vietnamese players"
   },
   "nav": {
-    "language": "Language"
+    "language": "Language",
+    "home": "Home",
+    "library": "Library"
   },
   "home": {
     "heading": "Teamfight Tactics Assistant",
@@ -16,6 +18,94 @@
     "noSet": "No Set data yet",
     "ok": "Online",
     "error": "Error",
-    "checking": "Checking..."
+    "checking": "Checking...",
+    "openLibrary": "Open library"
+  },
+  "library": {
+    "title": "Library",
+    "setLabel": "Set {set}",
+    "currentSet": "Current",
+    "patch": "Patch {patch}",
+    "empty": "No library data yet. Run the ETL to load it.",
+    "notFound": "Data not found",
+    "sections": {
+      "champions": "Champions",
+      "traits": "Traits",
+      "items": "Items",
+      "augments": "Augments",
+      "roles": "Roles"
+    },
+    "hub": {
+      "description": "Browse all data of Set {set}.",
+      "count": "{count} entries"
+    },
+    "champions": {
+      "cost": "{cost} gold",
+      "traits": "Traits",
+      "role": "Role",
+      "noRole": "Not assigned",
+      "stats": "Base stats",
+      "ability": "Ability",
+      "variables": "Ability values",
+      "star": "{star}-star",
+      "unknownValue": "A ? is a value computed in game; the source data does not include it."
+    },
+    "stats": {
+      "hp": "Health",
+      "mana": "Mana",
+      "initialMana": "Starting mana",
+      "damage": "Attack damage",
+      "attackSpeed": "Attack speed",
+      "armor": "Armor",
+      "magicResist": "Magic resist",
+      "critChance": "Crit chance",
+      "range": "Range"
+    },
+    "traits": {
+      "champions": "Champions with this trait",
+      "breakpoints": "Breakpoints"
+    },
+    "items": {
+      "recipe": "Recipe",
+      "showOther": "Show {count} other items",
+      "categories": {
+        "component": "Components",
+        "completed": "Completed items",
+        "emblem": "Emblems",
+        "radiant": "Radiant",
+        "artifact": "Artifacts",
+        "support": "Support",
+        "consumable": "Consumables",
+        "other": "Other"
+      }
+    },
+    "augments": {
+      "tiers": {
+        "1": "Silver",
+        "2": "Gold",
+        "3": "Prismatic",
+        "unknown": "Unknown tier"
+      }
+    },
+    "roles": {
+      "champions": "Champions",
+      "recommendedItems": "Recommended items",
+      "noItems": "An admin has not set recommended items for this role yet.",
+      "noChampions": "No champion has this role yet.",
+      "names": {
+        "ADCarry": "AD Carry",
+        "ADCaster": "AD Caster",
+        "ADFighter": "AD Fighter",
+        "ADReaper": "AD Reaper",
+        "ADSpecialist": "AD Specialist",
+        "ADTank": "AD Tank",
+        "APCarry": "AP Carry",
+        "APCaster": "AP Caster",
+        "APFighter": "AP Fighter",
+        "APReaper": "AP Reaper",
+        "APTank": "AP Tank",
+        "HFighter": "Hybrid Fighter"
+      }
+    }
   }
 }

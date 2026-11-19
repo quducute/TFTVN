@@ -4,7 +4,9 @@
     "description": "Thư viện, thống kê, đội hình và cộng đồng Đấu Trường Chân Lý cho người chơi Việt Nam"
   },
   "nav": {
-    "language": "Ngôn ngữ"
+    "language": "Ngôn ngữ",
+    "home": "Trang chủ",
+    "library": "Thư viện"
   },
   "home": {
     "heading": "Trợ thủ Đấu Trường Chân Lý",
@@ -16,6 +18,94 @@
     "noSet": "Chưa có dữ liệu Set",
     "ok": "Hoạt động",
     "error": "Lỗi",
-    "checking": "Đang kiểm tra..."
+    "checking": "Đang kiểm tra...",
+    "openLibrary": "Mở thư viện"
+  },
+  "library": {
+    "title": "Thư viện",
+    "setLabel": "Set {set}",
+    "currentSet": "Hiện tại",
+    "patch": "Bản {patch}",
+    "empty": "Chưa có dữ liệu thư viện. Hãy chạy ETL để nạp dữ liệu.",
+    "notFound": "Không tìm thấy dữ liệu",
+    "sections": {
+      "champions": "Tướng",
+      "traits": "Tộc / Hệ",
+      "items": "Trang bị",
+      "augments": "Lõi nâng cấp",
+      "roles": "Vai trò"
+    },
+    "hub": {
+      "description": "Tra cứu toàn bộ dữ liệu của Set {set}.",
+      "count": "{count} mục"
+    },
+    "champions": {
+      "cost": "{cost} vàng",
+      "traits": "Tộc / Hệ",
+      "role": "Vai trò",
+      "noRole": "Chưa gán",
+      "stats": "Chỉ số cơ bản",
+      "ability": "Kỹ năng",
+      "variables": "Chỉ số kỹ năng",
+      "star": "{star} sao",
+      "unknownValue": "Dấu ? là giá trị được tính khi vào trận, dữ liệu gốc không có sẵn."
+    },
+    "stats": {
+      "hp": "Máu",
+      "mana": "Năng lượng",
+      "initialMana": "Năng lượng khởi đầu",
+      "damage": "Sát thương",
+      "attackSpeed": "Tốc độ đánh",
+      "armor": "Giáp",
+      "magicResist": "Kháng phép",
+      "critChance": "Tỉ lệ chí mạng",
+      "range": "Tầm đánh"
+    },
+    "traits": {
+      "champions": "Tướng thuộc tộc / hệ này",
+      "breakpoints": "Mốc kích hoạt"
+    },
+    "items": {
+      "recipe": "Công thức",
+      "showOther": "Xem thêm {count} trang bị khác",
+      "categories": {
+        "component": "Thành phần",
+        "completed": "Trang bị ghép",
+        "emblem": "Ấn",
+        "radiant": "Ánh sáng",
+        "artifact": "Tạo tác",
+        "support": "Hỗ trợ",
+        "consumable": "Tiêu hao",
+        "other": "Khác"
+      }
+    },
+    "augments": {
+      "tiers": {
+        "1": "Bạc",
+        "2": "Vàng",
+        "3": "Lăng kính",
+        "unknown": "Chưa rõ cấp"
+      }
+    },
+    "roles": {
+      "champions": "Tướng",
+      "recommendedItems": "Trang bị gợi ý",
+      "noItems": "Admin chưa cấu hình trang bị gợi ý cho vai trò này.",
+      "noChampions": "Chưa có tướng nào được gán vai trò này.",
+      "names": {
+        "ADCarry": "Chủ Lực Vật Lý",
+        "ADCaster": "Pháp Sư Vật Lý",
+        "ADFighter": "Đấu Sĩ Vật Lý",
+        "ADReaper": "Sát Thủ Vật Lý",
+        "ADSpecialist": "Chuyên Gia Vật Lý",
+        "ADTank": "Đỡ Đòn Vật Lý",
+        "APCarry": "Chủ Lực Phép",
+        "APCaster": "Pháp Sư Phép",
+        "APFighter": "Đấu Sĩ Phép",
+        "APReaper": "Sát Thủ Phép",
+        "APTank": "Đỡ Đòn Phép",
+        "HFighter": "Đấu Sĩ Lai"
+      }
+    }
   }
 }

@@ -19,4 +19,12 @@ export const C = {
   tierB: "gold",
   tierC: "limegreen",
   tierX: "deepskyblue",
+  augment1: "silver",
+  augment2: "gold",
+  augment3: "violet",
+  damageMagic: "deepskyblue",
+  damagePhysical: "orange",
+  damageTrue: "white",
+  heal: "limegreen",
+  shield: "lightsteelblue",
 };

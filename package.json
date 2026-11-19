@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "pnpm --filter @tftvn/web dev",
     "build": "pnpm --filter @tftvn/web build",
-    "test": "pnpm -r --if-present test",
+    "test": "playwright test",
     "typecheck": "pnpm -r --if-present typecheck",
     "db:check": "pnpm --filter @tftvn/db check",
     "db:migrate": "pnpm --filter @tftvn/db migrate",
@@ -13,10 +13,13 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "etl": "pnpm --filter @tftvn/etl run"
+    "etl": "pnpm --filter @tftvn/etl run",
+    "e2e": "playwright test -c playwright.e2e.config.ts",
+    "e2e:install": "playwright install chromium"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.65.1",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.14.0",

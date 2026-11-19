@@ -23,7 +23,7 @@
 4. **Song ngữ Việt - Anh, tiếng Việt là chính**: không viết cứng chữ giao diện trong component (chi tiết ở mục 6.1).
 5. **Gọi HTTP bằng axios**: client gọi `/api/*` qua instance `api` (`src/lib/api-client.ts`); server / ETL gọi Riot API và CommunityDragon cũng bằng axios. Server Component đọc DB trực tiếp, không gọi HTTP.
 6. **Package luôn cài bản mới nhất** (`pnpm add <pkg>@latest`).
-7. **Tự kiểm tra bằng tool**: ESLint có hai rule nội bộ `tftvn/no-comments` và `tftvn/css-named-colors` (file `eslint.shared.mjs`); Vitest kiểm tra mọi giá trị trong `colors.js` là tên màu CSS và hai file ngôn ngữ có cùng bộ key. Tailwind tắt bảng màu mặc định (`--color-*: initial`), chỉ còn token trong `colors.js`.
+7. **Tự kiểm tra bằng tool**: ESLint có hai rule nội bộ `tftvn/no-comments` và `tftvn/css-named-colors` (file `eslint.shared.mjs`); Unit test (Playwright) kiểm tra mọi giá trị trong `colors.js` là tên màu CSS và hai file ngôn ngữ có cùng bộ key. Tailwind tắt bảng màu mặc định (`--color-*: initial`), chỉ còn token trong `colors.js`.
 
 ---
 
@@ -56,7 +56,7 @@
 | Auth                 | JWT 7 ngày trong localStorage        | Access token ngắn hạn + refresh token xoay vòng, **cookie httpOnly** |
 | XSS                  | DOMPurify phía client                | `sanitize-html` khi lưu + DOMPurify khi render + CSP header          |
 | Schema               | `ddl-auto=update`                    | SQL migration có version + `drizzle-kit pull` sinh type              |
-| Test                 | Thủ công                             | **Vitest** + Playwright trong CI                                     |
+| Test                 | Thủ công                             | **Playwright** (unit + e2e)                                          |
 
 ---
 
@@ -84,9 +84,9 @@ tftvn/
 - **web (giao diện)**: `next`, `react`, `tailwindcss`, `@tailwindcss/postcss`, `clsx`, `tailwind-merge`, `axios`, `@tanstack/react-query` (cho phần tương tác phía client), `@tiptap/react`, `dompurify`, `lucide-react`, `next-intl`.
 - **web (server)**: `hono`, `zod`, `@hono/zod-validator`, `jose` (JWT), `@node-rs/argon2`, `sanitize-html`, `resend`, `axios`, `drizzle-orm`, `@neondatabase/serverless`.
 - **etl**: `axios`, `bottleneck` (rate limiter Riot).
-- **dev**: `typescript`, `vitest`, `@vitejs/plugin-react`, `@testing-library/react`, `@playwright/test`, `drizzle-kit`, `eslint`, `eslint-config-next`, `typescript-eslint`, `prettier`, `prettier-plugin-tailwindcss`.
+- **dev**: `typescript`, `@playwright/test`, `drizzle-kit`, `eslint`, `eslint-config-next`, `typescript-eslint`, `prettier`, `prettier-plugin-tailwindcss`.
 
-**Phiên bản đang dùng (P0, cài bằng `@latest`)**: Next 16.4.6, React 19.3.1, next-intl 4.15.1, Hono 4.13.19, axios 1.21.1, Tailwind 4.3.5, Vitest 5.1.0, ESLint 10.15.0, Prettier 3.10.1, drizzle-orm 0.45.4, drizzle-kit 0.31.11, tsx 4.23.15, TypeScript 6.0.3.
+**Phiên bản đang dùng (P0, cài bằng `@latest`)**: Next 16.4.6, React 19.3.1, next-intl 4.15.1, Hono 4.13.19, axios 1.21.1, Tailwind 4.3.5, Playwright 1.65.1, ESLint 10.15.0, Prettier 3.10.1, drizzle-orm 0.45.4, drizzle-kit 0.31.11, tsx 4.23.15, TypeScript 6.0.3.
 
 **Chỉ dùng một bản TypeScript (6.0.3), khai báo một lần ở `package.json` root**. Các package con tìm thấy nó vì Node tìm module ngược lên thư mục cha. Không dùng TS 7 (bản mới nhất) vì TS 7.0 chưa có API lập trình: typescript-eslint và bước type-check của `next build` không chạy được với nó. Đây là ngoại lệ duy nhất của quy tắc "luôn cài bản mới nhất"; chuyển lên TS 7 khi typescript-eslint hỗ trợ (dự kiến TS 7.1).
 
@@ -252,14 +252,23 @@ tftvn/
 
 ### 6.1 Routing và render
 
-- Route theo Set: `/[set]/thu-vien/tuong/[apiName]`, mặc định redirect về Set hiện tại.
-- **Thư viện**: Server Component đọc DB, cache theo tag `gamedata:{set}:{patch}`, pre-render bằng `generateStaticParams` cho Set hiện tại. Chỉ build lại khi ETL gọi revalidate.
+- **Một bộ đường dẫn duy nhất (tiếng Anh)**, tiếng Việt và tiếng Anh chỉ khác tiền tố `/en`:
+  - `/library` (chọn Set), `/library/18` (tổng quan), `/library/18/champions`, `/library/18/champions/DA_Gromp18_AP`, `/library/18/traits`, `/library/18/items`, `/library/18/augments`, `/library/18/roles`.
+  - Bản tiếng Anh: `/en/library/18/champions`... Hàm tạo đường dẫn nằm ở `src/lib/library-paths.ts`.
+- **Cache Components** (`cacheComponents: true`, `partialPrefetching: true` trong `next.config.ts`):
+  - Hàm đọc dữ liệu trong `src/server/library.ts` dùng `"use cache"` + `cacheLife("max")` + `cacheTag`.
+  - Tag `gamedata`: Set nào trỏ tới snapshot nào (ETL làm mới sau mỗi snapshot mới). Tag `snapshot:<id>`: entity của snapshot (không bao giờ đổi). Tag `roles:<set>`: role / trang bị admin gán (P5 làm mới khi admin sửa).
+  - `POST /api/revalidate` (Hono): cần `Authorization: Bearer $REVALIDATE_SECRET`, chỉ nhận tag trong danh sách cho phép, gọi `revalidateTag(tag, "max")`.
+- **Tạo trang sẵn lúc build**: `generateStaticParams` lấy Set và tướng từ DB (build có DB tạo khoảng 315 trang tĩnh). Không có DB (CI) thì trả về param giữ chỗ `__placeholder__` và trang gọi `notFound()` trước khi chạm DB, nên build vẫn qua; trang render ở request đầu rồi được cache.
+- Phần đọc `params` của Thư viện nằm trong `<Suspense>` (yêu cầu của Cache Components). Set không tồn tại hiện trang "không tìm thấy" kèm `noindex` (mã 200 vì trang được stream).
+- Mô tả game hiển thị qua `parseGameText` (core) + `GameText` (React), **không dùng `dangerouslySetInnerHTML`**.
+- Trang Trang bị hiện các nhóm chính, nhóm "khác" (khoảng 440 item cơ chế / Set cũ) thu gọn và chỉ có icon + tên.
 - **Thống kê**: Server Component đọc `entity_stats` + `stat_totals`, cache theo tag `stats`; hiển thị thời điểm cập nhật từ `etl_runs`.
 - **Player / leaderboard**: Server Component gọi service (đã có `riot_cache`), cache ngắn.
 - **Phần tương tác** (builder, editor, reaction, bookmark): Client Component gọi `/api/*` bằng axios (instance `api`), quản lý cache / trạng thái bằng TanStack Query.
 - **Song ngữ Việt - Anh (Việt là chính)** bằng `next-intl`:
-  - Locale `vi` (mặc định) và `en`. Tiếng Việt không có tiền tố URL, tiếng Anh có `/en` (`localePrefix: "as-needed"`).
-  - Đường dẫn dịch theo ngôn ngữ bằng `pathnames`: `/17/thu-vien/tuong/aatrox` <-> `/en/17/library/champions/aatrox`.
+  - Locale `vi` (mặc định) và `en`. Tiếng Việt không có tiền tố URL, tiếng Anh có `/en` (`localePrefix: "as-needed"`). **Không đoán ngôn ngữ theo trình duyệt** (`localeDetection: false`): URL quyết định ngôn ngữ, `/` luôn là tiếng Việt kể cả khi trình duyệt dùng tiếng Anh (e2e có kiểm tra).
+  - Locale đọc bằng `next/root-params` (Next 16.3+) trong `src/i18n/request.ts`; trang lấy locale bằng `currentLocale()` (`getLocale`). Không dùng `setRequestLocale` (đã deprecate trong next-intl 4.15).
   - Mọi chữ giao diện nằm trong `messages/vi.json` và `messages/en.json`; thiếu bản dịch `en` thì hiện bản `vi`. Test kiểm tra hai file có cùng bộ key.
   - Tên và mô tả tướng / tộc hệ / trang bị / lõi / role lấy từ trường `i18n` của dữ liệu game (CommunityDragon `vi_vn` và `en_us`).
   - Bài viết do người dùng viết giữ nguyên ngôn ngữ tác giả, không dịch tự động.
@@ -353,8 +362,8 @@ tftvn/
   pnpm dev                        # Next.js + API tại http://localhost:3000
   pnpm etl sync-gamedata          # nạp dữ liệu game
   pnpm etl sync-matches           # nạp thống kê (cần RIOT_API_KEY)
-  pnpm test                       # Vitest
-  pnpm e2e                        # Playwright
+  pnpm test                       # unit test (Playwright)
+  pnpm e2e                        # e2e (Playwright + Chromium)
   ```
 
 - Ổ C và D đều đã dùng hơn 90%: nên dọn trước vài GB (`node_modules`, `.next`, Playwright browsers).
@@ -363,26 +372,29 @@ tftvn/
 
 ## 10. Testing và CI
 
-- **Vitest** là test runner chính:
-  - `packages/core`: HashResolver, parser CommunityDragon (fixture JSON của **2 Set khác nhau**), mã team planner, logic cộng dồn thống kê.
-  - API: gọi route bằng `app.request()` của Hono với Postgres test, mỗi test chạy trong transaction rồi rollback.
-  - Component: Vitest + `@testing-library/react` (môi trường `jsdom`) cho Client Component.
-- **Playwright** cho e2e: đăng ký -> tạo comp -> bookmark -> viết bài -> admin duyệt.
-- **`ci.yml`**: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, Playwright trên PR.
+**Chỉ dùng một công cụ test: Playwright** (`@playwright/test`, một bản ở root).
+
+- **Unit test** (`pnpm test`, file `playwright.config.ts`, không cần trình duyệt; file `*.test.ts`):
+  - Project `core`: HashResolver, FNV-1a, parser CommunityDragon (fixture cắt từ dữ liệu thật của **2 Set**), điền placeholder, phân loại item / augment, đọc markup, role.
+  - Project `web`: màu chỉ dùng tên CSS, hai file ngôn ngữ cùng bộ key, route Hono (`createApp` nhận dependency qua tham số nên không cần mock module).
+- **E2E** (`pnpm e2e`, file `playwright.e2e.config.ts`, Chromium; file `apps/web/e2e/*.spec.ts`): tự build production rồi chạy server cổng 3100, cần DB có dữ liệu. Hiện kiểm tra trang chủ hai ngôn ngữ, giữ tiếng Việt với trình duyệt tiếng Anh, chọn Set, mở tướng, nhóm trang bị / lõi, đổi ngôn ngữ giữ nguyên trang, Set không tồn tại. Sau thêm: đăng ký -> tạo comp -> bookmark -> viết bài -> admin duyệt.
+  - Cài trình duyệt một lần: `pnpm e2e:install`.
+- Import JSON dùng cú pháp chuẩn `with { type: "json" }` (Playwright chạy test bằng ES module của Node).
+- **`ci.yml`**: `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm build`. E2E chưa chạy trong CI vì cần DB có dữ liệu.
 
 ---
 
 ## 11. Lộ trình (khoảng 8 tuần)
 
-| Phase  | Thời gian | Nội dung                                                                                                                     | Kết quả                                  |
-| ------ | --------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **P0** | 1 tuần    | Monorepo, Postgres local + Neon, migration runner, Next.js + Tailwind + Vitest, Hono mount `/api`, deploy "hello" lên Vercel | Deploy chạy, trang gọi được DB và API    |
-| **P1** | 2 tuần    | `packages/core`: parser đa Set, HashResolver v2, thay placeholder; ETL `sync-gamedata` + workflow `etl.yml`                  | Dữ liệu Set hiện tại + 1 Set cũ trong DB |
-| **P2** | 1 tuần    | Trang Thư viện (ISR, chọn Set, i18n), route revalidate                                                                       | Feature 1 cho mọi Set                    |
-| **P3** | 1 tuần    | Auth bằng cookie, profile, quên mật khẩu, sync tài khoản Riot                                                                | Feature 8                                |
-| **P4** | 1,5 tuần  | Player lookup, leaderboard, `sync-matches`, trang thống kê                                                                   | Feature 2, 3, 4                          |
-| **P5** | 1,5 tuần  | Comps + builder theo Set, bookmark, articles, reactions, admin                                                               | Feature 5, 6, 9                          |
-| **P6** | 1 tuần    | Hardening: rate limit, CSRF, CSP, e2e, đo hiệu năng, kiểm tra "Set mới ra"                                                   | Bản production                           |
+| Phase  | Thời gian | Nội dung                                                                                                            | Kết quả                                  |
+| ------ | --------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| **P0** | 1 tuần    | Monorepo, Postgres local + Neon, migration runner, Next.js + Tailwind, Hono mount `/api`, deploy "hello" lên Vercel | Deploy chạy, trang gọi được DB và API    |
+| **P1** | 2 tuần    | `packages/core`: parser đa Set, HashResolver v2, thay placeholder; ETL `sync-gamedata` + workflow `etl.yml`         | Dữ liệu Set hiện tại + 1 Set cũ trong DB |
+| **P2** | 1 tuần    | Trang Thư viện (ISR, chọn Set, i18n), route revalidate                                                              | Feature 1 cho mọi Set                    |
+| **P3** | 1 tuần    | Auth bằng cookie, profile, quên mật khẩu, sync tài khoản Riot                                                       | Feature 8                                |
+| **P4** | 1,5 tuần  | Player lookup, leaderboard, `sync-matches`, trang thống kê                                                          | Feature 2, 3, 4                          |
+| **P5** | 1,5 tuần  | Comps + builder theo Set, bookmark, articles, reactions, admin                                                      | Feature 5, 6, 9                          |
+| **P6** | 1 tuần    | Hardening: rate limit, CSRF, CSP, e2e, đo hiệu năng, kiểm tra "Set mới ra"                                          | Bản production                           |
 
 **Cột mốc "Set mới ra"**: chạy ETL với fixture của một Set khác và xác nhận không phải sửa code.
 
@@ -403,7 +415,7 @@ tftvn/
 - Styling bằng **Tailwind CSS v4**, màu lấy từ `colors.js` và chỉ dùng tên màu CSS chuẩn; theme đen - vàng - chữ trắng.
 - Song ngữ Việt - Anh (`next-intl`), tiếng Việt là chính.
 - Code không có comment.
-- Test bằng **Vitest** + Playwright.
+- Chỉ dùng **Playwright** cho cả unit test và e2e (không dùng Vitest).
 - PostgreSQL (Neon) là database duy nhất; không dùng Redis.
 - Không có tính năng AI.
 
@@ -412,7 +424,7 @@ tftvn/
 ## Tham khảo
 
 - Next.js, caching và revalidate: <https://nextjs.org/docs/app/getting-started/caching-and-revalidating>
-- Next.js, testing với Vitest: <https://nextjs.org/docs/app/guides/testing/vitest>
+- Next.js, testing với Playwright: <https://nextjs.org/docs/app/guides/testing/playwright>
 - Tailwind CSS, cài đặt với Next.js: <https://tailwindcss.com/docs/installation/framework-guides/nextjs>
 - Hono trên Vercel / Next.js: <https://hono.dev/docs/getting-started/vercel>
 - Drizzle ORM + Neon: <https://orm.drizzle.team/docs/get-started/neon-new>

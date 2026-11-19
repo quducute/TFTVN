@@ -1,5 +1,5 @@
-import en from "../../messages/en.json";
-import vi from "../../messages/vi.json";
+import en from "../../messages/en.json" with { type: "json" };
+import vi from "../../messages/vi.json" with { type: "json" };
 import type { Locale } from "./routing";
 
 type Messages = { [key: string]: string | Messages };
