@@ -11,6 +11,7 @@ export function createTestAuth() {
   let clock = new Date("2026-11-19T00:00:00Z");
   let riotResult: RiotLookupResult = { status: "unconfigured" };
   let counter = 0;
+  let mailFails = false;
 
   const service = createAuthService({
     repository: memory.repository,
@@ -21,6 +22,9 @@ export function createTestAuth() {
     accessTokens: createAccessTokens(() => TEST_JWT_SECRET),
     mailer: {
       sendPasswordReset: async (mail) => {
+        if (mailFails) {
+          throw new Error("smtp rejected");
+        }
         mails.push(mail);
       },
     },
@@ -42,6 +46,9 @@ export function createTestAuth() {
     },
     setRiot(result: RiotLookupResult) {
       riotResult = result;
+    },
+    failMail(fails: boolean) {
+      mailFails = fails;
     },
   };
 }

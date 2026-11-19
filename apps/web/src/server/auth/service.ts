@@ -212,11 +212,13 @@ export function createAuthService(deps: AuthServiceDependencies) {
           expiresAt: later(PASSWORD_RESET_SECONDS),
         });
         const prefix = parsed.value.locale === "en" ? "/en" : "";
-        await mailer.sendPasswordReset({
-          to: user.email,
-          link: `${origin}${prefix}/reset-password?token=${encodeURIComponent(token)}`,
-          locale: parsed.value.locale,
-        });
+        await mailer
+          .sendPasswordReset({
+            to: user.email,
+            link: `${origin}${prefix}/reset-password?token=${encodeURIComponent(token)}`,
+            locale: parsed.value.locale,
+          })
+          .catch((error: unknown) => console.error("Password reset mail failed", error));
       }
       return { ok: true, value: null };
     },

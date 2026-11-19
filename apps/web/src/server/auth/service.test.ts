@@ -122,6 +122,17 @@ test.describe("password reset", () => {
     expect(mails).toEqual([]);
   });
 
+  test("answers the same way when the mail server rejects the message", async () => {
+    const { service, failMail } = await registered();
+    failMail(true);
+    const result = await service.forgotPassword(
+      { email: VALID_ACCOUNT.email },
+      CLIENT,
+      "https://tftvn.vn",
+    );
+    expect(result).toEqual({ ok: true, value: null });
+  });
+
   test("emails a localized link and resets the password once", async () => {
     const { service, mails, session } = await registered();
     await service.forgotPassword(
