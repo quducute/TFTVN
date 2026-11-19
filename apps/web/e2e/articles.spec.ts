@@ -97,7 +97,7 @@ test.describe("articles and admin", () => {
 
     await page.goto("/articles/mine");
     await expect(page.getByRole("heading", { name: title })).toBeVisible();
-    await expect(page.getByText("Đang chờ duyệt")).toBeVisible();
+    await expect(page.getByText("Đang chờ duyệt").filter({ visible: true })).toBeVisible();
   });
 
   test("lets an admin reject with a reason", async () => {

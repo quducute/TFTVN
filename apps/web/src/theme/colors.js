@@ -34,4 +34,5 @@ export const C = {
   placementWin: "gold",
   placementTop: "limegreen",
   placementBottom: "darkgray",
+  emailBorder: "dimgray",
 };

@@ -200,7 +200,15 @@
     "email": {
       "passwordReset": {
         "subject": "Reset your TFTVN password",
-        "body": "Hello,\n\nYou (or someone else) asked to reset the password of your TFTVN account. Open this link within 30 minutes to choose a new password:\n\n{link}\n\nIf this was not you, ignore this email."
+        "preheader": "Your password reset link, valid for 30 minutes.",
+        "heading": "Reset your password",
+        "greeting": "Hi {username},",
+        "intro": "You (or someone else) asked to reset the password of your TFTVN account. Press the button below to choose a new one.",
+        "expiry": "The link is valid for 30 minutes and works only once.",
+        "ignore": "If you did not ask for this, ignore this email and your password stays the same.",
+        "button": "Choose a new password",
+        "fallback": "Button not working? Copy this link into your browser:",
+        "footer": "TFTVN - Teamfight Tactics Assistant. This email was sent automatically, please do not reply."
       }
     }
   },

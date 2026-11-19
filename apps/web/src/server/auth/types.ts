@@ -74,7 +74,12 @@ export interface AccessTokens {
 }
 
 export interface Mailer {
-  sendPasswordReset(input: { to: string; link: string; locale: "vi" | "en" }): Promise<void>;
+  sendPasswordReset(input: {
+    to: string;
+    username: string;
+    link: string;
+    locale: "vi" | "en";
+  }): Promise<void>;
 }
 
 export type RiotLookupResult =

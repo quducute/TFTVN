@@ -11,8 +11,8 @@ test.describe("mailer", () => {
       from: "TFTVN <tftvn@gmail.com>",
     });
 
-    await mailer.sendPasswordReset({ to: "a@b.vn", link: LINK, locale: "vi" });
-    await mailer.sendPasswordReset({ to: "c@d.vn", link: LINK, locale: "en" });
+    await mailer.sendPasswordReset({ to: "a@b.vn", username: "qudu", link: LINK, locale: "vi" });
+    await mailer.sendPasswordReset({ to: "c@d.vn", username: "qudu", link: LINK, locale: "en" });
 
     expect(sent[0]).toMatchObject({
       from: "TFTVN <tftvn@gmail.com>",
@@ -21,13 +21,18 @@ test.describe("mailer", () => {
     });
     expect(sent[0]!.text).toContain(LINK);
     expect(sent[0]!.text).toContain("30 phút");
+    expect(sent[0]!.text).toContain("Xin chào qudu,");
+    expect(sent[0]!.html).toContain(`href="${LINK}"`);
+    expect(sent[0]!.html).toContain("Đặt mật khẩu mới");
+    expect(sent[0]!.html).toContain('<html lang="vi">');
+    expect(sent[1]!.html).toContain("Choose a new password");
     expect(sent[1]).toMatchObject({ to: "c@d.vn", subject: "Reset your TFTVN password" });
   });
 
   test("logs the link instead of sending when no transport is configured", async () => {
     const lines: string[] = [];
     const mailer = createMailer({ log: (line) => lines.push(line) });
-    await mailer.sendPasswordReset({ to: "a@b.vn", link: LINK, locale: "vi" });
+    await mailer.sendPasswordReset({ to: "a@b.vn", username: "qudu", link: LINK, locale: "vi" });
     expect(lines).toEqual([`[mail] a@b.vn | Đặt lại mật khẩu TFTVN | ${LINK}`]);
   });
 

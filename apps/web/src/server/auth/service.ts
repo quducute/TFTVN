@@ -215,6 +215,7 @@ export function createAuthService(deps: AuthServiceDependencies) {
         await mailer
           .sendPasswordReset({
             to: user.email,
+            username: user.username,
             link: `${origin}${prefix}/reset-password?token=${encodeURIComponent(token)}`,
             locale: parsed.value.locale,
           })

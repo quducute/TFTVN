@@ -7,7 +7,7 @@ export const TEST_JWT_SECRET = "test-secret-that-is-long-enough-123456";
 
 export function createTestAuth() {
   const memory = createMemoryAuthRepository();
-  const mails: { to: string; link: string; locale: "vi" | "en" }[] = [];
+  const mails: { to: string; username: string; link: string; locale: "vi" | "en" }[] = [];
   let clock = new Date("2026-11-19T00:00:00Z");
   let riotResult: RiotLookupResult = { status: "unconfigured" };
   let counter = 0;

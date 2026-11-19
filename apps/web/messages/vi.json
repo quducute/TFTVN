@@ -200,7 +200,15 @@
     "email": {
       "passwordReset": {
         "subject": "Đặt lại mật khẩu TFTVN",
-        "body": "Xin chào,\n\nBạn (hoặc ai đó) vừa yêu cầu đặt lại mật khẩu tài khoản TFTVN. Mở link sau trong vòng 30 phút để đặt mật khẩu mới:\n\n{link}\n\nNếu không phải bạn, hãy bỏ qua email này."
+        "preheader": "Link đặt lại mật khẩu của bạn, có hiệu lực trong 30 phút.",
+        "heading": "Đặt lại mật khẩu",
+        "greeting": "Xin chào {username},",
+        "intro": "Bạn (hoặc ai đó) vừa yêu cầu đặt lại mật khẩu tài khoản TFTVN. Bấm nút bên dưới để đặt mật khẩu mới.",
+        "expiry": "Link có hiệu lực trong 30 phút và chỉ dùng được một lần.",
+        "ignore": "Nếu không phải bạn yêu cầu, hãy bỏ qua email này, mật khẩu của bạn vẫn giữ nguyên.",
+        "button": "Đặt mật khẩu mới",
+        "fallback": "Nút không bấm được? Sao chép link sau vào trình duyệt:",
+        "footer": "TFTVN - Trợ thủ Đấu Trường Chân Lý. Email này được gửi tự động, vui lòng không trả lời."
       }
     }
   },

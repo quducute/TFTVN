@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { getMessagesFor } from "@/i18n/messages";
+import { renderEmail } from "./email-template";
 import type { Mailer } from "./types";
 
 export interface MailMessage {
@@ -7,6 +8,7 @@ export interface MailMessage {
   to: string;
   subject: string;
   text: string;
+  html: string;
 }
 
 export interface MailTransport {
@@ -56,15 +58,30 @@ export function createGmailTransport({
 
 export function createMailer({ transport, from, log = console.info }: MailerConfig): Mailer {
   return {
-    async sendPasswordReset({ to, link, locale }) {
-      const subject = messageAt(locale, "auth.email.passwordReset.subject");
-      const text = messageAt(locale, "auth.email.passwordReset.body", { link });
+    async sendPasswordReset({ to, username, link, locale }) {
+      const message = (key: string) =>
+        messageAt(locale, `auth.email.passwordReset.${key}`, { username });
+      const subject = message("subject");
+      const [greeting, intro, expiry, ignore] = ["greeting", "intro", "expiry", "ignore"].map(
+        message,
+      ) as [string, string, string, string];
+      const paragraphs = [greeting, intro, expiry, ignore];
+      const text = [greeting, intro, link, expiry, ignore, message("footer")].join("\n\n");
+      const html = renderEmail({
+        locale,
+        preheader: message("preheader"),
+        heading: message("heading"),
+        paragraphs,
+        button: { label: message("button"), href: link },
+        fallback: message("fallback"),
+        footer: message("footer"),
+      });
 
       if (!transport || !from) {
         log(`[mail] ${to} | ${subject} | ${link}`);
         return;
       }
-      await transport.sendMail({ from, to, subject, text });
+      await transport.sendMail({ from, to, subject, text, html });
     },
   };
 }
