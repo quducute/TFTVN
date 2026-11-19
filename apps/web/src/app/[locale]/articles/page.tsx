@@ -37,6 +37,7 @@ export default async function ArticlesPage({
           </Link>
           <Link
             href={articlePath.create()}
+            prefetch={false}
             className="rounded-lg bg-primary px-4 py-2 font-semibold text-on-primary hover:bg-primary-hover"
           >
             {t("write")}

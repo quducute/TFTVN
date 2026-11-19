@@ -1,0 +1,2 @@
+ALTER TABLE riot_cache SET LOGGED;
+ALTER TABLE rate_limits SET LOGGED;

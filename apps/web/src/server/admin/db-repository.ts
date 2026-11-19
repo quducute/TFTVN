@@ -1,4 +1,4 @@
-import { championRoles, getDb, roleItems } from "@tftvn/db";
+import { championRoles, getDb, roleItems, users } from "@tftvn/db";
 import { and, eq, sql } from "drizzle-orm";
 import { getEntities, getLibrarySets } from "../library";
 import { COMP_ITEM_CATEGORIES } from "../comps/catalog";
@@ -6,6 +6,15 @@ import type { ItemData } from "@tftvn/core";
 import type { AdminCatalog, AdminRepository } from "./service";
 
 export const dbAdminRepository: AdminRepository = {
+  async setUserRole(userId, role) {
+    const rows = await getDb()
+      .update(users)
+      .set({ role })
+      .where(eq(users.id, userId))
+      .returning({ id: users.id });
+    return rows.length > 0;
+  },
+
   async setChampionRole(setId, championApiName, roleApiName, userId) {
     if (!roleApiName) {
       await getDb()

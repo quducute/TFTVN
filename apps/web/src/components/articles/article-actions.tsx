@@ -39,6 +39,7 @@ export function ArticleActions({
       <div className="flex gap-2 text-sm">
         <Link
           href={articlePath.edit(publicId)}
+          prefetch={false}
           className="rounded-lg border border-line/20 px-3 py-1.5 hover:border-primary hover:text-primary"
         >
           {t("edit")}

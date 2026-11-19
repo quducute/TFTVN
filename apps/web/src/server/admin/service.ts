@@ -8,6 +8,8 @@ export type AdminErrorCode =
   | "roleInvalid"
   | "itemInvalid"
   | "tooManyItems"
+  | "userInvalid"
+  | "cannotChangeSelf"
   | "forbidden"
   | "unauthorized"
   | "forbiddenOrigin"
@@ -27,6 +29,7 @@ export interface AdminRepository {
     userId: number,
   ): Promise<void>;
   setRoleItems(setId: number, roleApiName: string, items: string[], userId: number): Promise<void>;
+  setUserRole(userId: number, role: "user" | "admin"): Promise<boolean>;
 }
 
 export type AdminResult<Value> =
@@ -34,6 +37,7 @@ export type AdminResult<Value> =
 
 const roleBody = z.object({ role: z.string().min(1).nullable() });
 const itemsBody = z.object({ items: z.array(z.string().min(1)) });
+const userRoleBody = z.object({ role: z.enum(["user", "admin"]) });
 
 const fail = (status: 400 | 403 | 404, code: AdminErrorCode): AdminResult<never> => ({
   ok: false,
@@ -52,6 +56,28 @@ export function createAdminService({
     /^\d+$/.test(setParam) ? catalog(Number(setParam)) : null;
 
   return {
+    async setUserRole(
+      actorId: number,
+      userParam: string,
+      input: unknown,
+    ): Promise<AdminResult<{ userId: number; role: "user" | "admin" }>> {
+      if (!/^\d+$/.test(userParam)) {
+        return fail(404, "userInvalid");
+      }
+      const userId = Number(userParam);
+      const parsed = userRoleBody.safeParse(input);
+      if (!parsed.success) {
+        return fail(400, "roleInvalid");
+      }
+      if (userId === actorId) {
+        return fail(400, "cannotChangeSelf");
+      }
+      if (!(await repository.setUserRole(userId, parsed.data.role))) {
+        return fail(404, "userInvalid");
+      }
+      return { ok: true, value: { userId, role: parsed.data.role } };
+    },
+
     async setChampionRole(
       userId: number,
       setParam: string,

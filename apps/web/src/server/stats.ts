@@ -4,11 +4,10 @@ import { and, desc, eq, ne } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 
 export const STATS_TAG = "stats";
-export const RANK_TIERS = ["challenger", "grandmaster", "master"] as const;
-export const STAT_SECTIONS = ["champions", "traits", "items"] as const;
+import { RANK_TIERS, type RankTier, STAT_SECTIONS, type StatSection } from "@/lib/stats-params";
 
-export type RankTier = (typeof RANK_TIERS)[number];
-export type StatSection = (typeof STAT_SECTIONS)[number];
+export { RANK_TIERS, STAT_SECTIONS };
+export type { RankTier, StatSection };
 
 export const SECTION_KIND: Record<StatSection, StatKind> = {
   champions: "champion",

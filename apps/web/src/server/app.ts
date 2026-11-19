@@ -14,6 +14,7 @@ import { createDbCompRepository } from "./comps/db-repository";
 import { createCompService } from "./comps/service";
 import { createApp } from "./create-app";
 import { findLibrarySet } from "./library";
+import { hitRateLimit } from "./rate-limit";
 import { getDatabaseVersion } from "./status";
 
 const env = process.env;
@@ -53,6 +54,7 @@ export const app = createApp({
   revalidateSecret: () => env.REVALIDATE_SECRET,
   revalidate: revalidateTag,
   databaseVersion: getDatabaseVersion,
+  hitRateLimit,
   auth: {
     service: authService,
     options: {

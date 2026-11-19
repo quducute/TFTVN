@@ -7,7 +7,7 @@
     "./node": "./src/node.ts"
   },
   "scripts": {
-    "check": "node --env-file=../../.env.local check.mjs ../../migrations/0001_init.sql",
+    "check": "node --env-file=../../.env.local check.mjs",
     "migrate": "node --env-file=../../.env.local migrate.mjs",
     "pull": "drizzle-kit pull && node postpull.mjs && prettier --write src/generated",
     "typecheck": "tsc --noEmit"

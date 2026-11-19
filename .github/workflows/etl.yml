@@ -42,3 +42,8 @@ jobs:
           else
             pnpm etl sync-gamedata
           fi
+      - name: Clean up expired data
+        if: ${{ !cancelled() }}
+        env:
+          DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+        run: pnpm etl cleanup

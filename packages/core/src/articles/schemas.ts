@@ -33,6 +33,7 @@ export const ARTICLE_ERROR_CODES = [
   "forbidden",
   "unauthorized",
   "forbiddenOrigin",
+  "rateLimited",
   "unknown",
 ] as const;
 

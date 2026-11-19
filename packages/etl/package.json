@@ -5,7 +5,8 @@
   "scripts": {
     "sync-gamedata": "tsx --env-file-if-exists=../../.env.local src/sync-gamedata.ts",
     "typecheck": "tsc --noEmit",
-    "sync-matches": "tsx --env-file-if-exists=../../.env.local src/sync-matches.ts"
+    "sync-matches": "tsx --env-file-if-exists=../../.env.local src/sync-matches.ts",
+    "cleanup": "tsx --env-file-if-exists=../../.env.local src/cleanup.ts"
   },
   "dependencies": {
     "@tftvn/core": "workspace:*",

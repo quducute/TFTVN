@@ -44,6 +44,7 @@ export const COMP_ERROR_CODES = [
   "forbidden",
   "unauthorized",
   "forbiddenOrigin",
+  "rateLimited",
   "unknown",
 ] as const;
 

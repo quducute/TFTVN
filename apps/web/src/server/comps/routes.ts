@@ -41,7 +41,7 @@ export function createCompRoutes({
   return new Hono<AuthEnv>()
     .use("/comps", guards.sameOrigin)
     .use("/comps/*", guards.sameOrigin)
-    .post("/comps", guards.requireUser, async (c) =>
+    .post("/comps", guards.requireUser, guards.limitPerUser("comp-create", 20, 3600), async (c) =>
       compResponse(c, await service.create(c.get("user"), await readBody(c)), 201),
     )
     .get("/comps/:id", async (c) => {
@@ -50,8 +50,12 @@ export function createCompRoutes({
         ? c.json({ ok: true, comp: toPublicComp(comp) })
         : c.json({ ok: false, code: "compNotFound", fields: {} }, 404);
     })
-    .put("/comps/:id", guards.requireUser, async (c) =>
-      compResponse(c, await service.update(c.get("user"), c.req.param("id"), await readBody(c))),
+    .put(
+      "/comps/:id",
+      guards.requireUser,
+      guards.limitPerUser("comp-update", 60, 3600),
+      async (c) =>
+        compResponse(c, await service.update(c.get("user"), c.req.param("id"), await readBody(c))),
     )
     .delete("/comps/:id", guards.requireUser, async (c) => {
       const result = await service.remove(c.get("user"), c.req.param("id"));
@@ -69,12 +73,22 @@ export function createCompRoutes({
       const result = await service.bookmarkState(user, c.req.param("id"));
       return result.ok ? c.json({ ok: true, ...result.value }) : failure(c, result);
     })
-    .put("/comps/:id/bookmark", guards.requireUser, async (c) => {
-      const result = await service.setBookmark(c.get("user"), c.req.param("id"), true);
-      return result.ok ? c.json({ ok: true, ...result.value }) : failure(c, result);
-    })
-    .delete("/comps/:id/bookmark", guards.requireUser, async (c) => {
-      const result = await service.setBookmark(c.get("user"), c.req.param("id"), false);
-      return result.ok ? c.json({ ok: true, ...result.value }) : failure(c, result);
-    });
+    .put(
+      "/comps/:id/bookmark",
+      guards.requireUser,
+      guards.limitPerUser("bookmark", 120, 3600),
+      async (c) => {
+        const result = await service.setBookmark(c.get("user"), c.req.param("id"), true);
+        return result.ok ? c.json({ ok: true, ...result.value }) : failure(c, result);
+      },
+    )
+    .delete(
+      "/comps/:id/bookmark",
+      guards.requireUser,
+      guards.limitPerUser("bookmark", 120, 3600),
+      async (c) => {
+        const result = await service.setBookmark(c.get("user"), c.req.param("id"), false);
+        return result.ok ? c.json({ ok: true, ...result.value }) : failure(c, result);
+      },
+    );
 }

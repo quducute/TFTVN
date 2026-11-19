@@ -5,7 +5,7 @@ import { createAdminRoutes } from "./admin/routes";
 import type { AdminService } from "./admin/service";
 import { createArticleRoutes } from "./articles/routes";
 import type { ArticleService } from "./articles/service";
-import { createGuards } from "./auth/guards";
+import { type HitRateLimit, createGuards } from "./auth/guards";
 import type { AuthService } from "./auth/service";
 import { createCompRoutes } from "./comps/routes";
 import type { CompService } from "./comps/service";
@@ -16,6 +16,7 @@ export interface AppDependencies {
   revalidateSecret: () => string | undefined;
   revalidate: (tag: string, profile: "max") => void;
   databaseVersion: () => Promise<string | null>;
+  hitRateLimit?: HitRateLimit;
   auth?: { service: AuthService; options: AuthRouteOptions };
   comps?: { service: CompService; expireTag: (tag: string) => void };
   articles?: { service: ArticleService; expireTag: (tag: string) => void };
@@ -55,7 +56,11 @@ export function createApp(dependencies: AppDependencies) {
   if (auth) {
     app.route("/", createAuthRoutes(auth.service, auth.options));
     const currentUser = (token: string | undefined) => auth.service.currentUser(token);
-    const guards = createGuards(currentUser, auth.options.allowedOrigins);
+    const guards = createGuards(
+      currentUser,
+      auth.options.allowedOrigins,
+      dependencies.hitRateLimit,
+    );
     if (comps) {
       app.route(
         "/",

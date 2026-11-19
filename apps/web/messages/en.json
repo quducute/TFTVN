@@ -421,7 +421,8 @@
       "forbidden": "You are not allowed to do this.",
       "unauthorized": "Your session expired, please log in again.",
       "forbiddenOrigin": "Request blocked.",
-      "unknown": "Something went wrong, please try again."
+      "unknown": "Something went wrong, please try again.",
+      "rateLimited": "You are doing this too often, try again in a few minutes."
     }
   },
   "articles": {
@@ -518,7 +519,8 @@
       "forbidden": "You are not allowed to do this.",
       "unauthorized": "Your session expired, please log in again.",
       "forbiddenOrigin": "Request blocked.",
-      "unknown": "Something went wrong, please try again."
+      "unknown": "Something went wrong, please try again.",
+      "rateLimited": "You are doing this too often, try again in a few minutes."
     }
   },
   "admin": {
@@ -528,7 +530,8 @@
     "login": "Log in",
     "tabs": {
       "review": "Review articles",
-      "roles": "Champion roles"
+      "roles": "Champion roles",
+      "users": "Users"
     },
     "review": {
       "empty": "No articles are waiting for review.",
@@ -562,7 +565,31 @@
       "forbidden": "You are not allowed to do this.",
       "unauthorized": "Your session expired, please log in again.",
       "forbiddenOrigin": "Request blocked.",
-      "unknown": "Something went wrong, please try again."
+      "unknown": "Something went wrong, please try again.",
+      "userInvalid": "User not found.",
+      "cannotChangeSelf": "You cannot change your own role."
+    },
+    "users": {
+      "search": "Search by username or email",
+      "searchButton": "Search",
+      "empty": "No users found.",
+      "username": "Username",
+      "email": "Email",
+      "joined": "Joined",
+      "role": "Role",
+      "roleOf": "Role of {username}",
+      "roles": {
+        "user": "User",
+        "admin": "Admin"
+      },
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page}/{pages}"
     }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or was removed.",
+    "home": "Back to home"
   }
 }

@@ -49,7 +49,7 @@
 | ORM                  | Hibernate                            | Drizzle ORM + `@neondatabase/serverless`                             |
 | Thư viện game        | CDragon fetch lúc request + Caffeine | Đọc DB trong Server Component, **ISR** theo tag `gamedata`           |
 | Thống kê             | Gọi Riot lúc request (khoảng 20 s)   | Cron thu match dần, gom bằng SQL, **ISR** theo tag `stats`           |
-| Cache API            | Caffeine (RAM)                       | Bảng UNLOGGED trong Postgres                                         |
+| Cache API            | Caffeine (RAM)                       | Bảng `riot_cache` trong Postgres (bảng thường, job cleanup dọn)      |
 | Lưu file gốc CDragon | Không có                             | GitHub Release asset theo từng patch                                 |
 | Chatbot AI           | FastAPI + ChromaDB + Groq            | **Bỏ**                                                               |
 | Email                | Gmail SMTP                           | Gmail SMTP qua `nodemailer` (dev: in link ra terminal)               |
@@ -171,7 +171,7 @@ tftvn/
 
 - `site_settings(key, value JSONB)`: nhãn patch, ghi đè Set hiện tại...
 - `etl_runs(job, status, started_at, finished_at, summary, error)`: lịch sử chạy ETL; trang thống kê hiển thị "Dữ liệu cập nhật lúc ..." từ đây.
-- `riot_cache(key, value, expires_at)`, `rate_limits(bucket, window_start, hits)`: bảng **UNLOGGED**.
+- `riot_cache(key, value, expires_at)`, `rate_limits(bucket, window_start, hits)`: ban đầu là bảng UNLOGGED, nhưng Neon tự tạm dừng compute khi rảnh và mỗi lần như vậy xóa sạch bảng UNLOGGED (cache match 7 ngày mất liên tục, rate limit bị reset). Migration `0004` chuyển về bảng thường; dòng hết hạn do job `cleanup` xóa.
 - Code đặt sau interface `Cache` / `RateLimiter` để sau này đổi sang Redis không phải sửa chỗ khác.
 
 ### 3.5 Kết nối từ serverless
@@ -226,7 +226,7 @@ tftvn/
 
 ### 4.3 `cleanup` (hằng ngày)
 
-- Áp dụng thời hạn lưu dữ liệu match; xóa dòng hết hạn trong `riot_cache`, `rate_limits`, token.
+- **Đã làm (P6)**: `pnpm etl cleanup`, chạy hằng ngày sau `sync-gamedata` trong `etl.yml` (vẫn chạy khi bước trước lỗi). Xóa `riot_cache` hết hạn, `rate_limits` cũ hơn 1 ngày, token hết hạn quá 1 ngày hoặc đã dùng quá 7 ngày, match của Set cũ (thống kê đã cộng dồn nên không mất số liệu), `etl_runs` cũ hơn 90 ngày. Kết quả ghi vào `etl_runs` (job `cleanup`).
 
 ### 4.4 Nơi chạy ETL
 
@@ -349,11 +349,15 @@ tftvn/
 - **Quên mật khẩu**: luôn trả 200 (không lộ email nào đã đăng ký). Mã đặt lại là chuỗi ngẫu nhiên, lưu SHA-256, hiệu lực 30 phút, dùng một lần; yêu cầu mã mới thì mã cũ bị xóa; đặt lại xong thì thu hồi mọi phiên đăng nhập. Email gửi theo ngôn ngữ đang dùng, qua **Gmail SMTP** (`smtp.gmail.com:587`, STARTTLS, `nodemailer`) bằng app password; thiếu `SMTP_USER` / `SMTP_APP_PASSWORD` thì in link ra terminal. Không cần domain riêng; giới hạn của Gmail khoảng 500 email/ngày.
 - **Profile**: đổi username / email (kiểm tra trùng, không phân biệt hoa thường nhờ `citext`); đổi mật khẩu cần mật khẩu hiện tại và đăng xuất các thiết bị khác, giữ phiên hiện tại.
 - **Riot ID**: kiểm tra định dạng (tên 3-16 ký tự, tag 3-5 chữ/số). Có `RIOT_API_KEY` thì tra `account-v1` (cụm `asia`) để lấy PUUID; chưa có key thì lưu dạng "chưa xác minh".
-- **Rate limit** (bảng `rate_limits`, theo IP): đăng ký 5 lần/giờ, đăng nhập 20 lần/5 phút, quên mật khẩu 5 lần/giờ. Tra cứu người chơi thêm ở P4.
+- **Rate limit** (bảng `rate_limits`): theo IP cho đăng ký 5 lần/giờ, đăng nhập 20 lần/5 phút, quên mật khẩu 5 lần/giờ, tra cứu người chơi / bảng xếp hạng 30 lần/phút. Theo user (P6, middleware `limitPerUser` trong `server/auth/guards.ts`): tạo comp 20/giờ, sửa comp 60/giờ, viết bài 10/giờ, sửa bài 30/giờ, bookmark và reaction 120/giờ; vượt thì trả 429 `rateLimited`.
 - **Validate dùng chung**: schema zod trong `packages/core/src/auth/schemas.ts` trả về **mã lỗi** (`usernameTooShort`, `emailTaken`...); giao diện dịch mã sang vi / en (`auth.errors.*`), test kiểm tra mã nào cũng có bản dịch. Ô trống được coi là chưa nhập (`dropEmptyStrings`).
 - **Chưa làm**: xác thực email (`email_verify` đã có trong enum), "nhớ đăng nhập", đăng nhập bằng Google / Riot.
 - **HTML bài viết**: chỉ lọc một lần bằng `sanitize-html` khi lưu (thẻ cho phép: p, br, h2, h3, strong, em, u, s, a, ul, ol, li, blockquote, code, pre, hr; link chỉ http/https/mailto, luôn thêm `rel="noopener noreferrer nofollow"` và `target="_blank"`; bỏ mọi class, style, sự kiện). Không thêm DOMPurify khi render vì phía server cần jsdom (nặng cho serverless) mà chỉ lọc lại thứ đã lọc; DB chỉ chứa HTML đã sạch.
-- **CSP và các security header** đặt trong `next.config` (`headers()`) (P6).
+- **Security header (P6)**, đặt trong `next.config.ts` (`headers()`), áp cho mọi đường dẫn:
+  - `Content-Security-Policy`: `default-src 'self'`; script và style chỉ từ site (`'unsafe-inline'` vì Next chèn script RSC nội tuyến; dùng nonce thì mọi trang phải render động, mất Partial Prerendering); ảnh từ site, `data:`, `blob:` và `raw.communitydragon.org`; `connect-src 'self'` (dev thêm `ws:` cho HMR, `'unsafe-eval'` chỉ ở dev); `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`.
+  - `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Cross-Origin-Opener-Policy: same-origin`, `Permissions-Policy` tắt camera / micro / vị trí / thanh toán, `Strict-Transport-Security` (chỉ production). Bỏ header `X-Powered-By`.
+- **404 thật** (P6): với Cache Components, phần khung trang gửi đi trước nên `notFound()` trong lúc render chỉ trả 200 + `noindex` (giới hạn của streaming). `proxy.ts` chặn trước những đường dẫn chắc chắn sai mà không cần DB (`lib/route-guard.ts`: bậc / mục thống kê lạ, mã comp / bài viết không phải UUID, Set không phải số, mục thư viện lạ, apiName sai ký tự) và rewrite sang route không tồn tại để nhận HTTP 404. Đường dẫn đúng dạng nhưng không có trong DB (comp đã xóa, Set 9999) vẫn 200 + `noindex`. Trang 404 có bản dịch (`app/[locale]/not-found.tsx`, catch-all `[...missing]`).
+- **Cấp quyền admin** (P6): `/admin/users` tìm theo tên đăng nhập / email, đổi quyền user / admin; API `PUT /api/admin/users/:id/role` chặn admin tự đổi quyền của chính mình để không mất hết admin. Admin đầu tiên vẫn phải đặt tay trong DB.
 - Secret trong Vercel Environment Variables (tách Preview và Production) và GitHub Actions secrets. Biến mới ở P3: `JWT_SECRET` (ít nhất 32 ký tự), `SMTP_USER`, `SMTP_APP_PASSWORD`, `MAIL_FROM` (mặc định `TFTVN <SMTP_USER>`), `APP_ORIGINS`.
 
 ---
@@ -374,6 +378,31 @@ tftvn/
 | Local `.env.local` ở gốc repo | Như `.env.example`; thiếu `SMTP_*` thì mail chỉ in ra log                                                                      |
 
 ---
+
+### Hiệu năng đo được (P6)
+
+Đo trên bản production chạy ở máy (`next start`, Edge, mạng nội bộ, Neon ở Singapore). "Lần đầu" là trình duyệt mới chưa có cache; "lần sau" là mở lại khi cache server đã nóng. JS là tổng script đã giải nén mà trang tải (gồm cả prefetch).
+
+| Trang                              | TTFB lần đầu / sau | LCP lần đầu / sau | CLS   | JS                                              |
+| ---------------------------------- | ------------------ | ----------------- | ----- | ----------------------------------------------- |
+| `/`                                | 354 / 12 ms        | 1540 / 312 ms     | 0.038 | 452-693 KB                                      |
+| `/library/18/champions`            | 54 / 20 ms         | 620 / 604 ms      | 0.045 | 157-358 KB                                      |
+| `/library/18/champions/DA_18_Shen` | 52 / 14 ms         | 400 / 536 ms      | 0.045 | 317-425 KB                                      |
+| `/library/18/items`                | 48 / 45 ms         | 1044 / 776 ms     | 0.045 | 148-426 KB                                      |
+| `/comps`                           | 13 / 11 ms         | 2196 / 412 ms     | 0.018 | 425 KB (trước khi tắt prefetch builder: 682 KB) |
+| `/articles`                        | 9 / 8 ms           | 240 / 228 ms      | 0.016 | 479 KB (trước: 629 KB)                          |
+| `/stats/challenger/champions`      | 7 / 7 ms           | 964 / 256 ms      | 0.045 | 127-360 KB                                      |
+| `/leaderboard`                     | 7 / 5 ms           | 188 / 176 ms      | 0.029 | 122-352 KB                                      |
+| `/players/...`                     | 7 / 8 ms           | 2072 / 956 ms     | 0.020 | 98-141 KB                                       |
+
+- Mọi trang đều đạt ngưỡng "tốt" của Core Web Vitals (LCP dưới 2,5 giây, CLS dưới 0,1). LCP lần đầu của `/comps` và trang người chơi cao hơn vì chờ ảnh từ CommunityDragon.
+- Link tới builder và editor (`Tạo đội hình`, `Viết bài`, `Sửa`) đặt `prefetch={false}`: hai trang này cần đăng nhập và kéo theo TipTap / builder nặng, không đáng tải sẵn cho mọi người xem.
+- Ảnh tướng ở hàng đầu tải ngay (`eager`), phần còn lại tải lười.
+
+### Kiểm tra "Set mới ra" (P6)
+
+- Test trong `packages/core/src/cdragon/parse.test.ts` tạo một Set 19 giả từ dữ liệu Set 17 (đổi mutator `TFTSet19`), rồi xác nhận: phát hiện Set hiện tại là 19, parse ra đúng tướng / tộc hệ / planner code như Set gốc, mã team planner xuất / nhập được với mutator mới. Không phải sửa dòng code nào.
+- Phần còn lại đều đọc theo Set hiện tại trong DB: thống kê và comps (chỉ Set hiện tại), thư viện (mọi Set), mutator cho mã planner (`game_sets.mutator`).
 
 ## 9. Môi trường dev trên máy
 

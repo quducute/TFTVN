@@ -73,7 +73,7 @@ test.describe("library", () => {
 
   test("shows not found for an unknown set", async ({ page }) => {
     await page.goto("/library/9999");
-    await expect(page.getByText(/could not be found/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Không tìm thấy trang" })).toBeVisible();
     await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toBeAttached();
   });
 });

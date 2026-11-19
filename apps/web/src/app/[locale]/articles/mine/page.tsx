@@ -39,6 +39,7 @@ async function MyArticles({ searchParams }: Readonly<{ searchParams: SearchParam
       <h1 className="text-3xl font-bold text-primary">{t("mine")}</h1>
       <Link
         href={articlePath.create()}
+        prefetch={false}
         className="rounded-lg bg-primary px-4 py-2 font-semibold text-on-primary hover:bg-primary-hover"
       >
         {t("write")}

@@ -24,6 +24,16 @@ export function createAdminRoutes({
   return new Hono<AuthEnv>()
     .use("/admin/*", guards.sameOrigin)
     .use("/admin/*", guards.requireAdmin)
+    .put("/admin/users/:user/role", async (c) => {
+      const result = await service.setUserRole(
+        c.get("user").id,
+        c.req.param("user"),
+        await readBody(c),
+      );
+      return result.ok
+        ? c.json({ ok: true, ...result.value })
+        : c.json({ ok: false, code: result.code, fields: {} }, result.status);
+    })
     .put("/admin/sets/:set/champions/:champion/role", async (c) =>
       respond(
         c,

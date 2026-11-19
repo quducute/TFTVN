@@ -9,7 +9,9 @@ export type AuthEnv = { Variables: { user: UserRecord } };
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
-const deny = (code: "forbiddenOrigin" | "unauthorized" | "forbidden") => ({
+export type HitRateLimit = (bucket: string, windowSeconds: number) => Promise<number>;
+
+const deny = (code: "forbiddenOrigin" | "unauthorized" | "forbidden" | "rateLimited") => ({
   ok: false as const,
   code,
   fields: {},
@@ -18,6 +20,7 @@ const deny = (code: "forbiddenOrigin" | "unauthorized" | "forbidden") => ({
 export function createGuards(
   currentUser: (accessToken: string | undefined) => Promise<UserRecord | null>,
   allowedOrigins: readonly string[] = [],
+  hitRateLimit?: HitRateLimit,
 ) {
   const origins = new Set(allowedOrigins);
 
@@ -53,7 +56,18 @@ export function createGuards(
     await next();
   });
 
-  return { sameOrigin, requireUser, requireAdmin };
+  const limitPerUser = (name: string, max: number, windowSeconds: number) =>
+    createMiddleware<AuthEnv>(async (c, next) => {
+      if (hitRateLimit) {
+        const hits = await hitRateLimit(`${name}:${c.get("user").id}`, windowSeconds);
+        if (hits > max) {
+          return c.json(deny("rateLimited"), 429);
+        }
+      }
+      await next();
+    });
+
+  return { sameOrigin, requireUser, requireAdmin, limitPerUser };
 }
 
 export type Guards = ReturnType<typeof createGuards>;

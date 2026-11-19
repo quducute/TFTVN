@@ -71,8 +71,11 @@ test.describe("articles and admin", () => {
     await page.getByRole("button", { name: "Tiêu đề lớn" }).click();
     await page.keyboard.press("End");
     await page.keyboard.press("Enter");
-    await page.getByRole("button", { name: "Đậm" }).click();
     await page.keyboard.type("Noi dung dam du dai de qua kiem tra");
+    await expect(body).toContainText("Noi dung dam du dai de qua kiem tra");
+    await page.keyboard.press("Shift+Home");
+    await page.getByRole("button", { name: "Đậm" }).click();
+    await expect(body.locator("strong")).toHaveText("Noi dung dam du dai de qua kiem tra");
     await page.getByRole("button", { name: "Gửi bài" }).click();
 
     await expect(page).toHaveURL(/\/articles\/[0-9a-f-]{36}$/);
@@ -88,7 +91,7 @@ test.describe("articles and admin", () => {
     await expect(page.getByRole("link", { name: "#kiemthu" })).toBeVisible();
 
     await guest.goto(articleUrl);
-    await expect(guest.getByText("This page could not be found")).toBeVisible();
+    await expect(guest.getByRole("heading", { name: "Không tìm thấy trang" })).toBeVisible();
     await guest.goto("/articles");
     await expect(guest.getByRole("heading", { name: title })).toHaveCount(0);
 
@@ -170,6 +173,28 @@ test.describe("articles and admin", () => {
     await expect(page.getByText("Đã lưu.")).toBeVisible();
     await page.reload();
     await expect(page.getByRole("combobox", { name: label })).toHaveValue("");
+  });
+
+  test("lets an admin promote and demote other users only", async () => {
+    const page = adminPage;
+    await page.goto(`/admin/users?q=${author}`);
+    const authorRole = page.getByRole("combobox", { name: `Quyền của ${author}` });
+    const changeRole = async (role: string) => {
+      const saved = page.waitForResponse(
+        (response) =>
+          response.url().includes("/api/admin/users/") && response.request().method() === "PUT",
+      );
+      await authorRole.selectOption(role);
+      expect((await saved).status()).toBe(200);
+      await page.reload();
+      await expect(authorRole).toHaveValue(role);
+    };
+    await expect(authorRole).toBeEnabled();
+    await changeRole("admin");
+    await changeRole("user");
+
+    await page.goto(`/admin/users?q=${admin}`);
+    await expect(page.getByRole("combobox", { name: `Quyền của ${admin}` })).toBeDisabled();
   });
 
   test("keeps regular users out of the admin pages", async () => {

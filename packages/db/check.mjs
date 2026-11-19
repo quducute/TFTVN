@@ -1,7 +1,12 @@
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import pg from "pg";
 
-const file = process.argv[2] ?? "migrations/0001_init.sql";
+const migrationsDir = new URL("../../migrations/", import.meta.url);
+const latest = (await readdir(migrationsDir))
+  .filter((name) => name.endsWith(".sql"))
+  .sort()
+  .at(-1);
+const file = process.argv[2] ?? new URL(latest, migrationsDir);
 const url = process.env.DATABASE_URL_DIRECT;
 if (!url) {
   console.error("Thieu DATABASE_URL_DIRECT trong .env.local");

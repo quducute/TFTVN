@@ -21,6 +21,13 @@ function setup() {
     async setRoleItems(setId, role, list) {
       items.set(`${setId}:${role}`, list);
     },
+    async setUserRole(userId, role) {
+      const user = auth.memory.users.find((candidate) => candidate.id === userId);
+      if (user) {
+        user.role = role;
+      }
+      return user != null;
+    },
   };
   const service = createAdminService({
     repository,
@@ -67,7 +74,7 @@ function setup() {
     auth.memory.users[0]!.role = admin ? "admin" : "user";
   };
 
-  return { send, login, roles, items, expired };
+  return { send, login, roles, items, expired, auth };
 }
 
 test.describe("admin routes", () => {
@@ -126,5 +133,28 @@ test.describe("admin routes", () => {
     expect((await send("PUT", "/api/admin/sets/18/roles/Wizard/items", { items: [] })).status).toBe(
       404,
     );
+  });
+
+  test("promotes and demotes other users but never the current admin", async () => {
+    const { send, login, auth } = setup();
+    await login(true);
+    await auth.service.register(
+      { username: "nguoi_choi", email: "nguoi_choi@example.com", password: "mat-khau-an-toan" },
+      "other",
+    );
+    const promote = await send("PUT", "/api/admin/users/2/role", { role: "admin" });
+    expect(await promote.json()).toEqual({ ok: true, userId: 2, role: "admin" });
+    expect(auth.memory.users[1]!.role).toBe("admin");
+
+    await send("PUT", "/api/admin/users/2/role", { role: "user" });
+    expect(auth.memory.users[1]!.role).toBe("user");
+
+    const self = await send("PUT", "/api/admin/users/1/role", { role: "user" });
+    expect([self.status, ((await self.json()) as { code: string }).code]).toEqual([
+      400,
+      "cannotChangeSelf",
+    ]);
+    expect((await send("PUT", "/api/admin/users/99/role", { role: "admin" })).status).toBe(404);
+    expect((await send("PUT", "/api/admin/users/2/role", { role: "owner" })).status).toBe(400);
   });
 });

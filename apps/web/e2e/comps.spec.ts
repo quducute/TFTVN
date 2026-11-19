@@ -165,6 +165,6 @@ test.describe("comps", () => {
     await expect(page.getByText("Chưa có đội hình nào.")).toBeVisible();
 
     await page.goto(compUrl);
-    await expect(page.getByText("This page could not be found")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Không tìm thấy trang" })).toBeVisible();
   });
 });

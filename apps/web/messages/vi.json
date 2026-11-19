@@ -421,7 +421,8 @@
       "forbidden": "Bạn không có quyền làm việc này.",
       "unauthorized": "Phiên đăng nhập đã hết, hãy đăng nhập lại.",
       "forbiddenOrigin": "Yêu cầu bị chặn.",
-      "unknown": "Có lỗi xảy ra, hãy thử lại."
+      "unknown": "Có lỗi xảy ra, hãy thử lại.",
+      "rateLimited": "Bạn thao tác quá nhanh, hãy thử lại sau ít phút."
     }
   },
   "articles": {
@@ -518,7 +519,8 @@
       "forbidden": "Bạn không có quyền làm việc này.",
       "unauthorized": "Phiên đăng nhập đã hết, hãy đăng nhập lại.",
       "forbiddenOrigin": "Yêu cầu bị chặn.",
-      "unknown": "Có lỗi xảy ra, hãy thử lại."
+      "unknown": "Có lỗi xảy ra, hãy thử lại.",
+      "rateLimited": "Bạn thao tác quá nhanh, hãy thử lại sau ít phút."
     }
   },
   "admin": {
@@ -528,7 +530,8 @@
     "login": "Đăng nhập",
     "tabs": {
       "review": "Duyệt bài",
-      "roles": "Vai trò tướng"
+      "roles": "Vai trò tướng",
+      "users": "Người dùng"
     },
     "review": {
       "empty": "Không có bài nào đang chờ duyệt.",
@@ -562,7 +565,31 @@
       "forbidden": "Bạn không có quyền làm việc này.",
       "unauthorized": "Phiên đăng nhập đã hết, hãy đăng nhập lại.",
       "forbiddenOrigin": "Yêu cầu bị chặn.",
-      "unknown": "Có lỗi xảy ra, hãy thử lại."
+      "unknown": "Có lỗi xảy ra, hãy thử lại.",
+      "userInvalid": "Không tìm thấy người dùng.",
+      "cannotChangeSelf": "Bạn không thể tự đổi quyền của chính mình."
+    },
+    "users": {
+      "search": "Tìm theo tên đăng nhập hoặc email",
+      "searchButton": "Tìm",
+      "empty": "Không có người dùng nào.",
+      "username": "Tên đăng nhập",
+      "email": "Email",
+      "joined": "Ngày tham gia",
+      "role": "Quyền",
+      "roleOf": "Quyền của {username}",
+      "roles": {
+        "user": "Người dùng",
+        "admin": "Admin"
+      },
+      "previous": "Trang trước",
+      "next": "Trang sau",
+      "page": "Trang {page}/{pages}"
     }
+  },
+  "notFound": {
+    "title": "Không tìm thấy trang",
+    "description": "Trang bạn tìm không tồn tại hoặc đã bị xóa.",
+    "home": "Về trang chủ"
   }
 }

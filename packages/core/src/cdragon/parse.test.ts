@@ -4,6 +4,11 @@ import en from "./fixtures/en_us.json" with { type: "json" };
 import teamPlanner from "./fixtures/teamplanner.json" with { type: "json" };
 import vi from "./fixtures/vi_vn.json" with { type: "json" };
 import { HashResolver, collectVocabulary } from "./hash-resolver";
+import {
+  decodePlannerCode,
+  encodePlannerCode,
+  isEncodablePlannerCode,
+} from "../comps/planner-code";
 import { type ParsedSet, parseSet } from "./parse";
 import type { RawGameData } from "./types";
 
@@ -97,5 +102,57 @@ test.describe("parseSet on Set 17", () => {
   test("collects roles from playable champions", () => {
     const roles = parsed.entities.filter((candidate) => candidate.kind === "role");
     expect(roles.length).toBeGreaterThan(0);
+  });
+});
+
+test.describe("a new Set appears", () => {
+  const withSet19 = (data: RawGameData): RawGameData => {
+    const base = data.setData.find((set) => set.mutator === "TFTSet17")!;
+    return {
+      ...data,
+      setData: [...data.setData, { ...base, mutator: "TFTSet19", number: 19, name: "Set19" }],
+    };
+  };
+  const nextSources = { vi: withSet19(sources.vi), en: withSet19(sources.en) };
+  const nextPlanner = { ...teamPlanner, TFTSet19: teamPlanner.TFTSet17 };
+  const nextResolver = new HashResolver(collectVocabulary([nextSources.vi, nextSources.en]));
+
+  test("is detected and parsed without code changes", () => {
+    expect(detectCurrentSet(nextSources.vi).number).toBe(19);
+    const set17 = parse(17);
+    const set19 = parseSet({
+      sources: nextSources,
+      teamPlanner: nextPlanner,
+      setNumber: 19,
+      resolver: nextResolver,
+    });
+    expect(set19.mutator).toBe("TFTSet19");
+    const champions = (parsed: ParsedSet) =>
+      parsed.entities
+        .filter((candidate) => candidate.kind === "champion")
+        .map((candidate) => [candidate.apiName, candidate.plannerCode, candidate.traits]);
+    expect(champions(set19)).toEqual(champions(set17));
+    expect(set19.entities.filter((candidate) => candidate.kind === "trait").length).toBe(
+      set17.entities.filter((candidate) => candidate.kind === "trait").length,
+    );
+  });
+
+  test("round-trips team planner codes with the new mutator", () => {
+    const set19 = parseSet({
+      sources: nextSources,
+      teamPlanner: nextPlanner,
+      setNumber: 19,
+      resolver: nextResolver,
+    });
+    const codes = set19.entities
+      .filter((candidate) => candidate.kind === "champion" && candidate.plannerCode)
+      .map((candidate) => candidate.plannerCode!)
+      .filter(isEncodablePlannerCode)
+      .slice(0, 3);
+    expect(codes.length).toBeGreaterThan(0);
+    expect(decodePlannerCode(encodePlannerCode(codes, set19.mutator))).toEqual({
+      codes,
+      mutator: "TFTSet19",
+    });
   });
 });

@@ -39,8 +39,11 @@ export function createArticleRoutes({
   return new Hono<AuthEnv>()
     .use("/articles", guards.sameOrigin)
     .use("/articles/*", guards.sameOrigin)
-    .post("/articles", guards.requireUser, async (c) =>
-      respond(c, await service.create(c.get("user"), await readBody(c)), 201),
+    .post(
+      "/articles",
+      guards.requireUser,
+      guards.limitPerUser("article-create", 10, 3600),
+      async (c) => respond(c, await service.create(c.get("user"), await readBody(c)), 201),
     )
     .get("/articles/:id", async (c) => {
       const result = await service.get(await optionalUser(c), c.req.param("id"));
@@ -48,8 +51,12 @@ export function createArticleRoutes({
         ? c.json({ ok: true, article: toPublicArticle(result.value) })
         : failure(c, result);
     })
-    .put("/articles/:id", guards.requireUser, async (c) =>
-      respond(c, await service.update(c.get("user"), c.req.param("id"), await readBody(c))),
+    .put(
+      "/articles/:id",
+      guards.requireUser,
+      guards.limitPerUser("article-update", 30, 3600),
+      async (c) =>
+        respond(c, await service.update(c.get("user"), c.req.param("id"), await readBody(c))),
     )
     .delete("/articles/:id", guards.requireUser, async (c) => {
       const result = await service.remove(c.get("user"), c.req.param("id"));
@@ -67,8 +74,13 @@ export function createArticleRoutes({
       const result = await service.reactions(await optionalUser(c), c.req.param("id"));
       return result.ok ? c.json({ ok: true, ...result.value }) : failure(c, result);
     })
-    .put("/articles/:id/reaction", guards.requireUser, async (c) => {
-      const result = await service.react(c.get("user"), c.req.param("id"), await readBody(c));
-      return result.ok ? c.json({ ok: true, ...result.value }) : failure(c, result);
-    });
+    .put(
+      "/articles/:id/reaction",
+      guards.requireUser,
+      guards.limitPerUser("reaction", 120, 3600),
+      async (c) => {
+        const result = await service.react(c.get("user"), c.req.param("id"), await readBody(c));
+        return result.ok ? c.json({ ok: true, ...result.value }) : failure(c, result);
+      },
+    );
 }

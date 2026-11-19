@@ -44,9 +44,30 @@ test.describe("stats", () => {
     await expect(page.getByRole("columnheader", { name: /Avg place/ })).toBeVisible();
   });
 
-  test("shows not found for an unknown tier", async ({ page }) => {
-    await page.goto("/stats/iron/champions");
-    await expect(page.getByText("This page could not be found")).toBeVisible();
+  test("answers impossible addresses with a real 404", async ({ page }) => {
+    for (const path of [
+      "/stats/iron/champions",
+      "/comps/not-a-uuid",
+      "/articles/hello",
+      "/library/abc",
+      "/trang-khong-co",
+    ]) {
+      const response = await page.goto(path);
+      expect(response?.status(), path).toBe(404);
+      await expect(page.getByRole("heading", { name: "Không tìm thấy trang" })).toBeVisible();
+    }
+    const english = await page.goto("/en/stats/iron/items");
+    expect(english?.status()).toBe(404);
+    await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+  });
+
+  test("sends security headers", async ({ page }) => {
+    const response = await page.goto("/");
+    const headers = response?.headers() ?? {};
+    expect(headers["content-security-policy"]).toContain("frame-ancestors 'none'");
+    expect(headers["x-content-type-options"]).toBe("nosniff");
+    expect(headers["x-frame-options"]).toBe("DENY");
+    expect(headers["x-powered-by"]).toBeUndefined();
   });
 });
 

@@ -46,7 +46,12 @@ function setup() {
     },
     now: () => new Date("2026-11-19T10:00:00Z"),
   });
+  const hits = new Map<string, number>();
   const app = createApp({
+    hitRateLimit: async (bucket) => {
+      hits.set(bucket, (hits.get(bucket) ?? 0) + 1);
+      return hits.get(bucket)!;
+    },
     revalidateSecret: () => undefined,
     revalidate: () => {},
     databaseVersion: async () => null,
@@ -178,6 +183,20 @@ test.describe("comp routes", () => {
     expect((await owner.send("DELETE", `/api/comps/${id}`)).status).toBe(200);
     expect((await owner.send("GET", `/api/comps/${id}`)).status).toBe(404);
     expect((await owner.send("PUT", `/api/comps/${id}`, edited)).status).toBe(404);
+  });
+
+  test("limits how many comps a user can create per hour", async () => {
+    const { client } = setup();
+    const owner = await client().register("chu_comp");
+    for (let index = 0; index < 20; index += 1) {
+      expect((await owner.send("POST", "/api/comps", VALID_COMP)).status).toBe(201);
+    }
+    const limited = await owner.send("POST", "/api/comps", VALID_COMP);
+    expect(limited.status).toBe(429);
+    expect(((await limited.json()) as { code: string }).code).toBe("rateLimited");
+
+    const other = await client().register("nguoi_khac");
+    expect((await other.send("POST", "/api/comps", VALID_COMP)).status).toBe(201);
   });
 
   test("treats malformed ids as not found", async () => {

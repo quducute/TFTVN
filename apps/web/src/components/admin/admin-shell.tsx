@@ -9,6 +9,7 @@ import { getViewer } from "@/server/auth/viewer";
 const TABS = [
   { key: "review", href: "/admin" },
   { key: "roles", href: "/admin/roles" },
+  { key: "users", href: "/admin/users" },
 ] as const;
 
 export async function AdminShell({
